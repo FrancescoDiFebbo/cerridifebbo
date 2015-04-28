@@ -630,11 +630,12 @@
       <x>875</x>
       <y>224</y>
       <w>126</w>
-      <h>105</h>
+      <h>126</h>
     </coordinates>
     <panel_attributes>Player
 --
 - name : String
+- playerCard : CharacterCard
 - ownCards [] : Card
 - pos : Sector
 - race : String
@@ -1045,20 +1046,6 @@ layer=-1</panel_attributes>
 - letterColumn : char
 - raw : int</panel_attributes>
     <additional_attributes/>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>2226</x>
-      <y>420</y>
-      <w>133</w>
-      <h>35</h>
-    </coordinates>
-    <panel_attributes>lt=-
-m1=0..n
-m2=0..1
-teaches to &gt;</panel_attributes>
-    <additional_attributes>10.0;20.0;170.0;20.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
