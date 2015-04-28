@@ -400,16 +400,17 @@
     <id>UMLClass</id>
     <coordinates>
       <x>546</x>
-      <y>651</y>
+      <y>630</y>
       <w>105</w>
-      <h>56</h>
+      <h>77</h>
     </coordinates>
     <panel_attributes>Deck
 --
 - name : String
 - cards : Card[]
 --
-+ draw(): Card</panel_attributes>
++ draw(): Card
++ discarCard () : void</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
