@@ -5,14 +5,6 @@ public class Sector {
 	private boolean passable;
 	private Player[] playerInside;
 	
-	private Sector north;
-	private Sector south;
-	private Sector east;
-	private Sector west;
-	private Sector northEast;
-	private Sector northWest;
-	private Sector southEast;
-	private Sector southWest;
 
 	public void playerEnters(Player player) {
 
