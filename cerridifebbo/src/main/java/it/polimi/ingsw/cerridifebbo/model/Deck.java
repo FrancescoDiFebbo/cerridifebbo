@@ -25,7 +25,7 @@ public class Deck extends Observable{
 
 	public static void main(String[] args) {
 		ConcreteDeckFactory deckFactory = new ConcreteDeckFactory();
-		Deck deck = deckFactory.createDeck(ConcreteDeckFactory.BASIC_GAME_TYPE);
+		Deck deck = deckFactory.createDeck(ConcreteDeckFactory.ADVANCED_GAME_TYPE);
 		Scanner in = new Scanner(System.in);
 		while (!in.nextLine().equals("q")) {
 			deck.drawCharacterCard().performAction();
