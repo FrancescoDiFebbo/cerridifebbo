@@ -14,19 +14,19 @@ public class ConcreteSectorFactory implements SectorFactory {
 	private final int HUMANSECTOR = 5;
 
 	@Override
-	public Sector createSector(int type) {
+	public Sector createSector(int type, int raw, int column) {
 		if (type == NOSECTOR)
-			return new Sector();
+			return new Sector(raw, column, false);
 		if (type == SECURESECTOR)
-			return new SecureSector();
+			return new SecureSector(raw, column);
 		if (type == DANGEROUSSECTOR)
-			return new DangerousSector();
+			return new DangerousSector(raw, column);
 		if (type == HATCHSECTOR)
-			return new EscapeHatchSector();
+			return new EscapeHatchSector(raw, column);
 		if (type == ALIENSECTOR)
-			return new AlienSector();
+			return new AlienSector(raw, column);
 		if (type == HUMANSECTOR)
-			return new HumanSector();
+			return new HumanSector(raw, column);
 		return null;
 	}
 	

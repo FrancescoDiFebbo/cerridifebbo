@@ -9,12 +9,7 @@ public class Map {
 	private String name;
 	private final int COLUMNMAP = 23;
 	private final int RAWMAP = 14;
-	private final int NOSECTOR = 0;
-	private final int SECURESECTOR = 1;
-	private final int DANGEROUSSECTOR = 2;
-	private final int HATCHSECTOR = 3;
-	private final int ALIENSECTOR = 4;
-	private final int HUMANSECTOR = 5;
+	
 	
 	private Sector[][] grid = new Sector [RAWMAP][COLUMNMAP];
 	
@@ -29,7 +24,7 @@ public class Map {
 			{
 				for (int j=0; j<COLUMNMAP; j++ )
 				{
-					grid[i][j] = factory.createSector(fr.nextInt());
+					grid[i][j] = factory.createSector(fr.nextInt(),i ,j);
 				}
 			}
 			fr.close();
