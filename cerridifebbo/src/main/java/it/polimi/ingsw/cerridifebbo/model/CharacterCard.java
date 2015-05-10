@@ -7,11 +7,11 @@ public class CharacterCard extends Card {
 
 	@Override
 	public void performAction() {
-		// TODO Auto-generated method stub
+		System.out.println(characterName);
 
 	}
 
-	public CharacterCard(String race, String characterName){
+	CharacterCard(String race, String characterName){
 		this.race = race;
 		this.characterName = characterName;
 	}
