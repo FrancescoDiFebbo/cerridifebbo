@@ -10,3 +10,8 @@ target/
 
 # ignore metadata directories
 .metadata
+
+# ignore .classpath, .project and .settings
+.classpath
+.project
+.settings
