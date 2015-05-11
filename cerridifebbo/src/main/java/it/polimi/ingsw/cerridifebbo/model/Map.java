@@ -1,4 +1,5 @@
 package it.polimi.ingsw.cerridifebbo.model;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
@@ -41,7 +42,7 @@ public class Map {
 
 	private void setNorthEast(int raw, int column) {
 		if (column % 2 == 0) {
-			if (raw - 1 > 0 && column + 1 < COLUMNMAP) {
+			if (raw - 1 >= 0 && column + 1 < COLUMNMAP) {
 				grid[raw][column].setNorthEast(grid[raw - 1][column + 1]);
 				grid[raw - 1][column + 1].setSouthWest(grid[raw][column]);
 			} else {
