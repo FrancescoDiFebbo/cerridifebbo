@@ -1,4 +1,5 @@
 package it.polimi.ingsw.cerridifebbo.model;
+
 public class Sector {
 	private Coordinate coordinate;
 	private boolean passable;
@@ -58,5 +59,14 @@ public class Sector {
 
 	public void setPassable(boolean passable) {
 		this.passable = passable;
+	}
+
+	@Override
+	public String toString() {
+		char column = (char) (coordinate.getColumn() + 'A');
+		String raw = Integer.toString(coordinate.getRaw() + 1);
+		if (coordinate.getRaw() < 9)
+			return column + "0" + raw;
+		return column + raw;
 	}
 }

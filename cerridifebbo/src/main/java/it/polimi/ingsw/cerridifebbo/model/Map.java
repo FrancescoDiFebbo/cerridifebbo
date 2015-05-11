@@ -29,8 +29,25 @@ public class Map {
 					setAdjacentSector(i, j);
 				}
 			}
+			System.out.println("Mappa completata");
 		} catch (IOException e) {
 			e.printStackTrace();
+		}
+
+		for (int i = 0; i < RAWMAP; i++) {
+			for (int j = 0; j < COLUMNMAP; j++) {
+				if (j % 2 == 0) {
+					System.out.print(grid[i][j].toString() + "   ");
+				}
+			}
+			System.out.println();
+			System.out.print("   ");
+			for (int j = 0; j < COLUMNMAP; j++) {
+				if (j % 2 != 0) {
+					System.out.print(grid[i][j].toString() + "   ");
+				}
+			}
+			System.out.println();
 		}
 	}
 
