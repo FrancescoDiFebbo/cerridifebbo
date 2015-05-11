@@ -7,8 +7,8 @@ import java.util.Scanner;
 public class Map {
 	
 	private String name;
-	private final int COLUMNMAP = 23;
-	private final int RAWMAP = 14;
+	public static final int COLUMNMAP = 23;
+	public static final int RAWMAP = 14;
 	
 	
 	private Sector[][] grid = new Sector [RAWMAP][COLUMNMAP];
@@ -28,12 +28,20 @@ public class Map {
 				}
 			}
 			fr.close();
+			for(int i=0; i<RAWMAP; i++ )
+			{
+				for (int j=0; j<COLUMNMAP; j++ )
+				{
+					
+				}
+			}
 		}
 		catch (IOException e)
 		{
 		    e.printStackTrace();
 		}
 	}
+	
 	
 	public  static void main(String[] args)
 	{

@@ -6,12 +6,12 @@ import java.util.Scanner;
 
 public class ConcreteSectorFactory implements SectorFactory {
 	
-	private final int NOSECTOR = 0;
-	private final int SECURESECTOR = 1;
-	private final int DANGEROUSSECTOR = 2;
-	private final int HATCHSECTOR = 3;
-	private final int ALIENSECTOR = 4;
-	private final int HUMANSECTOR = 5;
+	private static final int NOSECTOR = 0;
+	private static final int SECURESECTOR = 1;
+	private static final int DANGEROUSSECTOR = 2;
+	private static final int HATCHSECTOR = 3;
+	private static final int ALIENSECTOR = 4;
+	private static final int HUMANSECTOR = 5;
 
 	@Override
 	public Sector createSector(int type, int raw, int column) {
