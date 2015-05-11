@@ -32,7 +32,7 @@ public class Map {
 			{
 				for (int j=0; j<COLUMNMAP; j++ )
 				{
-					
+					grid[i][j].setAdjacentSector();
 				}
 			}
 		}
@@ -48,6 +48,7 @@ public class Map {
 		File a = new File ("C://Users//stefano//git//cerridifebbo//cerridifebbo//map//galilei.txt");
 		Map ao = new Map();
 		ao.createMap(a);
+		
 	}
 	
 	

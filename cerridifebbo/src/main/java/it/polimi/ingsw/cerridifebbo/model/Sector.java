@@ -26,85 +26,6 @@ public class Sector {
 		
 		
 	}
-	
-	private void setEstWest(int type)
-	{
-		int column = coordinate.getColumn();
-		int raw =coordinate.getRaw();
-		switch (type)
-		{
-		case 0:
-			if(checkOutOfBorders(coordinate.getRaw()-1,coordinate.getColumn()+1))
-			{
-				//northEst
-			}
-			else
-			{
-				northEst = null;
-			}
-			if(checkOutOfBorders(coordinate.getRaw()-1,coordinate.getColumn()-1))
-			{
-				//northWest
-			}
-			else
-			{
-				northWest = null;
-			}
-			if(checkOutOfBorders(coordinate.getRaw(),coordinate.getColumn()+1))
-			{
-				//southEst
-			}
-			else
-			{
-				southEst = null;
-			}
-			if(checkOutOfBorders(coordinate.getRaw(),coordinate.getColumn()-1))
-			{
-				//southWest
-			}
-			else
-			{
-				southWest = null;
-			}
-			break;
-			
-		case 1:
-			
-			if(checkOutOfBorders(coordinate.getRaw(),coordinate.getColumn()+1))
-			{
-				//northEst
-			}
-			else
-			{
-				northEst = null;
-			}
-			if(checkOutOfBorders(coordinate.getRaw(),coordinate.getColumn()-1))
-			{
-				//northWest
-			}
-			else
-			{
-				northWest = null;
-			}
-			if(checkOutOfBorders(coordinate.getRaw()+1,coordinate.getColumn()+1))
-			{
-				//southEst
-			}
-			else
-			{
-				southEst = null;
-			}
-			if(checkOutOfBorders(coordinate.getRaw()+1,coordinate.getColumn()-1))
-			{
-				//southWest
-			}
-			else
-			{
-				southWest = null;
-			}
-		}
-	
-	}
 
 	private boolean checkOutOfBorders(int raw, int column)
 	{
@@ -136,6 +57,54 @@ public class Sector {
 		{
 			south = null;
 		}
+	}
+	
+	private void setEstWest(int type)
+	{
+		int shiftColumnNorth=0;
+		int shiftColumnSouth=0;
+		
+		switch (type)
+		{
+		case 0:
+			shiftColumnNorth=-1;
+		case 1:
+			shiftColumnSouth=+1;
+		}
+		
+		if(checkOutOfBorders(coordinate.getRaw()+shiftColumnNorth,coordinate.getColumn()+1))
+		{
+			//northEst
+		}
+		else
+		{
+			northEst = null;
+		}
+		if(checkOutOfBorders(coordinate.getRaw()+shiftColumnNorth,coordinate.getColumn()-1))
+		{
+			//northWest
+		}
+		else
+		{
+			northWest = null;
+		}
+		if(checkOutOfBorders(coordinate.getRaw()+shiftColumnSouth,coordinate.getColumn()+1))
+		{
+			//southEst
+		}
+		else
+		{
+			southEst = null;
+		}
+		if(checkOutOfBorders(coordinate.getRaw()+shiftColumnSouth,coordinate.getColumn()-1))
+		{
+			//southWest
+		}
+		else
+		{
+			southWest = null;
+		}
+	
 	}
 	
 	public void playerEnters(Player player) {
