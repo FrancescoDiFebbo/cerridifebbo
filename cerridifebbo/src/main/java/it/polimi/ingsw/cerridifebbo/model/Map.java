@@ -59,14 +59,15 @@ public class Map {
 
 	private void setNorthEast(int raw, int column) {
 		if (column % 2 == 0) {
-			if (raw - 1 >= 0 && column + 1 < COLUMNMAP) {
+			if (raw - 1 >= 0 && column + 1 < COLUMNMAP
+					&& grid[raw - 1][column + 1] != null) {
 				grid[raw][column].setNorthEast(grid[raw - 1][column + 1]);
 				grid[raw - 1][column + 1].setSouthWest(grid[raw][column]);
 			} else {
 				grid[raw][column].setNorthEast(null);
 			}
 		} else {
-			if (column + 1 < COLUMNMAP) {
+			if (column + 1 < COLUMNMAP && grid[raw][column + 1] != null) {
 				grid[raw][column].setNorthEast(grid[raw][column + 1]);
 				grid[raw][column + 1].setSouthWest(grid[raw][column]);
 			} else {
@@ -77,14 +78,15 @@ public class Map {
 
 	private void setSouthEast(int raw, int column) {
 		if (column % 2 == 0) {
-			if (column + 1 < COLUMNMAP) {
+			if (column + 1 < COLUMNMAP && grid[raw][column + 1] != null) {
 				grid[raw][column].setSouthEast(grid[raw][column + 1]);
 				grid[raw][column + 1].setNorthWest(grid[raw][column]);
 			} else {
 				grid[raw][column].setSouthEast(null);
 			}
 		} else {
-			if (column + 1 < COLUMNMAP && raw + 1 < RAWMAP) {
+			if (column + 1 < COLUMNMAP && raw + 1 < RAWMAP
+					&& grid[raw + 1][column + 1] != null) {
 				grid[raw][column].setSouthEast(grid[raw + 1][column + 1]);
 				grid[raw + 1][column + 1].setNorthWest(grid[raw][column]);
 			} else {
@@ -94,7 +96,7 @@ public class Map {
 	}
 
 	private void setSouth(int raw, int column) {
-		if (raw + 1 < RAWMAP) {
+		if (raw + 1 < RAWMAP && grid[raw + 1][column] != null) {
 			grid[raw][column].setSouth(grid[raw + 1][column]);
 			grid[raw + 1][column].setNorth(grid[raw][column]);
 		} else {
@@ -103,7 +105,8 @@ public class Map {
 	}
 
 	public static void main(String[] args) {
-		File a = new File("C://Users//stefano//git//cerridifebbo//cerridifebbo//map//galilei.txt");
+		File a = new File(
+				"C://Users//stefano//git//cerridifebbo//cerridifebbo//map//galilei.txt");
 		Map ao = new Map();
 		ao.createMap(a);
 	}

@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.Scanner;
 
 public class ConcreteSectorFactory implements SectorFactory {
-	
+
 	private static final int NOSECTOR = 0;
 	private static final int SECURESECTOR = 1;
 	private static final int DANGEROUSSECTOR = 2;
@@ -16,7 +16,7 @@ public class ConcreteSectorFactory implements SectorFactory {
 	@Override
 	public Sector createSector(int type, int raw, int column) {
 		if (type == NOSECTOR)
-			return new Sector(raw, column, false);
+			return null;
 		if (type == SECURESECTOR)
 			return new SecureSector(raw, column);
 		if (type == DANGEROUSSECTOR)
@@ -29,5 +29,5 @@ public class ConcreteSectorFactory implements SectorFactory {
 			return new HumanSector(raw, column);
 		return null;
 	}
-	
+
 }

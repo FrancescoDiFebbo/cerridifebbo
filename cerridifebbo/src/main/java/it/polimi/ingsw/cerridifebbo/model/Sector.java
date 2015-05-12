@@ -1,9 +1,11 @@
 package it.polimi.ingsw.cerridifebbo.model;
 
-public class Sector {
+import java.util.ArrayList;
+
+public abstract class Sector {
 	private Coordinate coordinate;
 	private boolean passable;
-	private Player[] playerInside;
+	private ArrayList<Player> playerInside;
 
 	private Sector north;
 	private Sector south;
@@ -42,15 +44,15 @@ public class Sector {
 	}
 
 	public void playerEnters(Player player) {
-
+		playerInside.add(player);
 	}
 
 	public void playerLeaves(Player player) {
-
+		playerInside.remove(player);
 	}
 
 	public boolean containsPlayer(Player player) {
-		return false;
+		return playerInside.contains(player);
 	}
 
 	public boolean isPassable() {
@@ -59,6 +61,10 @@ public class Sector {
 
 	public void setPassable(boolean passable) {
 		this.passable = passable;
+	}
+
+	public boolean isReachable(Player p) {
+		return false;
 	}
 
 	@Override

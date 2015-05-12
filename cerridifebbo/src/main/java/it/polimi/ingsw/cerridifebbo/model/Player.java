@@ -6,6 +6,9 @@ public class Player {
 	private Card [] ownCard;
 	private Sector pos;
 	private String race;
+	private int maxMovement;
+	
+	public int ge
 	
 	public void move ()
 	{
