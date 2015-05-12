@@ -64,7 +64,41 @@ public abstract class Sector {
 	}
 
 	public boolean isReachable(Player p) {
+		if (!isPassable()) {
+			return false;
+		}
+		int maxMovement = p.getMaxMovement();
+		Sector playerSector = p.getSector();
+
+		return recursive(playerSector, maxMovement);
+
+	}
+
+	private boolean recursive(Sector playerSector, int maxMovement) {
+		if (playerSector == null || maxMovement < 0
+				|| !playerSector.isPassable())
+			return false;
+		if (playerSector.equals(this))
+			return true;
+
+		for (Sector sector : playerSector.getAdjacentSector()) {
+			if (recursive(sector, maxMovement--)) {
+				return true;
+			}
+		}
 		return false;
+
+	}
+
+	public ArrayList<Sector> getAdjacentSector() {
+		ArrayList<Sector> sectorList = new ArrayList<Sector>();
+		sectorList.add(north);
+		sectorList.add(northEast);
+		sectorList.add(northWest);
+		sectorList.add(south);
+		sectorList.add(southEast);
+		sectorList.add(southWest);
+		return sectorList;
 	}
 
 	@Override

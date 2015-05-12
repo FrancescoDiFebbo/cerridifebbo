@@ -26,29 +26,20 @@ public class Map {
 			fr.close();
 			for (int j = 0; j < COLUMNMAP; j++) {
 				for (int i = 0; i < RAWMAP; i++) {
-					setAdjacentSector(i, j);
+					if (grid[i][j] != null) {
+						setAdjacentSector(i, j);
+					}
 				}
 			}
-			System.out.println("Mappa completata");
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
-		for (int i = 0; i < RAWMAP; i++) {
-			for (int j = 0; j < COLUMNMAP; j++) {
-				if (j % 2 == 0) {
-					System.out.print(grid[i][j].toString() + "   ");
-				}
-			}
-			System.out.println();
-			System.out.print("   ");
-			for (int j = 0; j < COLUMNMAP; j++) {
-				if (j % 2 != 0) {
-					System.out.print(grid[i][j].toString() + "   ");
-				}
-			}
-			System.out.println();
-		}
+		Player test = new Player();
+		test.setMaxMovement(3);
+		test.setPos(grid[5][5]);
+		System.out.println("val " + grid[7][9].isReachable(test));
 	}
 
 	private void setAdjacentSector(int raw, int column) {
@@ -109,6 +100,7 @@ public class Map {
 				"C://Users//stefano//git//cerridifebbo//cerridifebbo//map//galilei.txt");
 		Map ao = new Map();
 		ao.createMap(a);
+
 	}
 
 }
