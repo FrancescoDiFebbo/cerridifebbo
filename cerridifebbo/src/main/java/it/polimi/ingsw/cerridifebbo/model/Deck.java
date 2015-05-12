@@ -5,14 +5,15 @@ import java.util.Observable;
 import java.util.Scanner;
 import java.util.Vector;
 
-public class Deck extends Observable{
+public class Deck extends Observable {
 	private final Vector<Card> characterCards;
-	private int currentCharacter = 0;
 	private final Vector<Card> sectorCards;
-	private int currentSector = 0;
 	private final Vector<Card> itemCards;
-	private int currentItem = 0;
 	private final Vector<Card> escapeHatchCards;
+
+	private int currentCharacter = 0;
+	private int currentSector = 0;
+	private int currentItem = 0;
 	private int currentEscapeHatchCards = 0;
 
 	Deck(Vector<Card> characters, Vector<Card> sectors, Vector<Card> items, Vector<Card> escapeHatches) {
@@ -20,11 +21,11 @@ public class Deck extends Observable{
 		this.sectorCards = sectors;
 		this.itemCards = items;
 		this.escapeHatchCards = escapeHatches;
-		
+
 	}
 
 	public static void main(String[] args) {
-		ConcreteDeckFactory deckFactory = new ConcreteDeckFactory();
+		DeckFactory deckFactory = new ConcreteDeckFactory();
 		Deck deck = deckFactory.createDeck(ConcreteDeckFactory.ADVANCED_GAME_TYPE);
 		Scanner in = new Scanner(System.in);
 		while (!in.nextLine().equals("q")) {

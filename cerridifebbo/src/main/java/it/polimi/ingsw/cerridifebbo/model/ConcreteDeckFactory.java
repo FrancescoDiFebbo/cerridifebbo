@@ -7,25 +7,29 @@ public class ConcreteDeckFactory implements DeckFactory {
 
 	public static final String BASIC_GAME_TYPE = "basic_game_type";
 	public static final String ADVANCED_GAME_TYPE = "advanced_game_type";
+	public static final int MAX_PLAYERS = 8;
+	public static final int MIN_PLAYERS = 2;
 
 	public Deck createDeck(String gameType) {
-		return createDeck(gameType, 8);
+		return createDeck(gameType, MAX_PLAYERS);
 	}
 
 	public Deck createDeck(String gameType, int numberOfPlayers) {
-		// TODO controllare numero giocatori
+		if (numberOfPlayers < MIN_PLAYERS || numberOfPlayers > MAX_PLAYERS) {
+			throw new IllegalArgumentException("Number of players between " + MIN_PLAYERS + " and " + MAX_PLAYERS);
+		}
 		switch (gameType) {
 		case BASIC_GAME_TYPE:
-			return deckCreator(numberOfPlayers, false, false, false);
+			return getDeck(numberOfPlayers, false, false, false);
 		case ADVANCED_GAME_TYPE:
-			return deckCreator(numberOfPlayers, true, true, true);
+			return getDeck(numberOfPlayers, true, true, true);
 		default:
 			return null;
 		}
 	}
 
-	private Deck deckCreator(int characters, boolean containsItems, boolean items, boolean escapeHatches) {
-		Vector<Card> characterCards = createCharactersDeck(characters);
+	private Deck getDeck(int players, boolean containsItems, boolean items, boolean escapeHatches) {
+		Vector<Card> characterCards = createCharactersDeck(players);
 		Vector<Card> sectorCards = createSectorsDeck(containsItems);
 		Vector<Card> itemCards = createItemsDeck(items);
 		Vector<Card> escapeHatchCards = createEscapeHatchesDeck(escapeHatches);
@@ -83,22 +87,22 @@ public class ConcreteDeckFactory implements DeckFactory {
 			// TODO eliminare codice ripetuto, utilizzare una combinazione
 			// Key,Value
 			Vector<Card> cards = new Vector<Card>();
-			for (int i = 0; i < ItemProperties.MAX_ATTACK_ITEM_CARD; i++) {
+			for (int i = 0; i < ItemProperties.MAX_ATTACK_ITEM_CARDS; i++) {
 				cards.add(new ItemCard(ItemProperties.ATTACK_ITEM_CARD));
 			}
-			for (int i = 0; i < ItemProperties.MAX_TELEPORT_ITEM_CARD; i++) {
+			for (int i = 0; i < ItemProperties.MAX_TELEPORT_ITEM_CARDS; i++) {
 				cards.add(new ItemCard(ItemProperties.TELEPORT_ITEM_CARD));
 			}
-			for (int i = 0; i < ItemProperties.MAX_SEDATIVES_ITEM_CARD; i++) {
+			for (int i = 0; i < ItemProperties.MAX_SEDATIVES_ITEM_CARDS; i++) {
 				cards.add(new ItemCard(ItemProperties.SEDATIVES_ITEM_CARD));
 			}
-			for (int i = 0; i < ItemProperties.MAX_SPOTLIGHT_ITEM_CARD; i++) {
+			for (int i = 0; i < ItemProperties.MAX_SPOTLIGHT_ITEM_CARDS; i++) {
 				cards.add(new ItemCard(ItemProperties.SPOTLIGHT_ITEM_CARD));
 			}
-			for (int i = 0; i < ItemProperties.MAX_DEFENSE_ITEM_CARD; i++) {
+			for (int i = 0; i < ItemProperties.MAX_DEFENSE_ITEM_CARDS; i++) {
 				cards.add(new ItemCard(ItemProperties.DEFENSE_ITEM_CARD));
 			}
-			for (int i = 0; i < ItemProperties.MAX_ADRENALINE_ITEM_CARD; i++) {
+			for (int i = 0; i < ItemProperties.MAX_ADRENALINE_ITEM_CARDS; i++) {
 				cards.add(new ItemCard(ItemProperties.ADRENALINE_ITEM_CARD));
 			}
 			Collections.shuffle(cards);
@@ -139,7 +143,7 @@ public class ConcreteDeckFactory implements DeckFactory {
 		public static final int MAX_NOISE_IN_YOUR_SECTOR_CARDS = 10;
 		public static final int MAX_NOISE_IN_ANY_SECTOR_CARDS = 10;
 		public static final int MAX_SILENCE_CARDS = 5;
-		public static final int MAX_SECTOR_ITEM_CARDS = 5;
+		public static final int MAX_SECTOR_ITEM_CARDS = 4;
 
 		public static final String NOISE_IN_YOUR_SECTOR_CARD = "noise_in_your_sector_card";
 		public static final String NOISE_IN_ANY_SECTOR_CARD = "noise_in_any_sector_card";
@@ -148,12 +152,12 @@ public class ConcreteDeckFactory implements DeckFactory {
 
 	public static class ItemProperties {
 		public static final int MAX_ITEM_CARDS = 12;
-		public static final int MAX_ATTACK_ITEM_CARD = 2;
-		public static final int MAX_TELEPORT_ITEM_CARD = 2;
-		public static final int MAX_SEDATIVES_ITEM_CARD = 2;
-		public static final int MAX_SPOTLIGHT_ITEM_CARD = 2;
-		public static final int MAX_DEFENSE_ITEM_CARD = 2;
-		public static final int MAX_ADRENALINE_ITEM_CARD = 2;
+		public static final int MAX_ATTACK_ITEM_CARDS = 2;
+		public static final int MAX_TELEPORT_ITEM_CARDS = 2;
+		public static final int MAX_SEDATIVES_ITEM_CARDS = 3;
+		public static final int MAX_SPOTLIGHT_ITEM_CARDS = 2;
+		public static final int MAX_DEFENSE_ITEM_CARDS = 1;
+		public static final int MAX_ADRENALINE_ITEM_CARDS = 2;
 
 		public static final String ATTACK_ITEM_CARD = "attack_item";
 		public static final String TELEPORT_ITEM_CARD = "teleport_item";
