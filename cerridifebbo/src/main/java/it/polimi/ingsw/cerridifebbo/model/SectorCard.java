@@ -1,23 +1,19 @@
 package it.polimi.ingsw.cerridifebbo.model;
 
-public class SectorCard extends Card {
-	
-	private final String type;
+public abstract class SectorCard implements Card {
+
 	private final boolean containsItem;
-	
-	SectorCard(String type) {
-		this(type, false);
-	}
-	
-	SectorCard(String type, boolean item) {
-		this.type = type;
+
+	SectorCard(boolean item) {
 		this.containsItem = item;
 	}
-	
-	@Override
-	public void performAction() {
-		// TODO Auto-generated method stub
 
+	public boolean containsItem() {
+		return containsItem;
+	}
+
+	public boolean isContainsItem() {
+		return containsItem;
 	}
 
 }

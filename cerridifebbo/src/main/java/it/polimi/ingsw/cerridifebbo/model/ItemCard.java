@@ -1,17 +1,15 @@
 package it.polimi.ingsw.cerridifebbo.model;
 
-public class ItemCard extends Card {
+public abstract class ItemCard implements Card {
 
-	private final String type;
+	boolean taken = false;
 
-	@Override
-	public void performAction() {
-		// TODO Auto-generated method stub
-
+	public boolean isTaken() {
+		return taken;
 	}
 
-	ItemCard(String type) {
-		this.type = type;
+	public void setTaken(boolean taken) {
+		this.taken = taken;
 	}
 
 }

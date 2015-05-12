@@ -5,7 +5,7 @@ import java.util.Observable;
 import java.util.Scanner;
 import java.util.Vector;
 
-public class Deck extends Observable {
+public class Deck {
 	private final Vector<Card> characterCards;
 	private final Vector<Card> sectorCards;
 	private final Vector<Card> itemCards;
@@ -23,17 +23,20 @@ public class Deck extends Observable {
 		this.escapeHatchCards = escapeHatches;
 
 	}
-
+	
+	//TODO
 	public static void main(String[] args) {
 		DeckFactory deckFactory = new ConcreteDeckFactory();
-		Deck deck = deckFactory.createDeck(ConcreteDeckFactory.ADVANCED_GAME_TYPE);
+		deckFactory.setPlayers(3);
+		Deck deck = deckFactory.createDeck();
 		Scanner in = new Scanner(System.in);
-		while (!in.nextLine().equals("q")) {
+		while (!in.next().equals("q")) {
 			deck.drawCharacterCard().performAction();
 		}
 	}
 
 	public Card drawCharacterCard() {
+		//TODO
 		if (currentCharacter == characterCards.size()) {
 			Collections.shuffle(characterCards);
 			currentCharacter = 0;
