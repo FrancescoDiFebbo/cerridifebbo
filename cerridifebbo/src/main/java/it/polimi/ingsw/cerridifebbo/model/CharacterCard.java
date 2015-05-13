@@ -14,6 +14,7 @@ public abstract class CharacterCard implements Card {
 	
 	@Override
 	public void performAction() {
+		//TODO
 		System.out.println(characterName);
 	}
 }

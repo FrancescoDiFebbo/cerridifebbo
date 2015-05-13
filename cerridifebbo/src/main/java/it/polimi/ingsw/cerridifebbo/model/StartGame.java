@@ -1,9 +1,15 @@
 package it.polimi.ingsw.cerridifebbo.model;
 
-public class StartGame implements GameState {
+public class StartGame extends GameState {
+	
+	public StartGame(Game game){
+		super(game);
+	}
+	
+	
 	@Override
 	public void handle() {
-		// TODO Auto-generated method stub
-
+		Map map = Map.getInstance();
+		Deck deck = new ConcreteDeckFactory().createDeck();
 	}
 }
