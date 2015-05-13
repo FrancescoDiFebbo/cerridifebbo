@@ -435,13 +435,10 @@
     <panel_attributes>/Sector/
 --
 - coordinate : Coordinate
-- passable : boolean
-- playerInside [] : Player 
+- passable : boolean 
 - adjacentSector [] : Sector
 --
-+ playerEnters ( p : Player)
-+ playerLeaves ( p : Player) 
-+ containsPlayer (p : Player) : boolean
++ isReachable(p: Player) : boolean
 
 </panel_attributes>
     <additional_attributes/>
@@ -449,8 +446,8 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1592</x>
-      <y>680</y>
+      <x>1792</x>
+      <y>560</y>
       <w>168</w>
       <h>104</h>
     </coordinates>
@@ -459,7 +456,7 @@
 - name: String
 - grid[][] : Sector
 --
-+ createMap( fileMap : File): void
++ getInstance(): Map
 
 
 </panel_attributes>
@@ -468,13 +465,13 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1752</x>
-      <y>696</y>
-      <w>272</w>
-      <h>152</h>
+      <x>1952</x>
+      <y>576</y>
+      <w>72</w>
+      <h>272</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>10.0;10.0;320.0;170.0</additional_attributes>
+    <additional_attributes>10.0;10.0;70.0;320.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
@@ -635,17 +632,16 @@
       <w>144</w>
       <h>144</h>
     </coordinates>
-    <panel_attributes>Player
+    <panel_attributes>/Player/
 --
 - name : String
 - playerCard : CharacterCard
 - ownCards [] : Card
 - pos : Sector
-- race : String
 --
-+ move () : void
-- movement () : void
-- attack () : void</panel_attributes>
++ movement () : boolean
++ attack () : void
++ kill() : void</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
@@ -665,12 +661,12 @@ m1=2..8</panel_attributes>
     <coordinates>
       <x>1384</x>
       <y>456</y>
-      <w>296</w>
-      <h>240</h>
+      <w>496</w>
+      <h>120</h>
     </coordinates>
     <panel_attributes>lt=&lt;-
 m1=0..n</panel_attributes>
-    <additional_attributes>10.0;10.0;350.0;280.0</additional_attributes>
+    <additional_attributes>10.0;10.0;600.0;130.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
@@ -847,7 +843,7 @@ m1=0..n</panel_attributes>
     <id>UMLPackage</id>
     <coordinates>
       <x>0</x>
-      <y>272</y>
+      <y>264</y>
       <w>2744</w>
       <h>1104</h>
     </coordinates>
@@ -1117,5 +1113,98 @@ m1=1..1</panel_attributes>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;.</panel_attributes>
     <additional_attributes>10.0;10.0;40.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>840</x>
+      <y>344</y>
+      <w>176</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>200.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>744</x>
+      <y>328</y>
+      <w>104</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>HumanPlayer</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>744</x>
+      <y>376</y>
+      <w>104</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>AlienPlayer</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>840</x>
+      <y>344</y>
+      <w>176</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>200.0;10.0;100.0;10.0;100.0;60.0;10.0;60.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1536</x>
+      <y>576</y>
+      <w>176</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>/MapCreator/
+--
++ createMap(fileMap : File): Map
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1624</x>
+      <y>608</y>
+      <w>24</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;50.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1536</x>
+      <y>648</y>
+      <w>176</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>ConcreteMapCreator
+--
++createMap(fileMap : File) : Map</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1704</x>
+      <y>616</y>
+      <w>104</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>110.0;10.0;10.0;60.0</additional_attributes>
   </element>
 </diagram>

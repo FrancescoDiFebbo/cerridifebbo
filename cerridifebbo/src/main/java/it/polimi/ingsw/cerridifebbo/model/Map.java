@@ -7,8 +7,8 @@ import java.util.Scanner;
 public class Map {
 
 	private String name;
-	private static Map instance=null;
-	private  final Sector[][] grid;
+	private static Map instance = null;
+	private final Sector[][] grid;
 
 	public static Map getInstance() {
 		if (instance != null)
@@ -18,9 +18,9 @@ public class Map {
 		return ConcreteMapFactory.createMap(fileMap);
 
 	}
-	
-	Map (Sector[][] grid, String name){
-		this.grid=grid;
-		this.name=name;
+
+	Map(Sector[][] grid, String name) {
+		this.grid = grid;
+		this.name = name;
 	}
 }

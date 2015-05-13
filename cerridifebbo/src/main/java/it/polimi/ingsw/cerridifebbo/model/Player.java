@@ -1,21 +1,39 @@
 package it.polimi.ingsw.cerridifebbo.model;
 
-public class Player {
-	private String name;
+import java.util.ArrayList;
+
+public abstract class Player {
+
 	private CharacterCard playerCard;
 	private Card[] ownCard;
 	private Sector pos;
-	private String race;
 	private int maxMovement;
+	private boolean alive;
+
+	Player(CharacterCard playerCard, Sector pos, int maxMovement) {
+		this.playerCard = playerCard;
+		this.pos = pos;
+		this.maxMovement = maxMovement;
+		this.ownCard = null;
+		this.alive= true;
+
+	}
+	
+	public boolean isAlive(){
+		return alive;
+	}
+	
+	public void kill(){
+		this.alive=false;
+	}
 
 	public int getMaxMovement() {
 		return maxMovement;
 	}
-	
-	public Sector getSector (){
+
+	public Sector getSector() {
 		return pos;
 	}
-	
 
 	public Sector getPos() {
 		return pos;
@@ -29,15 +47,22 @@ public class Player {
 		this.maxMovement = maxMovement;
 	}
 
-	public void move() {
-
+	private void attack(ArrayList<Player> playerList) {
+		for (Player p : playerList) {
+			if (p.pos == this.pos) {
+				p.kill();
+			}
+		}
 	}
 
-	private boolean attack() {
+	private boolean movement(Sector destination) {
+		if(destination.isReachable(this)){
+			this.pos=destination;
+			return true;
+		}
 		return false;
 	}
-
-	private void movement() {
-
-	}
+		
+		
+	
 }
