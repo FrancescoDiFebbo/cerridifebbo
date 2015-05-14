@@ -439,6 +439,7 @@
 - adjacentSector [] : Sector
 --
 + isReachable(p: Player) : boolean
++ playerEnters (deck : Deck) : Card
 
 </panel_attributes>
     <additional_attributes/>
@@ -476,68 +477,76 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>2408</x>
+      <x>2432</x>
       <y>976</y>
-      <w>168</w>
+      <w>184</w>
       <h>56</h>
     </coordinates>
     <panel_attributes>AlienSector
 --
-</panel_attributes>
+
+--
++ playerEnters (deck : Deck) : Card</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>2224</x>
+      <x>2232</x>
       <y>976</y>
-      <w>168</w>
+      <w>184</w>
       <h>56</h>
     </coordinates>
     <panel_attributes>HumanSector
 --
-</panel_attributes>
+
+--
++ playerEnters (deck : Deck) : Card</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1856</x>
+      <x>1832</x>
       <y>976</y>
-      <w>168</w>
+      <w>184</w>
       <h>56</h>
     </coordinates>
     <panel_attributes>DangerousSector
 --
-</panel_attributes>
+
+--
++ playerEnters (deck : Deck) : Card</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>2040</x>
+      <x>2032</x>
       <y>976</y>
-      <w>168</w>
+      <w>184</w>
       <h>56</h>
     </coordinates>
     <panel_attributes>SecureSector
 --
-</panel_attributes>
+
+--
++ playerEnters (deck : Deck) : Card</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1672</x>
+      <x>1632</x>
       <y>976</y>
-      <w>168</w>
+      <w>184</w>
       <h>56</h>
     </coordinates>
     <panel_attributes>EscapeHatchSector
 --
-- status : String
+
 --
-+ changeStatus ( status : String ) 
++ playerEnters (deck : Deck) : Card
 </panel_attributes>
     <additional_attributes/>
   </element>
@@ -595,17 +604,6 @@
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;40.0;480.0;40.0;480.0;100.0</additional_attributes>
-  </element>
-  <element>
-    <id>Text</id>
-    <coordinates>
-      <x>1856</x>
-      <y>728</y>
-      <w>184</w>
-      <h>56</h>
-    </coordinates>
-    <panel_attributes>le dimensioni di grid  e player inside le prendiamo dalla classe costanti così usiamo gli array/matrici invece delle liste</panel_attributes>
-    <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>

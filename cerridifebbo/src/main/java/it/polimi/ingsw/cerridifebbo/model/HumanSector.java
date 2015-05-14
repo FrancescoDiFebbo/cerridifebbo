@@ -6,4 +6,9 @@ public class HumanSector extends Sector {
 		super(raw, column, false);
 	}
 
+	@Override
+	public Card playerEnters(Deck deck) {
+		return null;
+	}
+
 }

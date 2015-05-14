@@ -44,16 +44,16 @@ public class Deck {
 		return characterCards.get(currentCharacter++);
 	}
 
-	public void drawSectorCard() {
-
+	public Card drawSectorCard() {
+		return null;
 	}
 
-	public void drawItemCard() {
-
+	public Card drawItemCard() {
+		return null;
 	}
 
-	public void drawEscapeHatchCard() {
-
+	public Card drawEscapeHatchCard() {
+		return null;
 	}
 
 	public void discardCard() {
