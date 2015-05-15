@@ -24,10 +24,10 @@ public class StartGame extends GameState {
 			Card character = deck.drawCharacterCard();
 			Player player;
 			if (character instanceof HumanCard) {
-				player = new HumanPlayer((CharacterCard) character, map.getRandomHumanSector());
+				player = new HumanPlayer((CharacterCard) character, map.getHumanSector());
 				user.setPlayer(player);
 			} else if (character instanceof AlienCard) {
-				player = new AlienPlayer((CharacterCard) character, map.getRandomAlienSector());
+				player = new AlienPlayer((CharacterCard) character, map.getAlienSector());
 				user.setPlayer(player);
 			}
 		}

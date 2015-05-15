@@ -47,15 +47,15 @@ public abstract class Player {
 		this.maxMovement = maxMovement;
 	}
 
-	private void attack(ArrayList<Player> playerList) {
-		for (Player p : playerList) {
-			if (p.pos == this.pos) {
-				p.kill();
+	public void attack(ArrayList<User> userList) {
+		for (User u : userList) {
+			if (u.getPlayer().pos == this.pos) {
+				u.getPlayer().kill();
 			}
 		}
 	}
 
-	private boolean movement(Sector destination) {
+	public boolean movement(Sector destination) {
 		if(destination.isReachable(this)){
 			this.pos=destination;
 			return true;
