@@ -1,5 +1,7 @@
 package it.polimi.ingsw.cerridifebbo.model;
 
+import java.util.ArrayList;
+
 public abstract class GameState {
 	
 	protected Game game;
@@ -8,5 +10,6 @@ public abstract class GameState {
 		this.game= game;
 	}
 	
-	abstract void handle();
+	public abstract void handle();
+	public abstract void perform(User user, String action, Object target);
 }
