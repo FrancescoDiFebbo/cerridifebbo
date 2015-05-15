@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public abstract class Player {
 
 	private CharacterCard playerCard;
-	private Card[] ownCard;
+	private Card[] ownCards;
 	private Sector pos;
 	private int maxMovement;
 	private boolean alive;
@@ -14,7 +14,7 @@ public abstract class Player {
 		this.playerCard = playerCard;
 		this.pos = pos;
 		this.maxMovement = maxMovement;
-		this.ownCard = null;
+		this.ownCards = null;
 		this.alive= true;
 
 	}

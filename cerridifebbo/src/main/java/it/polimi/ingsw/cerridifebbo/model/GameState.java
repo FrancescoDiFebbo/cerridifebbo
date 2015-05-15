@@ -1,7 +1,5 @@
 package it.polimi.ingsw.cerridifebbo.model;
 
-import java.util.ArrayList;
-
 public abstract class GameState {
 	
 	protected Game game;

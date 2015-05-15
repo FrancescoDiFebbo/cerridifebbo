@@ -4,13 +4,16 @@ import java.util.ArrayList;
 
 public class Game {
 	private String name;
-	private ArrayList<Player> playerList;
 	private int turn;
 
 	private GameState state;
 	private Map map;
 	private Deck deck;
 	private final ArrayList<User> users;
+
+	public ArrayList<User> getUsers() {
+		return users;
+	}
 
 	Game(ArrayList<User> users) {
 		this.state = new StartGame(this);
@@ -46,6 +49,12 @@ public class Game {
 	}
 
 	public static void main(String[] args) {
+		ArrayList<User> users = new ArrayList<User>();
+		users.add(new User());
+		users.add(new User());
+		users.add(new User());
+		Game game = new Game(users);
+		game.run();
 		
 	}
 }
