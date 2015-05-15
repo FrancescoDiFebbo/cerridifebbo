@@ -15,6 +15,16 @@ public class Map {
 		return instance;
 
 	}
+	
+	public static void main(String[] args) {
+		Map map = Map.getInstance();
+		Sector start = map.getCell(5, 5);
+		Sector end = map.getCell(7, 9);
+		int maxMovement = 4;
+		System.out.println(start + " --> "+ end);
+		System.out.println(start.getReachableSectors(maxMovement));
+		System.out.println(start.getReachableSectors(maxMovement).contains(end)? true : false);		
+	}
 
 	private Map(File mapFile) {
 		try {
@@ -90,6 +100,10 @@ public class Map {
 		} else {
 			grid[raw][column].setSouth(null);
 		}
+	}
+	
+	public Sector getCell(int i, int j){
+		return grid[i][j];
 	}
 
 	public Sector getHumanSector() {

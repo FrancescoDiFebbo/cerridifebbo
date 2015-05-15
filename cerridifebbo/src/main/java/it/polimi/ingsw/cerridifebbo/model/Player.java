@@ -56,8 +56,7 @@ public abstract class Player {
 	}
 
 	public boolean movement(Sector destination) {
-		if(destination.isReachable(this)){
-			this.pos=destination;
+		if (pos.getReachableSectors(maxMovement).contains(destination)) {
 			return true;
 		}
 		return false;
