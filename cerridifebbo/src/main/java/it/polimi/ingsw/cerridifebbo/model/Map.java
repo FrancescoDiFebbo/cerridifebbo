@@ -8,22 +8,11 @@ public class Map {
 	private static final int COLUMNMAP = 23;
 	private static final int RAWMAP = 14;
 	public static final Sector[][] grid = new Sector[RAWMAP][COLUMNMAP];
-	private static Map instance = new Map(new File(
-			System.getProperty("user.dir") + "//map//galilei.txt"));
+	private static Map instance = new Map(new File(System.getProperty("user.dir") + "//map//galilei.txt"));
 
 	public static Map getInstance() {
 		return instance;
 
-	}
-	
-	public static void main(String[] args) {
-		Map map = Map.getInstance();
-		Sector start = map.getCell(5, 5);
-		Sector end = map.getCell(7, 9);
-		int maxMovement = 4;
-		System.out.println(start + " --> "+ end);
-		System.out.println(start.getReachableSectors(maxMovement));
-		System.out.println(start.getReachableSectors(maxMovement).contains(end)? true : false);		
 	}
 
 	private Map(File mapFile) {
@@ -57,8 +46,7 @@ public class Map {
 
 	private static void setNorthEast(int raw, int column, Sector[][] grid) {
 		if (column % 2 == 0) {
-			if (raw - 1 >= 0 && column + 1 < COLUMNMAP
-					&& grid[raw - 1][column + 1] != null) {
+			if (raw - 1 >= 0 && column + 1 < COLUMNMAP && grid[raw - 1][column + 1] != null) {
 				grid[raw][column].setNorthEast(grid[raw - 1][column + 1]);
 				grid[raw - 1][column + 1].setSouthWest(grid[raw][column]);
 			} else {
@@ -83,8 +71,7 @@ public class Map {
 				grid[raw][column].setSouthEast(null);
 			}
 		} else {
-			if (column + 1 < COLUMNMAP && raw + 1 < RAWMAP
-					&& grid[raw + 1][column + 1] != null) {
+			if (column + 1 < COLUMNMAP && raw + 1 < RAWMAP && grid[raw + 1][column + 1] != null) {
 				grid[raw][column].setSouthEast(grid[raw + 1][column + 1]);
 				grid[raw + 1][column + 1].setNorthWest(grid[raw][column]);
 			} else {
@@ -101,8 +88,8 @@ public class Map {
 			grid[raw][column].setSouth(null);
 		}
 	}
-	
-	public Sector getCell(int i, int j){
+
+	public Sector getCell(int i, int j) {
 		return grid[i][j];
 	}
 

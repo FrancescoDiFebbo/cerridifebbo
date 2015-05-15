@@ -14,9 +14,8 @@ public class StartGame extends GameState {
 		ArrayList<User> users = game.getUsers();
 		Deck deck = new ConcreteDeckFactory().createDeck(users.size());
 		initializePlayers(users, deck, map);
-		//TODO
-		System.out.println("Inizializzazione eseguita");
-
+		game.setDeck(deck);
+		game.setMap(map);
 	}
 
 	private void initializePlayers(ArrayList<User> users, Deck deck, Map map) {

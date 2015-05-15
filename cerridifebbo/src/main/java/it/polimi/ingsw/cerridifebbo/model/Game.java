@@ -15,7 +15,7 @@ public class Game {
 		return users;
 	}
 
-	Game(ArrayList<User> users) {
+	public Game(ArrayList<User> users) {
 		this.state = new StartGame(this);
 		this.users = users;
 	}
@@ -46,15 +46,5 @@ public class Game {
 	
 	public void perform(User user, String action, Object object){
 		state.perform(user, action, object);
-	}
-
-	public static void main(String[] args) {
-		ArrayList<User> users = new ArrayList<User>();
-		users.add(new User());
-		users.add(new User());
-		users.add(new User());
-		Game game = new Game(users);
-		game.run();
-		
 	}
 }

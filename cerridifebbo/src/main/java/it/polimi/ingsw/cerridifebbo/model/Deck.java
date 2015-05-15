@@ -25,16 +25,6 @@ public class Deck {
 
 	}
 
-	// TODO
-	public static void main(String[] args) {
-		DeckFactory deckFactory = new ConcreteDeckFactory();
-		Deck deck = deckFactory.createDeck(2);
-		Scanner in = new Scanner(System.in);
-		while (!in.next().equals("q")) {
-			deck.drawCharacterCard().performAction();
-		}
-	}
-
 	public Card drawCharacterCard() {
 		// TODO
 		if (currentCharacter == characterCards.size()) {
