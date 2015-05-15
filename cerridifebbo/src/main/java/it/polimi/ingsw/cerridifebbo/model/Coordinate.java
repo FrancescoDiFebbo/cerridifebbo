@@ -2,6 +2,7 @@ package it.polimi.ingsw.cerridifebbo.model;
 
 public class Coordinate {
 	private int column;
+	private int raw;
 	
 	public int getColumn() {
 		return column;
@@ -10,8 +11,6 @@ public class Coordinate {
 	public int getRaw() {
 		return raw;
 	}
-
-	private int raw;
 	
 	public Coordinate (int raw, int column)
 	{

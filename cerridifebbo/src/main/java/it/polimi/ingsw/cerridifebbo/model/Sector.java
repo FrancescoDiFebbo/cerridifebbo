@@ -90,6 +90,8 @@ public abstract class Sector {
 		}
 	}
 
+	public abstract Card playerEnters(Deck deck);
+
 	@Override
 	public String toString() {
 		char column = (char) (coordinate.getColumn() + 'A');

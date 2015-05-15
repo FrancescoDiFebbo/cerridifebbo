@@ -6,4 +6,9 @@ public class EscapeHatchSector extends Sector {
 		super(raw, column, true);
 	}
 
+	@Override
+	public Card playerEnters(Deck deck) {
+		return deck.drawEscapeHatchCard();
+	}
+
 }

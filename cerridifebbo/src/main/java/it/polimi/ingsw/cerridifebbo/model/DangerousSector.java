@@ -6,4 +6,9 @@ public class DangerousSector extends Sector {
 		super(raw, column, true);
 	}
 
+	@Override
+	public Card playerEnters(Deck deck) {
+		return deck.drawSectorCard();
+	}
+
 }

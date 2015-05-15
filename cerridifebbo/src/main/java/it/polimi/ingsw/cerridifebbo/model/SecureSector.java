@@ -7,4 +7,9 @@ public class SecureSector extends Sector {
 
 	}
 
+	@Override
+	public Card playerEnters(Deck deck) {
+		return null;
+	}
+
 }
