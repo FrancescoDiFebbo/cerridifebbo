@@ -10,8 +10,8 @@ public class Game {
 		return turn;
 	}
 
-	public void setTurn(int turn) {
-		this.turn = turn;
+	public void nextTurn() {
+		this.turn++;
 	}
 
 	private GameState state;
@@ -51,8 +51,16 @@ public class Game {
 	public void run() {
 		state.handle();
 	}
-	
-	public void perform(User user, String action, Object object) throws Exception{
-		state.perform(user, action, object);
+
+	public void declareSector(Player player, Sector sector) {
+		// TODO se sector è uguale a null il metodo chiederà al controller il
+		// settore da raggiungere altrimenti il controller
+		// si occuperà di mostrare il settore dichiarato
+	}
+
+	public Move getMoveFromUser(User user) {
+		// TODO questo metodo chiederà al controller di ricevere un move dallo
+		// user selezionato e restituira un oggetto Move		
+		return new Move(Move.MOVEMENT, map.getCell(5, 5));
 	}
 }

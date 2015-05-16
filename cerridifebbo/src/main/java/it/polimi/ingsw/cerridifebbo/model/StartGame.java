@@ -20,27 +20,20 @@ public class StartGame extends GameState {
 		}
 		game.setDeck(deck);
 		game.setMap(map);
+		game.setState(new Turn(game));
+		game.run();
 	}
 
 	private void initializePlayers(ArrayList<User> users, Deck deck, Map map) throws Exception {
 		for (User user : users) {
 			Card card = deck.drawCharacterCard();
-			Object player = card.performAction(null, map);
+			Object player = card.performAction(null, game);
 			if (player instanceof Player && player != null) {
 				user.setPlayer((Player) player);
 			} else {
 				throw new Exception("Player not returned");
 			}
-			
+
 		}
 	}
-
-	@Override
-	public void perform(User user, String action, Object target) {
-		try {
-			throw new Exception("Move from user " + user + " not listened");
-		} catch (Exception e) {
-		}
-	}
-
 }

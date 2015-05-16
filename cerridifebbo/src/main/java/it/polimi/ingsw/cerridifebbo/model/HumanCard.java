@@ -7,13 +7,13 @@ public class HumanCard extends CharacterCard {
 	}
 	
 	@Override
-	public Object performAction(Object target, Map map) {
+	public Object performAction(Player target, Game game) {
 		if (target != null) {
 			try {
 				throw new Exception("Target is not considered");
 			} catch (Exception e) {
 			}
 		}
-		return new HumanPlayer(this, map.getHumanSector());		
+		return new HumanPlayer(this, game.getMap().getHumanSector());		
 	}
 }

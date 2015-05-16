@@ -4,11 +4,6 @@ import java.util.ArrayList;
 
 public class Turn extends GameState {
 
-	private final String MOVEMENT = "MOVEMENT";
-	private final String ATTACK = "ATTACK";
-	private final String USEITEMCARD = "USEITEMCARD";
-	private final String FINISH = "FINISH";
-	private final String TIMEFINISHED = "TIMEFINISHED";
 	private boolean finish;
 	private boolean noMoreMovement;
 
@@ -24,48 +19,51 @@ public class Turn extends GameState {
 				finish = false;
 				noMoreMovement = false;
 				while (!finish) {
-					String actionUser = "";
-					Sector targetUser = null;
-					// TODO wait player's move
+					Move move = game.getMoveFromUser(u);
 					try {
-						perform(u, actionUser, targetUser);
+						perform(u.getPlayer(), move);
 					} catch (Exception e) {
 						// TODO exception: inform player invalid move
 					}
 				}
 			}
 		}
-		game.setTurn(game.getTurn() + 1);
+		game.nextTurn();
 	}
 
-	@Override
-	public void perform(User user, String action, Object target)
-			throws Exception {
-		if (action == MOVEMENT && !noMoreMovement) {
-			if (user.getPlayer().movement((Sector) target)) {
+	private void perform(Player player, Move move) throws Exception {
+		String action = move.getAction();
+		Object target = move.getTarget();
+		switch (action) {
+		case Move.MOVEMENT:
+			if (player.movement((Sector) target) && !noMoreMovement) {
 				noMoreMovement = true;
-				Card drawnCard = user.getPlayer().getPos()
-						.playerEnters(game.getDeck());
-				drawnCard.performAction(user.getPlayer(), game.getMap());
+				Card drawnCard = player.getPosition().playerEnters(game.getDeck());
+				drawnCard.performAction(player, game);
 			} else {
 				throw new Exception("Invalid movement");
 			}
-		} else if (action == ATTACK) {
-			ArrayList<User> userList = game.getUsers();
-			user.getPlayer().attack(userList);
-		} else if (action == USEITEMCARD) {
+			break;
+		case Move.ATTACK:
+			player.attack(game);
+			break;
+		case Move.USEITEMCARD:
 			if (target instanceof Card && target != null) {
 				Card itemCard = (Card) target;
-				itemCard.performAction(user.getPlayer(), game.getMap());
+				itemCard.performAction(player, game);
 			} else {
 				throw new Exception("invalid card");
 			}
-		} else if (action == FINISH) {
+			break;
+		case Move.FINISH:
 			finish = true;
-		} else if (action == TIMEFINISHED) {
+			break;
+		case Move.TIMEFINISHED:
 			finish = true;
-		} else {
-			throw new Exception("invalid move");
+			break;
+
+		default:
+			return;
 		}
 	}
 }

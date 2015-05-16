@@ -13,11 +13,4 @@ public class EndGame extends GameState {
 		// TODO Auto-generated method stub
 
 	}
-
-	@Override
-	public void perform(User user, String action, Object target) {
-		// TODO Auto-generated method stub
-
-	}
-
 }

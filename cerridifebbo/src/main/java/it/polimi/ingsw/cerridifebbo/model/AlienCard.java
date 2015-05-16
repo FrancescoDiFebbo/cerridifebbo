@@ -7,14 +7,14 @@ public class AlienCard extends CharacterCard {
 	}
 	
 	@Override
-	public Object performAction(Object target, Map map) {
+	public Object performAction(Player target, Game game) {
 		if (target != null) {
 			try {
 				throw new Exception("Target is not considered");
 			} catch (Exception e) {
 			}
 		}
-		return new AlienPlayer(this, map.getAlienSector());
+		return new AlienPlayer(this, game.getMap().getAlienSector());
 		
 	}
 

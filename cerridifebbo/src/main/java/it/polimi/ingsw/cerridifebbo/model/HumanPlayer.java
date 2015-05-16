@@ -1,24 +1,52 @@
 package it.polimi.ingsw.cerridifebbo.model;
 
-import java.util.ArrayList;
 
 public class HumanPlayer extends Player {
 
+	private boolean escaped;
+
 	HumanPlayer(CharacterCard playerCard, Sector pos) {
 		super(playerCard, pos, 1);
-		
+		setEscaped(false);
 	}
-	
+
 	@Override
-	public void attack(ArrayList<User> userList) throws Exception {
-		for (Card card : this.getOwnCards()){
-			if(card instanceof AttackItemCard ){
-				this.deleteCard(card);
-				super.attack(userList);
-				return;
+	public void attack(Game game) throws Exception {
+		for (User user : game.getUsers()) {
+			Player player = user.getPlayer();
+			if (player.getPosition() == getPosition() && player != this) {
+				if (player instanceof AlienPlayer) {
+					player.kill();
+				} else {
+					boolean safe = false;
+					for (Card card : player.getOwnCards()) {
+						if (card instanceof DefenseItemCard) {
+							card.performAction(player, game);
+							safe = true;
+						}
+					}
+					if (!safe) {
+						player.kill();
+					}
+				}
 			}
 		}
-			throw new Exception ("No attack card");
-			
-		}
 	}
+
+	@Override
+	public boolean movement(Sector destination) {
+		if (getPosition().getReachableSectors(getMaxMovement()).contains(destination)) {
+			setPosition(destination);
+			return true;
+		}
+		return false;
+	}
+
+	public boolean isEscaped() {
+		return escaped;
+	}
+
+	public void setEscaped(boolean escaped) {
+		this.escaped = escaped;
+	}
+}

@@ -7,7 +7,7 @@ public class SilenceCard extends SectorCard {
 	}
 
 	@Override
-	public Object performAction(Object target, Map map) {
+	public Object performAction(Player target, Game game) {
 		return null;
 	}
 

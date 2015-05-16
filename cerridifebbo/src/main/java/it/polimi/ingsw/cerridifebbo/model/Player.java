@@ -27,41 +27,20 @@ public abstract class Player {
 		this.alive = false;
 	}
 
+	public Sector getPosition() {
+		return pos;
+	}
+
+	public void setPosition(Sector pos) {
+		this.pos = pos;
+	}
+
 	public int getMaxMovement() {
 		return maxMovement;
 	}
 
-	public Sector getSector() {
-		return pos;
-	}
-
-	public Sector getPos() {
-		return pos;
-	}
-
-	public void setPos(Sector pos) {
-		this.pos = pos;
-	}
-
 	public void setMaxMovement(int maxMovement) {
 		this.maxMovement = maxMovement;
-	}
-
-	public void attack(ArrayList<User> userList) throws Exception {
-		for (User u : userList) {
-			if (u.getPlayer().pos == this.pos) {
-				boolean safe = false;
-				for (Card card : this.getOwnCards()) {
-					if (card instanceof AttackItemCard
-							&& u.getPlayer() instanceof HumanPlayer) {
-						this.deleteCard(card);
-						safe = true;
-						if (!safe)
-							u.getPlayer().kill();
-					}
-				}
-			}
-		}
 	}
 
 	public ArrayList<Card> getOwnCards() {
@@ -76,11 +55,8 @@ public abstract class Player {
 		ownCards.remove(card);
 	}
 
-	public boolean movement(Sector destination) {
-		if (pos.getReachableSectors(maxMovement).contains(destination)) {
-			return true;
-		}
-		return false;
-	}
+	public abstract void attack(Game game) throws Exception;
+
+	public abstract boolean movement(Sector destination);
 
 }

@@ -9,5 +9,4 @@ public abstract class GameState {
 	}
 	
 	public abstract void handle();
-	public abstract void perform(User user, String action, Object target) throws Exception;
 }
