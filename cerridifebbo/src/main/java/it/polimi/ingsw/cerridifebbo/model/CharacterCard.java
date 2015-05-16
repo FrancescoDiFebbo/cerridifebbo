@@ -11,9 +11,4 @@ public abstract class CharacterCard implements Card {
 	public String getCharacterName() {
 		return characterName;
 	}
-	
-	@Override
-	public void performAction() {
-
-	}
 }
