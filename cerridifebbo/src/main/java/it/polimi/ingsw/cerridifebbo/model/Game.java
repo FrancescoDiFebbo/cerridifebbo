@@ -6,6 +6,14 @@ public class Game {
 	private String name;
 	private int turn;
 
+	public int getTurn() {
+		return turn;
+	}
+
+	public void setTurn(int turn) {
+		this.turn = turn;
+	}
+
 	private GameState state;
 	private Map map;
 	private Deck deck;

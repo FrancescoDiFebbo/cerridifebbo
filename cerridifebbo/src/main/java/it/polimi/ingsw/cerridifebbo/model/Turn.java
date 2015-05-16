@@ -9,6 +9,7 @@ public class Turn extends GameState {
 	private final String FINISH = "FINISH";
 	private final String TIMEFINISHED = "TIMEFINISHED";
 	private boolean finish;
+	private boolean noMoreMovement;
 
 	public Turn(Game game) {
 		super(game);
@@ -20,6 +21,7 @@ public class Turn extends GameState {
 		for (User u : userList) {
 			if (u.getPlayer().isAlive()) {
 				finish = false;
+				noMoreMovement = false;
 				while (!finish) {
 					String actionUser = "";
 					Sector targetUser = null;
@@ -28,22 +30,23 @@ public class Turn extends GameState {
 				}
 			}
 		}
-
+		game.setTurn(game.getTurn() + 1);
 	}
 
 	@Override
 	public void perform(User user, String action, Object target) {
-		if (action == MOVEMENT) {
-			user.getPlayer().movement((Sector) target);
-		}
-		if (action == ATTACK) {
+		if (action == MOVEMENT && !noMoreMovement) {
+			if (user.getPlayer().movement((Sector) target)) {
+				noMoreMovement = true;
+				Card drawnCard = user.getPlayer().getPos().playerEnters(game.getDeck());
+				drawnCard.performAction();
+			}
+		} else if (action == ATTACK) {
 			ArrayList<User> userList = game.getUsers();
 			user.getPlayer().attack(userList);
-		}
-		if (action == FINISH) {
+		} else if (action == FINISH) {
 			finish = true;
-		}
-		if (action == TIMEFINISHED) {
+		} else if (action == TIMEFINISHED) {
 			finish = true;
 		}
 	}
