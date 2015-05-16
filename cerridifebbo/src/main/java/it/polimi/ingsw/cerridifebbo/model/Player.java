@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public abstract class Player {
 
 	private CharacterCard playerCard;
-	private Card[] ownCards;
+	private ArrayList<Card> ownCards;
 	private Sector pos;
 	private int maxMovement;
 	private boolean alive;
@@ -15,16 +15,16 @@ public abstract class Player {
 		this.pos = pos;
 		this.maxMovement = maxMovement;
 		this.ownCards = null;
-		this.alive= true;
+		this.alive = true;
 
 	}
-	
-	public boolean isAlive(){
+
+	public boolean isAlive() {
 		return alive;
 	}
-	
-	public void kill(){
-		this.alive=false;
+
+	public void kill() {
+		this.alive = false;
 	}
 
 	public int getMaxMovement() {
@@ -47,12 +47,33 @@ public abstract class Player {
 		this.maxMovement = maxMovement;
 	}
 
-	public void attack(ArrayList<User> userList) {
+	public void attack(ArrayList<User> userList) throws Exception {
 		for (User u : userList) {
 			if (u.getPlayer().pos == this.pos) {
-				u.getPlayer().kill();
+				boolean safe = false;
+				for (Card card : this.getOwnCards()) {
+					if (card instanceof AttackItemCard
+							&& u.getPlayer() instanceof HumanPlayer) {
+						this.deleteCard(card);
+						safe = true;
+						if (!safe)
+							u.getPlayer().kill();
+					}
+				}
 			}
 		}
+	}
+
+	public ArrayList<Card> getOwnCards() {
+		return ownCards;
+	}
+
+	public void addCard(Card card) {
+		ownCards.add(card);
+	}
+
+	public void deleteCard(Card card) {
+		ownCards.remove(card);
 	}
 
 	public boolean movement(Sector destination) {
@@ -61,7 +82,5 @@ public abstract class Player {
 		}
 		return false;
 	}
-		
-		
-	
+
 }

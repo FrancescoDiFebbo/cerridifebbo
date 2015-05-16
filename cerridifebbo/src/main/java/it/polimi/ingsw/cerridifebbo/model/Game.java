@@ -52,7 +52,7 @@ public class Game {
 		state.handle();
 	}
 	
-	public void perform(User user, String action, Object object){
+	public void perform(User user, String action, Object object) throws Exception{
 		state.perform(user, action, object);
 	}
 }
