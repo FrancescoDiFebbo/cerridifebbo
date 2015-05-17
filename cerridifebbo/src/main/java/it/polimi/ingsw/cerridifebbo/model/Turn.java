@@ -23,7 +23,10 @@ public class Turn extends GameState {
 					try {
 						perform(u.getPlayer(), move);
 					} catch (Exception e) {
-						// TODO exception: inform player invalid move
+						//TODO gestire errore nell'esecuzione della mossa
+						game.setState(new EndGame(game));
+						game.run();
+						return;
 					}
 				}
 			}
