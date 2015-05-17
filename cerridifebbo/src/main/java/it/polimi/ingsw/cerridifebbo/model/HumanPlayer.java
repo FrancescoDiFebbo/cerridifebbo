@@ -1,6 +1,5 @@
 package it.polimi.ingsw.cerridifebbo.model;
 
-
 public class HumanPlayer extends Player {
 
 	private boolean escaped;
@@ -11,33 +10,12 @@ public class HumanPlayer extends Player {
 	}
 
 	@Override
-	public void attack(Game game) throws Exception {
-		for (User user : game.getUsers()) {
-			Player player = user.getPlayer();
-			if (player.getPosition() == getPosition() && player != this) {
-				if (player instanceof AlienPlayer) {
-					player.kill();
-				} else {
-					boolean safe = false;
-					for (Card card : player.getOwnCards()) {
-						if (card instanceof DefenseItemCard) {
-							card.performAction(player, game);
-							safe = true;
-						}
-					}
-					if (!safe) {
-						player.kill();
-					}
-				}
+	public boolean attack(Game game) throws Exception {
+		for (Card card : this.getOwnCards()) {
+			if (card instanceof AttackItemCard) {
+				card.performAction(this, game);
+				return super.attack(game);
 			}
-		}
-	}
-
-	@Override
-	public boolean movement(Sector destination) {
-		if (getPosition().getReachableSectors(getMaxMovement()).contains(destination)) {
-			setPosition(destination);
-			return true;
 		}
 		return false;
 	}

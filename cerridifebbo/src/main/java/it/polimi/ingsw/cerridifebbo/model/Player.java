@@ -55,8 +55,38 @@ public abstract class Player {
 		ownCards.remove(card);
 	}
 
-	public abstract void attack(Game game) throws Exception;
+	public boolean attack(Game game) throws Exception {
+		boolean success = false;
+		for (User user : game.getUsers()) {
+			Player player = user.getPlayer();
+			if (player.getPosition() == getPosition() && player != this) {
+					player.kill();
+			}else {
+				boolean safe = false;
+				for (Card card : player.getOwnCards()) {
+					if (card instanceof DefenseItemCard) {
+						card.performAction(player, game);
+						safe = true;
+					}
+				}
+				if (!safe) {
+					player.kill();
+					success = true;
+				}
+			}
+		}
+	return success;
+	}
+		
+	
 
-	public abstract boolean movement(Sector destination);
+	public boolean movement(Sector destination) {
+		if (getPosition().getReachableSectors(getMaxMovement()).contains(
+				destination)) {
+			setPosition(destination);
+			return true;
+		}
+		return false;
+	}
 
 }
