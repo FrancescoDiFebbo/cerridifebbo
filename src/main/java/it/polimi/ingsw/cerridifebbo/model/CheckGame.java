@@ -10,7 +10,27 @@ public class CheckGame extends GameState {
 
 	@Override
 	public void handle() {
-		// TODO Auto-generated method stub
+		boolean allAlienKilled = true;
+		boolean allHumanNotInGame = true;
+		for (User u : game.getUsers()) {
+			if (u.getPlayer() instanceof HumanPlayer) {
+				HumanPlayer human = (HumanPlayer) u.getPlayer();
+				if (human.isAlive() && !human.isEscaped()) {
+					allHumanNotInGame = false;
+
+				}
+			} else if (u.getPlayer() instanceof AlienPlayer) {
+				AlienPlayer alien = (AlienPlayer) u.getPlayer();
+				if (alien.isAlive()) {
+					allAlienKilled = false;
+
+				}
+			}
+		}
+		if (allHumanNotInGame || allAlienKilled) {
+			game.setState(new EndGame(game));
+			game.run();
+		}
 
 	}
 }

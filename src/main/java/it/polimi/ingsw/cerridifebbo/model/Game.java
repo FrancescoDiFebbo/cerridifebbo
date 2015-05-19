@@ -3,6 +3,7 @@ package it.polimi.ingsw.cerridifebbo.model;
 import java.util.ArrayList;
 
 public class Game {
+	private static final int MAX_TURNS = 39;
 	private String name;
 	private int turn;
 
@@ -11,9 +12,18 @@ public class Game {
 	}
 
 	public void nextTurn() {
-		this.turn++;
+		if (++turn == MAX_TURNS) {
+			state = new EndGame(this);
+		} else {
+			state = new Turn(this);
+		}
+		state.handle();
 	}
 
+	public GameState getState(){
+		return state;
+	}
+	
 	private GameState state;
 	private Map map;
 	private Deck deck;
@@ -60,7 +70,7 @@ public class Game {
 
 	public Move getMoveFromUser(User user) {
 		// TODO questo metodo chiederà al controller di ricevere un move dallo
-		// user selezionato e restituira un oggetto Move		
+		// user selezionato e restituira un oggetto Move
 		return new Move(Move.MOVEMENT, map.getCell(5, 5));
 	}
 }

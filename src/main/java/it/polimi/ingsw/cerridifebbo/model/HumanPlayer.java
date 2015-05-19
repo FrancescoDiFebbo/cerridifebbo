@@ -3,21 +3,11 @@ package it.polimi.ingsw.cerridifebbo.model;
 public class HumanPlayer extends Player {
 
 	private boolean escaped;
+	public static final int HUMANMOVEMENT=1;
 
 	HumanPlayer(CharacterCard playerCard, Sector pos) {
-		super(playerCard, pos, 1);
+		super(playerCard, pos, HUMANMOVEMENT);
 		setEscaped(false);
-	}
-
-	@Override
-	public boolean attack(Game game) throws Exception {
-		for (Card card : this.getOwnCards()) {
-			if (card instanceof AttackItemCard) {
-				card.performAction(this, game);
-				return super.attack(game);
-			}
-		}
-		return false;
 	}
 
 	public boolean isEscaped() {

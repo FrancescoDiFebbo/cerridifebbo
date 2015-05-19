@@ -55,30 +55,29 @@ public abstract class Player {
 		ownCards.remove(card);
 	}
 
-	public boolean attack(Game game) throws Exception {
-		boolean success = false;
+	public boolean attack(Game game) {
+		boolean humanEaten = false;
 		for (User user : game.getUsers()) {
 			Player player = user.getPlayer();
-			if (player.getPosition() == getPosition() && player != this) {
-					player.kill();
-			}else {
+			if (player.getPosition() == this.getPosition() && player != this) {
 				boolean safe = false;
-				for (Card card : player.getOwnCards()) {
-					if (card instanceof DefenseItemCard) {
-						card.performAction(player, game);
-						safe = true;
+				if (player instanceof HumanPlayer) {
+					for (Card card : player.getOwnCards()) {
+						if (card instanceof DefenseItemCard) {
+							card.performAction(player, game);
+							safe = true;
+						}
 					}
 				}
 				if (!safe) {
 					player.kill();
-					success = true;
+					if (player instanceof HumanPlayer)
+						humanEaten = true;
 				}
 			}
 		}
-	return success;
+		return humanEaten;
 	}
-		
-	
 
 	public boolean movement(Sector destination) {
 		if (getPosition().getReachableSectors(getMaxMovement()).contains(

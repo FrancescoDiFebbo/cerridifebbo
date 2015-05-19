@@ -12,10 +12,8 @@ public class AlienPlayer extends Player {
 	}
 
 	@Override
-	public boolean attack(Game game) throws Exception {
-		boolean eatenHuman = false;
-		if (super.attack(game) && eatenHuman
-				&& getMaxMovement() == MOVEMENT_BEFORE_EATING) {
+	public boolean attack(Game game) {
+		if (super.attack(game) && getMaxMovement() == MOVEMENT_BEFORE_EATING) {
 			setMaxMovement(MOVEMENT_AFTER_EATING);
 			return true;
 		}
