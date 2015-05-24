@@ -5,10 +5,11 @@ import java.io.IOException;
 import java.util.Scanner;
 
 public class Map {
-	private static final int COLUMNMAP = 23;
-	private static final int RAWMAP = 14;
-	public static final Sector[][] grid = new Sector[RAWMAP][COLUMNMAP];
-	private static Map instance = new Map(new File(System.getProperty("user.dir") + "//map//galilei.txt"));
+	public static final int COLUMNMAP = 23;
+	public static final int RAWMAP = 14;
+	private static final Sector[][] grid = new Sector[RAWMAP][COLUMNMAP];
+	private static Map instance = new Map(new File(
+			System.getProperty("user.dir") + "//map//galilei.txt"));
 
 	public static Map getInstance() {
 		return instance;
@@ -46,7 +47,8 @@ public class Map {
 
 	private static void setNorthEast(int raw, int column, Sector[][] grid) {
 		if (column % 2 == 0) {
-			if (raw - 1 >= 0 && column + 1 < COLUMNMAP && grid[raw - 1][column + 1] != null) {
+			if (raw - 1 >= 0 && column + 1 < COLUMNMAP
+					&& grid[raw - 1][column + 1] != null) {
 				grid[raw][column].setNorthEast(grid[raw - 1][column + 1]);
 				grid[raw - 1][column + 1].setSouthWest(grid[raw][column]);
 			} else {
@@ -71,7 +73,8 @@ public class Map {
 				grid[raw][column].setSouthEast(null);
 			}
 		} else {
-			if (column + 1 < COLUMNMAP && raw + 1 < RAWMAP && grid[raw + 1][column + 1] != null) {
+			if (column + 1 < COLUMNMAP && raw + 1 < RAWMAP
+					&& grid[raw + 1][column + 1] != null) {
 				grid[raw][column].setSouthEast(grid[raw + 1][column + 1]);
 				grid[raw + 1][column + 1].setNorthWest(grid[raw][column]);
 			} else {
