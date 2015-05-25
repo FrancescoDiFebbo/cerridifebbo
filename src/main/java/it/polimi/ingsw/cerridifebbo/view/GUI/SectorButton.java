@@ -35,7 +35,7 @@ public abstract class SectorButton extends JButton implements ActionListener {
 		initializeHexagon();
 		addActionListener(this);
 		this.setFont(new Font("Arial", Font.PLAIN, 8));
-		this.setBackground(Color.BLACK);
+		this.setBackground(MainWindow.BACKGROUND_COLOR);
 		this.setOpaque(false);
 
 	}

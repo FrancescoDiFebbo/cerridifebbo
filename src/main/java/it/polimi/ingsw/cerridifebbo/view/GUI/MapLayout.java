@@ -24,10 +24,10 @@ public class MapLayout implements LayoutManager {
 	}
 
 	private void setSizes() {
-		preferredWidth = (SectorButton.WIDTH - SectorButton.SIDE) * column + 2
-				* BORDER;
-		preferredHeight = SectorButton.HEIGHT * raw + SectorButton.RADIUS + 2
-				* BORDER;
+		preferredWidth = (SectorButton.WIDTH - SectorButton.SHIFT_OBLIQUE_SIDE)
+				* column + 4 * BORDER;
+		preferredHeight = SectorButton.HEIGHT * raw + 4 * SectorButton.RADIUS
+				+ 4 * BORDER;
 		minWidth = preferredWidth;
 		minHeight = preferredHeight;
 	}

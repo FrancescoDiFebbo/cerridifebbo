@@ -29,5 +29,6 @@ public class MapContainer extends Container {
 		}
 		LayoutManager mapLayout = new MapLayout(Map.RAWMAP, Map.COLUMNMAP);
 		this.setLayout(mapLayout);
+		this.setSize(mapLayout.preferredLayoutSize(this));
 	}
 }

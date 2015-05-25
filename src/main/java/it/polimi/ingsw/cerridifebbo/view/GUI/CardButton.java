@@ -18,46 +18,31 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
-public  class CardButton extends JButton implements ActionListener {
+public class CardButton extends JButton implements ActionListener {
 
+	public static final String NO_CARD = "No card";
+	private String cardName;
 
 	public CardButton(String label) {
 		super(label);
+		cardName = label;
 		addActionListener(this);
 		this.setFont(new Font("Arial", Font.PLAIN, 12));
-		this.setBackground(Color.BLACK);
-		this.setForeground(Color.GREEN);
+		this.setBackground(MainWindow.BACKGROUND_COLOR);
+		this.setForeground(MainWindow.FOREGROUND_COLOR);
 		this.setOpaque(false);
-     	String ciao = System.getProperty("user.dir") + "\\map\\card.png";
-		ImageIcon img = new ImageIcon(ciao);
-		this.setIcon(img);
+		if (label != NO_CARD) {
+			String cardPath = System.getProperty("user.dir")
+					+ "\\map\\card.png";
+			ImageIcon img = new ImageIcon(cardPath);
+			this.setIcon(img);
+		}
 
 	}
-
 
 	@Override
 	public void actionPerformed(ActionEvent ev) {
-		System.out.println("button clicked!" + this.getName());
-	}
-
-	public static void main(String[] args) {
-		JFrame frame = new JFrame();
-		
-		frame.setBackground(Color.BLACK);
-		Container contentPane = frame.getContentPane();
-		CardButton comp = new CardButton("Adrenaline Card");
-		contentPane.setLayout(new GridLayout());
-		contentPane.add(comp);
-		CardButton comp2 = new CardButton("Sedatives Card");
-		contentPane.add(comp2);
-		CardButton comp3 = new CardButton("Sedatives Card");
-		contentPane.add(comp3);
-		CardButton comp4 = new CardButton("no card");
-		contentPane.add(comp4);
-		contentPane.setSize(200, 50);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.pack();
-		frame.setVisible(true);
+		System.out.println("button clicked!" + cardName);
 	}
 
 }
