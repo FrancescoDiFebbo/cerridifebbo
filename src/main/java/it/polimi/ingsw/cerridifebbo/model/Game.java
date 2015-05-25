@@ -1,8 +1,11 @@
 package it.polimi.ingsw.cerridifebbo.model;
 
+import it.polimi.ingsw.cerridifebbo.controller.server.Server;
+
 import java.util.ArrayList;
 
 public class Game {
+	private final Server server;
 	private static final int MAX_TURNS = 39;
 	private String name;
 	private int turn;
@@ -33,7 +36,8 @@ public class Game {
 		return users;
 	}
 
-	public Game(ArrayList<User> users) {
+	public Game(Server server, ArrayList<User> users) {
+		this.server = server;
 		this.state = new StartGame(this);
 		this.users = users;
 	}

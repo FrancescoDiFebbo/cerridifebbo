@@ -1,10 +1,12 @@
 package it.polimi.ingsw.cerridifebbo.controller.client;
 
+import java.io.IOException;
+
 import it.polimi.ingsw.cerridifebbo.controller.common.RemoteServer;
 
 public interface NetworkInterface extends RemoteServer {
 
-	boolean connect();
+	public void connect() throws IOException;
 
-	boolean close();
+	public void close() throws IOException;
 }

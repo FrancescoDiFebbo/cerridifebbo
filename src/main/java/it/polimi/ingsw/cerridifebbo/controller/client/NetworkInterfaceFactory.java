@@ -16,7 +16,7 @@ public class NetworkInterfaceFactory {
 	public static NetworkInterface getInterface(String param) {
 		switch (param) {
 		case SOCKET_INTERFACE:
-			return null;
+			return new SocketInterface();
 		case RMI_INTERFACE:
 			return new RMIInterface();
 		default:

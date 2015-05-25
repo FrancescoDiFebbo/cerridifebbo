@@ -1,16 +1,24 @@
 package it.polimi.ingsw.cerridifebbo.model;
 
-import java.rmi.server.UID;
 import java.util.UUID;
 
 public class User {
-	private final UUID ID = UUID.randomUUID();
+	private final UUID id;
 	private Player player;
+
+	public User(UUID id) {
+		this.id = id;
+	}
+
+	public UUID getId() {
+		return id;
+	}
 
 	public void setPlayer(Player player) {
 		this.player = player;
 	}
-	public Player getPlayer(){
+
+	public Player getPlayer() {
 		return player;
 	}
 }

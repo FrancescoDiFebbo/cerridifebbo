@@ -11,6 +11,7 @@ public class EndGame extends GameState {
 	@Override
 	public void handle() {
 		// TODO Auto-generated method stub
+		// settare i player degli user a null
 
 	}
 }

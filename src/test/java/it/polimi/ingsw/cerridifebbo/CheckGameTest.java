@@ -2,8 +2,10 @@ package it.polimi.ingsw.cerridifebbo;
 
 import static org.junit.Assert.*;
 import it.polimi.ingsw.cerridifebbo.model.*;
+
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.UUID;
 
 import org.junit.Test;
 
@@ -12,10 +14,10 @@ public class CheckGameTest {
 	@Test
 	public void test() {
 		ArrayList<User> users = new ArrayList<User>();
-		users.add(new User());
-		users.add(new User());
-		users.add(new User());
-		Game game = new Game(users);
+		users.add(new User(UUID.randomUUID()));
+		users.add(new User(UUID.randomUUID()));
+		users.add(new User(UUID.randomUUID()));
+		Game game = new Game(null, users);
 		game.run();
 		game.setState(new CheckGame(game));
 		game.run();

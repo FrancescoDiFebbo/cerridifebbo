@@ -16,44 +16,41 @@ public class Client {
 
 	public static void main(String[] args) throws IOException, NotBoundException {
 		new Client();
-	}
-
-	UUID id = UUID.randomUUID();
-	int port;
-	Registry registry;
-
+	}	
+	
 	Client() throws RemoteException {
+		Scanner in = new Scanner(System.in);
+		NetworkInterface network;
+		System.out.println("Select '1' for RMI interface, '2' for socket interface");
 		while (true) {
-			try {
-				Random random = new Random();
-				port = random.nextInt(65535);
-				registry = LocateRegistry.createRegistry(port);
+			String line = in.nextLine();
+			if (line.equals("1")) {
+				network = NetworkInterfaceFactory.getInterface(NetworkInterfaceFactory.RMI_INTERFACE);
 				break;
-			} catch (RemoteException e) {
-				System.err.println(port + " not available");
+			}
+			if (line.equals("2")) {
+				network = NetworkInterfaceFactory.getInterface(NetworkInterfaceFactory.SOCKET_INTERFACE);
+				break;
 			}
 		}
 		try {
-			RemoteClient client = new ClientImpl();
-			registry.bind(RemoteClient.RMI_ID, client);
-			System.out.println("Client bound at port " + port);
-		} catch (RemoteException | AlreadyBoundException e) {
-			System.err.println("Client not bound.\nClosing client...");
-			System.exit(-1);
-		}
-
-		Scanner in = new Scanner(System.in);
-		NetworkInterface network = NetworkInterfaceFactory.getInterface(NetworkInterfaceFactory.RMI_INTERFACE);
-		network.connect();
-		network.registerOnServer(id, port);
+			network.connect();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}	
 		while (true) {
 			String line = in.nextLine();
 			if (line.equals("q")) {
 				in.close();
 				break;
 			}
-			network.sendMessage(id, line);
 		}
-		network.close();
+		try {
+			network.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
