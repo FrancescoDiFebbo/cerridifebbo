@@ -12,8 +12,8 @@ public abstract class Sector {
 	private Sector northWest;
 	private Sector southWest;
 
-	public Sector(int raw, int column, boolean passable) {
-		coordinate = new Coordinate(raw, column);
+	public Sector(int row, int column, boolean passable) {
+		coordinate = new Coordinate(row, column);
 		setPassable(passable);
 	}
 
@@ -48,25 +48,6 @@ public abstract class Sector {
 	public void setPassable(boolean passable) {
 		this.passable = passable;
 	}
-
-//	public boolean isReachable(Player p) {
-//		if (!isPassable()) {
-//			return false;
-//		}
-//		int maxMovement = p.getMaxMovement();
-//		ArrayList<Sector> sectorList = new ArrayList<Sector>();
-//		sectorList.add(p.getPos());
-//		for (; maxMovement > 0; maxMovement--) {
-//			addAdjacentSector(sectorList);
-//			for (Sector s : sectorList) {
-//				if (s.toString().equals(toString()))
-//					return true;
-//			}
-//			System.out.println("sector list : " + sectorList);
-//		}
-//
-//		return false;
-//	}
 
 	public ArrayList<Sector> getAdjacentSectors() {
 		ArrayList<Sector> list = new ArrayList<Sector>();
@@ -110,36 +91,15 @@ public abstract class Sector {
 		}
 		return list;
 	}
-//	private void addAdjacentSector(ArrayList<Sector> sectorList) {
-//		ArrayList<Sector> temp = new ArrayList<Sector>();
-//		for (Sector s : sectorList) {
-//			if (s.north != null && s.north.isPassable())
-//				temp.add(s.north);
-//			if (s.northEast != null && s.northEast.isPassable())
-//				temp.add(s.northEast);
-//			if (s.northWest != null && s.northWest.isPassable())
-//				temp.add(s.northWest);
-//			if (s.south != null && s.south.isPassable())
-//				temp.add(s.south);
-//			if (s.southEast != null && s.southEast.isPassable())
-//				temp.add(s.southEast);
-//			if (s.southWest != null && s.southWest.isPassable())
-//				temp.add(s.southWest);
-//		}
-//		for (Sector s : temp) {
-//			if (!sectorList.contains(s))
-//				sectorList.add(s);
-//		}
-//	}
 
-	public abstract Card playerEnters(Deck deck);
+	public abstract Card playerEnters(Player player, Deck deck);
 
 	@Override
 	public String toString() {
 		char column = (char) (coordinate.getColumn() + 'A');
-		String raw = Integer.toString(coordinate.getRaw() + 1);
-		if (coordinate.getRaw() < 9)
-			return column + "0" + raw;
-		return column + raw;
+		String row = Integer.toString(coordinate.getRow() + 1);
+		if (coordinate.getRow() < 9)
+			return column + "0" + row;
+		return column + row;
 	}
 }

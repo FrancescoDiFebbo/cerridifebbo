@@ -28,8 +28,7 @@ public class CheckGame extends GameState {
 			}
 		}
 		if (allHumanNotInGame || allAlienKilled) {
-			game.setState(new EndGame(game));
-			game.run();
+			game.endGame();
 		}
 
 	}

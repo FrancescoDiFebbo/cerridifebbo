@@ -2,6 +2,6 @@ package it.polimi.ingsw.cerridifebbo.model;
 
 public interface Card {
 
-	public abstract Object performAction(Player target, Game game);
-
+	public abstract Object performAction(Player player, Object target, Game game);
+	
 }

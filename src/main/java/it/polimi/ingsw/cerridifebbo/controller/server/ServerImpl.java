@@ -18,8 +18,7 @@ public class ServerImpl extends UnicastRemoteObject implements RemoteServer {
 	 */
 	private static final long serialVersionUID = 1L;
 	private final ServerConnection serverConnection;
-	private Map<UUID, RemoteClient> clients = new HashMap<UUID, RemoteClient>();
-
+	
 	protected ServerImpl(ServerConnection serverConnection) throws RemoteException {
 		super();
 		this.serverConnection = serverConnection;
@@ -27,19 +26,7 @@ public class ServerImpl extends UnicastRemoteObject implements RemoteServer {
 
 	@Override
 	public boolean registerClientOnServer(UUID id, int port) throws RemoteException {
-		Registry registry = LocateRegistry.getRegistry(port);
-		RemoteClient client;
-		try {
-			client = (RemoteClient) registry.lookup(RemoteClient.RMI_ID);
-		} catch (NotBoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return false;
-		}
-		clients.put(id, client);
-		System.out.println("Client " + id + " connected at port " + port);
-		serverConnection.registerClientOnServer(id);
-		return true;
+		return serverConnection.registerClientOnServer(id, port);
 	}
 
 	@Override
@@ -50,9 +37,6 @@ public class ServerImpl extends UnicastRemoteObject implements RemoteServer {
 
 	@Override
 	public void broadcastMessage(String message) throws RemoteException {
-		for (RemoteClient client : clients.values()) {
-			client.sendMessage(message);
-		}
 		
 	}
 

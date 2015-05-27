@@ -7,12 +7,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
-public class SocketServer implements ServerConnection, Runnable {
+public class SocketServer extends ServerConnection {
 
-	private final Server hub;
 	private int port;
 	private String address;
-	private ServerSocket server;
+	private ServerSocket serverSocket;
 	private boolean listening;
 	private String status;
 	private List<SocketHandler> handlers;
@@ -22,7 +21,7 @@ public class SocketServer implements ServerConnection, Runnable {
 	}
 
 	public SocketServer(Server server, int port, String address) {
-		this.hub = server;
+		super(server);
 		this.setPort(port);
 		this.setAddress(address);
 		listening = false;
@@ -32,33 +31,9 @@ public class SocketServer implements ServerConnection, Runnable {
 
 	@Override
 	public void start() {
-		run();
-	}
-
-	@Override
-	public void close() throws IOException {
-		if(listening){
-			listening = false;
-			for(SocketHandler sh : handlers)
-				sh.close();			
-			server.close();
-			status = "closed";
-		}
-	}
-
-	@Override
-	public void registerClientOnServer(UUID idClient) {
-		while (true) {
-			
-		}
-
-	}
-
-	@Override
-	public void run() {
 		if (!listening) {
 			try {
-				server = new ServerSocket(port);
+				serverSocket = new ServerSocket(port);
 			} catch (IOException e) {
 				System.err.println("Unable to start socket server");
 				e.printStackTrace();
@@ -67,7 +42,7 @@ public class SocketServer implements ServerConnection, Runnable {
 			listening = true;
 			while (listening) {
 				try {
-					Socket s = server.accept();
+					Socket s = serverSocket.accept();
 					SocketHandler sh = new SocketHandler(s);
 					handlers.add(sh);
 					sh.start();
@@ -76,6 +51,27 @@ public class SocketServer implements ServerConnection, Runnable {
 				}
 			}
 		}
+	}
+
+	@Override
+	public void close() throws IOException {
+		if (listening) {
+			listening = false;
+			for (SocketHandler sh : handlers)
+				sh.close();
+			serverSocket.close();
+			status = "closed";
+		}
+	}
+
+	@Override
+	public boolean registerClientOnServer(UUID id, int port) {
+		return true;
+	}
+
+	@Override
+	public void run() {
+		start();
 	}
 
 	public String getStatus() {

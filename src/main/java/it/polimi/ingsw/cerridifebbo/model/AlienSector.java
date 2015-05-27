@@ -7,7 +7,7 @@ public class AlienSector extends Sector {
 	}
 
 	@Override
-	public Card playerEnters(Deck deck) {
+	public Card playerEnters(Player player, Deck deck) {
 		return null;
 	}
 

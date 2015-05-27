@@ -7,12 +7,15 @@ public class NoiseInSectorCard extends SectorCard {
 	}
 
 	@Override
-	public Object performAction(Player target, Game game) {
-		if (target == null || !(target instanceof Player)) {
-			throw new IllegalArgumentException("Target is not a Player");
+	public Object performAction(Player player, Object target, Game game) {
+		if (player == null) {
+			throw new IllegalArgumentException("Player is null");
 		}
-		Player player = (Player) target;
-		game.declareSector(player, player.getPosition());
-		return null;
+		game.declareSector(player, (Sector) player.getPosition(), false);
+		if (this.containsItem()) {
+			return game.getDeck().drawItemCard();
+		} else {
+			return null;
+		}
 	}
 }

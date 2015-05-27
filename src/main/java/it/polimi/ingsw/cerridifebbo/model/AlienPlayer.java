@@ -21,10 +21,10 @@ public class AlienPlayer extends Player {
 	}
 
 	@Override
-	public boolean movement(Sector destination) {
+	public boolean movement(Sector destination, Game game) {
 		if (destination instanceof EscapeHatchSector) {
 			return false;
 		}
-		return super.movement(destination);
+		return super.movement(destination, game);
 	}
 }

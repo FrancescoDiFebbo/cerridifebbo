@@ -4,11 +4,6 @@ import java.util.ArrayList;
 
 public class Turn extends GameState {
 
-	private boolean finish;
-	private boolean noMoreMovement;
-	private boolean adrenalineUsed;
-	private boolean sedativesUsed;
-
 	public Turn(Game game) {
 		super(game);
 	}
@@ -16,75 +11,91 @@ public class Turn extends GameState {
 	@Override
 	public void handle() {
 		ArrayList<User> userList = game.getUsers();
-		for (User u : userList) {
-			if (u.getPlayer().isAlive()) {
-				adrenalineUsed = false;
-				finish = false;
-				sedativesUsed = false;
-				noMoreMovement = false;
-				while (!finish) {
-					Move move = game.getMoveFromUser(u);
-					try {
-						perform(u.getPlayer(), move);
-					} catch (Exception e) {
-						// TODO gestire errore nell'esecuzione della mossa
-						game.setState(new EndGame(game));
-						game.run();
-						return;
-					}
-				}
-				if (adrenalineUsed) {
-					u.getPlayer().setMaxMovement(HumanPlayer.HUMANMOVEMENT);
-				}
-			}
-			game.setState(new CheckGame(game));
-			game.run();
+		for (User user : userList) {
+			turn(user);
+			game.checkGame();
 		}
 		game.nextTurn();
 	}
 
-	private void perform(Player player, Move move) throws Exception {
+	private void turn(User user) {
+		PlayerTurnState state = new PlayerTurnState();
+		Player player = user.getPlayer();
+		if (canPlay(player)) {
+			while (!state.finish) {
+				Move move = game.getMoveFromUser(user);
+				try {
+					perform(player, move, state);
+				} catch (IllegalMoveException e) {
+					state.finish = true;
+				}
+			}
+			if (player instanceof HumanPlayer) {
+				((HumanPlayer) player).clear();
+			}
+
+		}
+	}
+
+	private boolean canPlay(Player player) {
+		return player.isAlive() && (player instanceof HumanPlayer && !((HumanPlayer) player).isEscaped());
+	}
+
+	private void perform(Player player, Move move, PlayerTurnState state) throws IllegalMoveException {
 		String action = move.getAction();
-		Object target = move.getTarget();
+		Sector target = move.getTarget();
 		switch (action) {
 		case Move.MOVEMENT:
-			if (player.movement((Sector) target) && !noMoreMovement) {
-				noMoreMovement = true;
-				if (!sedativesUsed) {
-					Card drawnCard = player.getPosition().playerEnters(
-							game.getDeck());
-					if (drawnCard != null)
-						drawnCard.performAction(player, game);
-				}
-			} else {
-				throw new Exception("Invalid movement");
-			}
+			movement(player, target, state);
 			break;
 		case Move.ATTACK:
-			player.attack(game);
+			attack(player, state);
 			break;
 		case Move.USEITEMCARD:
-			if (target instanceof Card && target != null
-					&& !(target instanceof DefenseItemCard)) {
-				Card itemCard = (Card) target;
-				itemCard.performAction(player, game);
-				if (itemCard instanceof AdrenalineItemCard)
-					adrenalineUsed = true;
-				else if (itemCard instanceof SedativesItemCard)
-					sedativesUsed = true;
-			} else {
-				throw new Exception("invalid card");
-			}
+			useCard(player, target, move.getSelectedCard());
 			break;
 		case Move.FINISH:
-			finish = true;
+			endPlayerTurn(state);
 			break;
 		case Move.TIMEFINISHED:
-			finish = true;
+			endPlayerTurn(state);
 			break;
-
 		default:
-			return;
+			break;
 		}
+	}
+
+	private void movement(Player player, Object target, PlayerTurnState state) throws IllegalMoveException {
+		if (player.movement((Sector) target, null) && !state.noMoreMovement) {
+			state.noMoreMovement = true;
+		} else {
+			throw new IllegalMoveException();
+		}
+	}
+
+	private void attack(Player player, PlayerTurnState state) throws IllegalMoveException {
+		if (state.noMoreMovement) {
+			player.attack(game);
+		} else {
+			throw new IllegalMoveException();
+		}
+	}
+
+	private void useCard(Player player, Sector target, Card card) throws IllegalMoveException {
+		if (target != null && !(card instanceof DefenseItemCard)) {
+			Card itemCard = (Card) card;
+			itemCard.performAction(player, target, game);
+		} else {
+			throw new IllegalMoveException();
+		}
+	}
+
+	private void endPlayerTurn(PlayerTurnState state) {
+		state.finish = true;
+	}
+
+	private class PlayerTurnState {
+		public boolean finish = false;
+		public boolean noMoreMovement = false;
 	}
 }

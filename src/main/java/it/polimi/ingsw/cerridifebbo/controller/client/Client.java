@@ -35,9 +35,9 @@ public class Client {
 		}
 		try {
 			network.connect();
-		} catch (IOException e1) {
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			e.printStackTrace();
 		}	
 		while (true) {
 			String line = in.nextLine();

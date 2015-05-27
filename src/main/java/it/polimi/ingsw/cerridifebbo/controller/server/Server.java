@@ -1,6 +1,9 @@
 package it.polimi.ingsw.cerridifebbo.controller.server;
 
 import it.polimi.ingsw.cerridifebbo.model.Game;
+import it.polimi.ingsw.cerridifebbo.model.Move;
+import it.polimi.ingsw.cerridifebbo.model.Player;
+import it.polimi.ingsw.cerridifebbo.model.Sector;
 import it.polimi.ingsw.cerridifebbo.model.User;
 
 import java.io.IOException;
@@ -25,9 +28,12 @@ public class Server {
 
 	// private Timer timeout = new Timer();
 	private ServerConnection rmi, socket;
+	private Thread rmiThread, socketThread;
 	private Map<User, ServerConnection> users = new HashMap<User, ServerConnection>();
 	private List<Game> games = new ArrayList<Game>();
 	private ArrayList<User> buildingMatch = new ArrayList<User>();
+	
+	private Object busy = new Object();
 
 	Server() {
 		rmi = ServerConnectionFactory.getConnection(this, ServerConnectionFactory.RMI);
@@ -37,11 +43,12 @@ public class Server {
 			System.err.println("Closing server...");
 			e.printStackTrace();
 			return;
-		}		
+		}
 		System.out.println("RMI server is started...");
 
 		socket = ServerConnectionFactory.getConnection(this, ServerConnectionFactory.SOCKET);
-		new Thread((Runnable) socket).start();
+		Thread socketThread = new Thread((Runnable) socket);
+		socketThread.start();
 		System.out.println("Socket server is started...\nServer is ready! :)");
 		Scanner in = new Scanner(System.in);
 		while(true){
@@ -92,5 +99,16 @@ public class Server {
 		buildingMatch.clear();
 		System.out.println("Starting new game");
 		game.run();
+	}
+	
+	public Move getMoveFromUser(User user){
+		//TODO 
+		return null;
+	}
+	
+	public void declareSector(User user, Sector sector) {
+		// TODO se sector è uguale a null il metodo chiederà al controller il
+		// settore da raggiungere altrimenti il controller
+		// si occuperà di mostrare il settore dichiarato
 	}
 }

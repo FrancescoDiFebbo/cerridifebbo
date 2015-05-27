@@ -7,12 +7,18 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.UUID;
 
-public interface ServerConnection {
+public abstract class ServerConnection implements Runnable{
 	
-	public void start() throws IOException, AlreadyBoundException;
+	protected final Server server;
+	
+	public ServerConnection(Server server) {
+		this.server = server;
+	}
+	
+	public abstract void start() throws IOException, AlreadyBoundException;
 
-	public void close() throws AccessException, NotBoundException, IOException;
+	public abstract void close() throws AccessException, NotBoundException, IOException;
 
-	public void registerClientOnServer(UUID idClient);
+	public abstract boolean registerClientOnServer(UUID id, int port) throws RemoteException;
 	
 }

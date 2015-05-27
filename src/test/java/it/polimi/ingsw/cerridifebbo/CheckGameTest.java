@@ -19,7 +19,7 @@ public class CheckGameTest {
 		users.add(new User(UUID.randomUUID()));
 		Game game = new Game(null, users);
 		game.run();
-		game.setState(new CheckGame(game));
+		game.checkGame();
 		game.run();
 		assertFalse(game.getState() instanceof EndGame);
 		
@@ -29,7 +29,7 @@ public class CheckGameTest {
 				alien.kill();
 			}	
 		}
-		game.setState(new CheckGame(game));
+		game.checkGame();
 		game.run();
 		assertTrue(game.getState() instanceof EndGame);
 		

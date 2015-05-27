@@ -19,17 +19,15 @@ public class StartGame extends GameState {
 			initializePlayers();
 		} catch (Exception e) {
 			// TODO Eventuali errori nel setting dei player si termina il game
-			game.setState(new EndGame(game));
-			game.run();
+			game.endGame();
 		}		
-		game.setState(new Turn(game));
-		game.run();
+		game.nextTurn();
 	}
 
 	private void initializePlayers() throws Exception {
 		for (User user : game.getUsers()) {
 			Card card = game.getDeck().drawCharacterCard();
-			Object player = card.performAction(null, game);
+			Object player = card.performAction(null, null, game);
 			if (player instanceof Player && player != null) {
 				user.setPlayer((Player) player);
 			} else {

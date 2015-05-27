@@ -11,12 +11,20 @@ public abstract class Player {
 	private boolean alive;
 
 	Player(CharacterCard playerCard, Sector pos, int maxMovement) {
-		this.playerCard = playerCard;
+		this.setPlayerCard(playerCard);
 		this.pos = pos;
 		this.maxMovement = maxMovement;
 		this.ownCards = null;
 		this.alive = true;
 
+	}
+
+	public CharacterCard getPlayerCard() {
+		return playerCard;
+	}
+
+	public void setPlayerCard(CharacterCard playerCard) {
+		this.playerCard = playerCard;
 	}
 
 	public boolean isAlive() {
@@ -64,7 +72,7 @@ public abstract class Player {
 				if (player instanceof HumanPlayer) {
 					for (Card card : player.getOwnCards()) {
 						if (card instanceof DefenseItemCard) {
-							card.performAction(player, game);
+							card.performAction(player, null, game);
 							safe = true;
 						}
 					}
@@ -79,10 +87,14 @@ public abstract class Player {
 		return humanEaten;
 	}
 
-	public boolean movement(Sector destination) {
-		if (getPosition().getReachableSectors(getMaxMovement()).contains(
-				destination)) {
+	public boolean movement(Sector destination, Game game) {
+		if (getPosition().getReachableSectors(getMaxMovement()).contains(destination)) {
 			setPosition(destination);
+			Card sectorCard = destination.playerEnters(this, game.getDeck());
+			if (sectorCard != null){
+				Card itemCard = (Card) sectorCard.performAction(this, null, game);
+				this.addCard(itemCard);
+			}
 			return true;
 		}
 		return false;

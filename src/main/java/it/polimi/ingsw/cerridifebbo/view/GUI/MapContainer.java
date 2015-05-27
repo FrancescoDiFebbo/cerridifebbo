@@ -13,7 +13,7 @@ public class MapContainer extends Container {
 		Map map = Map.getInstance();
 		SectorButtonFactory factory = new ConcreteSectorButtonFactory();
 		this.setForeground(Color.GREEN);
-		for (int i = 0; i < Map.RAWMAP; i++) {
+		for (int i = 0; i < Map.ROWMAP; i++) {
 			for (int j = 0; j < Map.COLUMNMAP; j++) {
 				Sector temp = map.getCell(i, j);
 				String label = null;
@@ -27,7 +27,7 @@ public class MapContainer extends Container {
 				this.add(button);
 			}
 		}
-		LayoutManager mapLayout = new MapLayout(Map.RAWMAP, Map.COLUMNMAP);
+		LayoutManager mapLayout = new MapLayout(Map.ROWMAP, Map.COLUMNMAP);
 		this.setLayout(mapLayout);
 		this.setSize(mapLayout.preferredLayoutSize(this));
 	}

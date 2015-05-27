@@ -3,13 +3,15 @@ package it.polimi.ingsw.cerridifebbo.model;
 public class GreenEscapeHatchCard extends EscapeHatchCard {
 
 	@Override
-	public Object performAction(Player target, Game game) {
-		if (target == null || !(target instanceof HumanPlayer)) {
+	public Object performAction(Player player, Object target, Game game) {
+		if (player != null && player instanceof HumanPlayer) {
+			HumanPlayer p = (HumanPlayer) player;
+			p.setEscaped(true);
+			p.getPosition().setPassable(false);
+		} else {
 			throw new IllegalArgumentException();
 		}
-		HumanPlayer human = (HumanPlayer) target;
-		human.setEscaped(true);
-		human.getPosition().setPassable(false);
 		return null;
+
 	}
 }

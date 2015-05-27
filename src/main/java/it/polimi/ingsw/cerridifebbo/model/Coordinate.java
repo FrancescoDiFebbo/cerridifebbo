@@ -2,19 +2,19 @@ package it.polimi.ingsw.cerridifebbo.model;
 
 public class Coordinate {
 	private int column;
-	private int raw;
+	private int row;
 	
 	public int getColumn() {
 		return column;
 	}
 
-	public int getRaw() {
-		return raw;
+	public int getRow() {
+		return row;
 	}
 	
-	public Coordinate (int raw, int column)
+	public Coordinate (int row, int column)
 	{
-		this.raw=raw;
+		this.row=row;
 		this.column=column;
 	}
 }

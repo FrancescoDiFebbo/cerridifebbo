@@ -8,18 +8,25 @@ public class Move {
 	public static final String TIMEFINISHED = "TIMEFINISHED";
 	
 	private final String action;
-	private final Object target;
+	private final Sector target;
+	private final Card selectedCard;
+	
+	public Move(String action, Sector target, Card selectedCard) {
+		this.action = action;
+		this.target = target;
+		this.selectedCard = selectedCard;
+	}
+
 	
 	public String getAction() {
 		return action;
 	}
 
-	public Object getTarget() {
+	public Sector getTarget() {
 		return target;
-	}
+	}	
 
-	public Move(String action, Object target) {
-		this.action = action;
-		this.target = target;
+	public Card getSelectedCard() {
+		return selectedCard;
 	}
 }
