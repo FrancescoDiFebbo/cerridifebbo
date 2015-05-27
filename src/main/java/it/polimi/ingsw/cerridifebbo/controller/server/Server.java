@@ -106,7 +106,7 @@ public class Server {
 		return null;
 	}
 	
-	public void declareSector(User user, Sector sector) {
+	public void declareSector(User user, Sector sector, boolean spotlight) {
 		// TODO se sector è uguale a null il metodo chiederà al controller il
 		// settore da raggiungere altrimenti il controller
 		// si occuperà di mostrare il settore dichiarato

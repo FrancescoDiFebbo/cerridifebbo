@@ -1,11 +1,12 @@
 package it.polimi.ingsw.cerridifebbo.model;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public abstract class Player {
 
 	private CharacterCard playerCard;
-	private ArrayList<Card> ownCards;
+	private List<Card> ownCards;
 	private Sector pos;
 	private int maxMovement;
 	private boolean alive;
@@ -14,7 +15,7 @@ public abstract class Player {
 		this.setPlayerCard(playerCard);
 		this.pos = pos;
 		this.maxMovement = maxMovement;
-		this.ownCards = null;
+		this.ownCards = new ArrayList<Card>();
 		this.alive = true;
 
 	}
@@ -51,7 +52,7 @@ public abstract class Player {
 		this.maxMovement = maxMovement;
 	}
 
-	public ArrayList<Card> getOwnCards() {
+	public List<Card> getOwnCards() {
 		return ownCards;
 	}
 
@@ -67,31 +68,37 @@ public abstract class Player {
 		boolean humanEaten = false;
 		for (User user : game.getUsers()) {
 			Player player = user.getPlayer();
-			if (player.getPosition() == this.getPosition() && player != this) {
-				boolean safe = false;
-				if (player instanceof HumanPlayer) {
-					for (Card card : player.getOwnCards()) {
-						if (card instanceof DefenseItemCard) {
-							card.performAction(player, null, game);
-							safe = true;
-						}
-					}
-				}
-				if (!safe) {
-					player.kill();
-					if (player instanceof HumanPlayer)
-						humanEaten = true;
-				}
+			if (player.getPosition() == this.getPosition() && player != this && !hasDefenseCard(game, player)) {
+				player.kill();
+				humanEaten = isHumanEaten(humanEaten, player);
 			}
 		}
 		return humanEaten;
+	}
+
+	private boolean isHumanEaten(boolean humanEaten, Player player) {
+		if (player instanceof HumanPlayer)
+			return true;
+		return humanEaten;
+	}
+
+	private boolean hasDefenseCard(Game game, Player player) {
+		if (player instanceof HumanPlayer) {
+			for (Card card : player.getOwnCards()) {
+				if (card instanceof DefenseItemCard) {
+					card.performAction(player, null, game);
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	public boolean movement(Sector destination, Game game) {
 		if (getPosition().getReachableSectors(getMaxMovement()).contains(destination)) {
 			setPosition(destination);
 			Card sectorCard = destination.playerEnters(this, game.getDeck());
-			if (sectorCard != null){
+			if (sectorCard != null) {
 				Card itemCard = (Card) sectorCard.performAction(this, null, game);
 				this.addCard(itemCard);
 			}

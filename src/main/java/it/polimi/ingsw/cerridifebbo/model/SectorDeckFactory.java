@@ -2,6 +2,7 @@ package it.polimi.ingsw.cerridifebbo.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class SectorDeckFactory implements SingleTypeDeckFactory {
 
@@ -12,8 +13,8 @@ public class SectorDeckFactory implements SingleTypeDeckFactory {
 	public static final int MAX_SECTOR_ITEM_CARDS = 4;
 
 	@Override
-	public ArrayList<Card> createDeck() {
-		ArrayList<Card> cards = new ArrayList<Card>();
+	public List<Card> createDeck(Integer numberOfPlayers) {
+		List<Card> cards = new ArrayList<Card>();
 		for (int i = 0; i < MAX_SILENCE_CARDS; i++) {
 			cards.add(new SilenceCard());
 		}
@@ -37,5 +38,4 @@ public class SectorDeckFactory implements SingleTypeDeckFactory {
 		Collections.shuffle(cards);
 		return cards;
 	}
-
 }

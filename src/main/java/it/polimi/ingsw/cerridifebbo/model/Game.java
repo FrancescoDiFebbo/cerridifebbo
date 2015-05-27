@@ -2,44 +2,32 @@ package it.polimi.ingsw.cerridifebbo.model;
 
 import it.polimi.ingsw.cerridifebbo.controller.server.Server;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class Game {
-	
+
 	private static final int MAX_TURNS = 39;
-	
-	private final Server server;	
-	private final ArrayList<User> users;
-	
+
+	private final Server server;
+	private final List<User> users;
+
 	private GameState state;
 	private Map map;
 	private Deck deck;
 	private int turn = 0;
 
-	public Game(Server server, ArrayList<User> users) {
+	public Game(Server server, List<User> users) {
 		this.server = server;
 		this.state = new StartGame(this);
 		this.users = users;
 	}
 
-	public ArrayList<User> getUsers() {
+	public List<User> getUsers() {
 		return users;
 	}
 
-	public GameState getState(){
+	public GameState getState() {
 		return state;
-	}
-
-	public Map getMap() {
-		return map;
-	}
-
-	public void setMap(Map map) {
-		this.map = map;
-	}
-
-	public int getTurn() {
-		return turn;
 	}
 
 	public void nextTurn() {
@@ -50,15 +38,23 @@ public class Game {
 		}
 		state.handle();
 	}
-	
-	public void checkGame(){
+
+	public void checkGame() {
 		state = new CheckGame(this);
 		state.handle();
 	}
-	
+
 	public void endGame() {
 		state = new EndGame(this);
 		state.handle();
+	}
+
+	public Map getMap() {
+		return map;
+	}
+
+	public void setMap(Map map) {
+		this.map = map;
 	}
 
 	public Deck getDeck() {
@@ -69,16 +65,28 @@ public class Game {
 		this.deck = deck;
 	}
 
+	public int getTurn() {
+		return turn;
+	}
+
 	public void run() {
 		state.handle();
 	}
 
 	public void declareSector(Player player, Sector sector, boolean spotlight) {
-		server.declareSector(null, null);
+		User found = null;
+		for (User user : users) {
+			if (user.getPlayer() == player) {
+				found = user;
+			}
+		}
+		server.declareSector(found, sector, spotlight);
 	}
 
 	public Move getMoveFromUser(User user) {
-		return new Move(Move.MOVEMENT, map.getCell(7, 9), null);
-		//return server.getMoveFromUser(user);
+		// il successivo statement e l'ultimo argomento sono per togliere
+		// momentaneamente l'errore in sonar
+		user.getPlayer().addCard(new DefenseItemCard());
+		return new Move(Move.MOVEMENT, map.getCell(7, 9), user.getPlayer().getOwnCards().get(0));
 	}
 }

@@ -4,8 +4,8 @@ public class HumanPlayer extends Player {
 
 	private boolean escaped;
 	private boolean sedatives;
-	
-	public static final int HUMANMOVEMENT=1;
+
+	public static final int HUMANMOVEMENT = 1;
 
 	HumanPlayer(CharacterCard playerCard, Sector pos) {
 		super(playerCard, pos, HUMANMOVEMENT);
@@ -31,6 +31,5 @@ public class HumanPlayer extends Player {
 	public void clear() {
 		sedatives = false;
 		setMaxMovement(HUMANMOVEMENT);
-		
 	}
 }

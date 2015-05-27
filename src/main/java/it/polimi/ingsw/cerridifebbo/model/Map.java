@@ -3,18 +3,17 @@ package it.polimi.ingsw.cerridifebbo.model;
 import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Map {
+	private static final Logger LOG = Logger.getLogger(Map.class.getName());
+
 	public static final int COLUMNMAP = 23;
 	public static final int ROWMAP = 14;
 	private static final Sector[][] grid = new Sector[ROWMAP][COLUMNMAP];
 	private static Map instance = new Map(new File(System.getProperty("user.dir") + System.getProperty("file.separator") + "map"
 			+ System.getProperty("file.separator") + "galilei.txt"));
-
-	public static Map getInstance() {
-		return instance;
-
-	}
 
 	private Map(File mapFile) {
 		try {
@@ -28,18 +27,24 @@ public class Map {
 			fr.close();
 			for (int j = 0; j < COLUMNMAP; j++) {
 				for (int i = 0; i < ROWMAP; i++) {
-					if (grid[i][j] != null) {
-						setAdjacentSector(i, j, grid);
-					}
+					setAdjacentSector(i, j, grid);
 				}
 			}
 
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOG.log(Level.WARNING, e.getMessage(), e);
 		}
 	}
 
+	public static Map getInstance() {
+		return instance;
+
+	}
+
 	private static void setAdjacentSector(int row, int column, Sector[][] grid) {
+		if (grid[row][column] == null) {
+			return;
+		}
 		setNorthEast(row, column, grid);
 		setSouthEast(row, column, grid);
 		setSouth(row, column, grid);

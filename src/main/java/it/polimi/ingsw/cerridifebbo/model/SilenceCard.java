@@ -1,8 +1,8 @@
 package it.polimi.ingsw.cerridifebbo.model;
 
 public class SilenceCard extends SectorCard {
-	
-	SilenceCard(){
+
+	SilenceCard() {
 		super(false);
 	}
 
@@ -10,5 +10,4 @@ public class SilenceCard extends SectorCard {
 	public Object performAction(Player player, Object target, Game game) {
 		return null;
 	}
-
 }

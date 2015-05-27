@@ -1,6 +1,7 @@
 package it.polimi.ingsw.cerridifebbo.model;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public abstract class Sector {
 	private Coordinate coordinate;
@@ -49,8 +50,8 @@ public abstract class Sector {
 		this.passable = passable;
 	}
 
-	public ArrayList<Sector> getAdjacentSectors() {
-		ArrayList<Sector> list = new ArrayList<Sector>();
+	public List<Sector> getAdjacentSectors() {
+		List<Sector> list = new ArrayList<Sector>();
 		if (north != null) {
 			list.add(north);
 		}
@@ -71,25 +72,29 @@ public abstract class Sector {
 		}
 		return list;
 	}
-	
-	public ArrayList<Sector> getReachableSectors(int radius){
-		ArrayList<Sector> list = new ArrayList<Sector>();
+
+	@SuppressWarnings("unchecked")
+	public List<Sector> getReachableSectors(int radius) {
+		List<Sector> list = new ArrayList<Sector>();
 		for (Sector sector : getAdjacentSectors()) {
 			if (sector.isPassable()) {
 				list.add(sector);
 			}
 		}
 		for (int i = 0; i < radius - 1; i++) {
-			ArrayList<Sector> temp = (ArrayList<Sector>) list.clone();
+			List<Sector> temp = (ArrayList<Sector>) ((ArrayList<Sector>) list).clone();
 			for (Sector sector : temp) {
 				for (Sector adjacentSector : sector.getAdjacentSectors()) {
-					if (adjacentSector.isPassable() && !list.contains(adjacentSector) && !adjacentSector.equals(this)) {
-						list.add(adjacentSector);
-					}
+					checkAdjacentSector(list, adjacentSector);
 				}
 			}
 		}
 		return list;
+	}
+
+	private void checkAdjacentSector(List<Sector> list, Sector adjacentSector) {
+		if (adjacentSector.isPassable() && !list.contains(adjacentSector) && !adjacentSector.equals(this))
+			list.add(adjacentSector);
 	}
 
 	public abstract Card playerEnters(Player player, Deck deck);

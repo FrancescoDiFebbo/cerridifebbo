@@ -1,6 +1,6 @@
 package it.polimi.ingsw.cerridifebbo.model;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class Turn extends GameState {
 
@@ -10,7 +10,7 @@ public class Turn extends GameState {
 
 	@Override
 	public void handle() {
-		ArrayList<User> userList = game.getUsers();
+		List<User> userList = game.getUsers();
 		for (User user : userList) {
 			turn(user);
 			game.checkGame();
@@ -83,7 +83,7 @@ public class Turn extends GameState {
 
 	private void useCard(Player player, Sector target, Card card) throws IllegalMoveException {
 		if (target != null && !(card instanceof DefenseItemCard)) {
-			Card itemCard = (Card) card;
+			Card itemCard = card;
 			itemCard.performAction(player, target, game);
 		} else {
 			throw new IllegalMoveException();
@@ -95,7 +95,7 @@ public class Turn extends GameState {
 	}
 
 	private class PlayerTurnState {
-		public boolean finish = false;
-		public boolean noMoreMovement = false;
+		private boolean finish = false;
+		private boolean noMoreMovement = false;
 	}
 }

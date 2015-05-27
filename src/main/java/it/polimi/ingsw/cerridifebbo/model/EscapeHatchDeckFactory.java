@@ -2,6 +2,7 @@ package it.polimi.ingsw.cerridifebbo.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class EscapeHatchDeckFactory implements SingleTypeDeckFactory {
 
@@ -10,8 +11,8 @@ public class EscapeHatchDeckFactory implements SingleTypeDeckFactory {
 	public static final int MAX_ESCAPE_HATCH_CARDS = MAX_GREEN_ESCAPE_HATCH_CARDS + MAX_RED_ESCAPE_HATCH_CARDS;
 
 	@Override
-	public ArrayList<Card> createDeck() {
-		ArrayList<Card> cards = new ArrayList<Card>();
+	public List<Card> createDeck(Integer numberOfPlayers) {
+		List<Card> cards = new ArrayList<Card>();
 		for (int i = 0; i < MAX_GREEN_ESCAPE_HATCH_CARDS; i++) {
 			cards.add(new GreenEscapeHatchCard());
 		}

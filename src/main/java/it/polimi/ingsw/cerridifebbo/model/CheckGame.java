@@ -1,7 +1,5 @@
 package it.polimi.ingsw.cerridifebbo.model;
 
-import java.util.ArrayList;
-
 public class CheckGame extends GameState {
 
 	public CheckGame(Game game) {
@@ -30,6 +28,5 @@ public class CheckGame extends GameState {
 		if (allHumanNotInGame || allAlienKilled) {
 			game.endGame();
 		}
-
 	}
 }

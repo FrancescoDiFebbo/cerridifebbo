@@ -6,25 +6,24 @@ public class Move {
 	public static final String USEITEMCARD = "USEITEMCARD";
 	public static final String FINISH = "FINISH";
 	public static final String TIMEFINISHED = "TIMEFINISHED";
-	
+
 	private final String action;
 	private final Sector target;
 	private final Card selectedCard;
-	
+
 	public Move(String action, Sector target, Card selectedCard) {
 		this.action = action;
 		this.target = target;
 		this.selectedCard = selectedCard;
 	}
 
-	
 	public String getAction() {
 		return action;
 	}
 
 	public Sector getTarget() {
 		return target;
-	}	
+	}
 
 	public Card getSelectedCard() {
 		return selectedCard;

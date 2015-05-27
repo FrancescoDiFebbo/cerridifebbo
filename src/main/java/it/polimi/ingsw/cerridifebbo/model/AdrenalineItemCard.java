@@ -1,6 +1,7 @@
 package it.polimi.ingsw.cerridifebbo.model;
 
 public class AdrenalineItemCard extends ItemCard {
+
 	private static final int ADRENALINEMOVEMENT = 2;
 
 	@Override

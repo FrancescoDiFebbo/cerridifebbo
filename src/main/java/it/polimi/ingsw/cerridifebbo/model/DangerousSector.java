@@ -8,7 +8,7 @@ public class DangerousSector extends Sector {
 
 	@Override
 	public Card playerEnters(Player player, Deck deck) {
-		
+
 		if (player instanceof HumanPlayer) {
 			HumanPlayer human = (HumanPlayer) player;
 			if (human.hasSedatives()) {
@@ -18,5 +18,4 @@ public class DangerousSector extends Sector {
 		}
 		return deck.drawSectorCard();
 	}
-
 }

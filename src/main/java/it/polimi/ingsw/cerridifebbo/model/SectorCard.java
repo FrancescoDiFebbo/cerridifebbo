@@ -15,5 +15,4 @@ public abstract class SectorCard implements Card {
 	public boolean isContainsItem() {
 		return containsItem;
 	}
-
 }

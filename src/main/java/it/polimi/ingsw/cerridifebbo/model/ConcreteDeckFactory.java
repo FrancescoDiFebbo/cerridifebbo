@@ -1,6 +1,6 @@
 package it.polimi.ingsw.cerridifebbo.model;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class ConcreteDeckFactory implements DeckFactory {
 
@@ -14,12 +14,11 @@ public class ConcreteDeckFactory implements DeckFactory {
 	}
 
 	private Deck getDeck(int numberOfPlayers) {
-		ArrayList<Card> characterCards = new CharacterDeckFactory().createDeck(numberOfPlayers);
-		ArrayList<Card> sectorCards = new SectorDeckFactory().createDeck();
-		ArrayList<Card> itemCards = new ItemDeckFactory().createDeck();
-		ArrayList<Card> escapeHatchCards = new EscapeHatchDeckFactory().createDeck();
+		List<Card> characterCards = new CharacterDeckFactory().createDeck(numberOfPlayers);
+		List<Card> sectorCards = new SectorDeckFactory().createDeck(null);
+		List<Card> itemCards = new ItemDeckFactory().createDeck(null);
+		List<Card> escapeHatchCards = new EscapeHatchDeckFactory().createDeck(null);
 
 		return new Deck(characterCards, sectorCards, itemCards, escapeHatchCards);
 	}
-
 }

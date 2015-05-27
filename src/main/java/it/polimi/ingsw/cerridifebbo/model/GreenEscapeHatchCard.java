@@ -12,6 +12,5 @@ public class GreenEscapeHatchCard extends EscapeHatchCard {
 			throw new IllegalArgumentException();
 		}
 		return null;
-
 	}
 }

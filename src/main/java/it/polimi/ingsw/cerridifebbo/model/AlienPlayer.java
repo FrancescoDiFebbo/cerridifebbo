@@ -1,7 +1,5 @@
 package it.polimi.ingsw.cerridifebbo.model;
 
-import java.beans.DesignMode;
-
 public class AlienPlayer extends Player {
 
 	private static final int MOVEMENT_BEFORE_EATING = 2;

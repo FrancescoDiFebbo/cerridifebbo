@@ -2,6 +2,7 @@ package it.polimi.ingsw.cerridifebbo.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class ItemDeckFactory implements SingleTypeDeckFactory {
 
@@ -15,8 +16,8 @@ public class ItemDeckFactory implements SingleTypeDeckFactory {
 			+ MAX_DEFENSE_ITEM_CARDS + MAX_ADRENALINE_ITEM_CARDS;
 
 	@Override
-	public ArrayList<Card> createDeck() {
-		ArrayList<Card> cards = new ArrayList<Card>();
+	public List<Card> createDeck(Integer numberOfPlayers) {
+		List<Card> cards = new ArrayList<Card>();
 		for (int i = 0; i < MAX_ATTACK_ITEM_CARDS; i++) {
 			cards.add(new AttackItemCard());
 		}

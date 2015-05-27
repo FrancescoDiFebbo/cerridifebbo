@@ -1,7 +1,9 @@
 package it.polimi.ingsw.cerridifebbo.model;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public interface SingleTypeDeckFactory {
-	public ArrayList<Card> createDeck();
+
+	public List<Card> createDeck(Integer numberOfPlayers);
+
 }
