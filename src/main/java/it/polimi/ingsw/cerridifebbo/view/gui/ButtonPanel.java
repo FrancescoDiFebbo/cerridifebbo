@@ -1,16 +1,11 @@
-package it.polimi.ingsw.cerridifebbo.view.GUI;
-
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Panel;
-
-import it.polimi.ingsw.cerridifebbo.model.User;
+package it.polimi.ingsw.cerridifebbo.view.gui;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
 public class ButtonPanel extends JPanel {
 
+	private static final long serialVersionUID = 1L;
 	public static final String FINISH_TURN = "Finish Turn";
 	public static final String MOVEMENT = "Movement";
 	public static final String USE_CARD = "Use Card";
@@ -28,27 +23,27 @@ public class ButtonPanel extends JPanel {
 	public ButtonPanel() {
 		setButton();
 		setSize(WIDTH, HEIGHT);
-		setBackground(MainWindow.BACKGROUND_COLOR);
-		setForeground(MainWindow.FOREGROUND_COLOR);
+		setBackground(GUIGraphic.BACKGROUND_COLOR);
+		setForeground(GUIGraphic.FOREGROUND_COLOR);
 
 	}
 
 	private void setButton() {
 		finishTurn = new JButton(FINISH_TURN);
-		finishTurn.setBackground(MainWindow.BACKGROUND_COLOR);
-		finishTurn.setForeground(MainWindow.FOREGROUND_COLOR);
+		finishTurn.setBackground(GUIGraphic.BACKGROUND_COLOR);
+		finishTurn.setForeground(GUIGraphic.FOREGROUND_COLOR);
 		movement = new JButton(MOVEMENT);
-		movement.setBackground(MainWindow.BACKGROUND_COLOR);
-		movement.setForeground(MainWindow.FOREGROUND_COLOR);
+		movement.setBackground(GUIGraphic.BACKGROUND_COLOR);
+		movement.setForeground(GUIGraphic.FOREGROUND_COLOR);
 		useCard = new JButton(USE_CARD);
-		useCard.setBackground(MainWindow.BACKGROUND_COLOR);
-		useCard.setForeground(MainWindow.FOREGROUND_COLOR);
+		useCard.setBackground(GUIGraphic.BACKGROUND_COLOR);
+		useCard.setForeground(GUIGraphic.FOREGROUND_COLOR);
 		deleteCard = new JButton(DELETE_CARD);
-		deleteCard.setBackground(MainWindow.BACKGROUND_COLOR);
-		deleteCard.setForeground(MainWindow.FOREGROUND_COLOR);
+		deleteCard.setBackground(GUIGraphic.BACKGROUND_COLOR);
+		deleteCard.setForeground(GUIGraphic.FOREGROUND_COLOR);
 		attack = new JButton(ATTACK);
-		attack.setBackground(MainWindow.BACKGROUND_COLOR);
-		attack.setForeground(MainWindow.FOREGROUND_COLOR);
+		attack.setBackground(GUIGraphic.BACKGROUND_COLOR);
+		attack.setForeground(GUIGraphic.FOREGROUND_COLOR);
 		add(useCard);
 		add(deleteCard);
 		add(movement);

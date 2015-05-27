@@ -1,11 +1,10 @@
-package it.polimi.ingsw.cerridifebbo.view.GUI;
+package it.polimi.ingsw.cerridifebbo.view.gui;
 
 import java.awt.*;
 
 public class MapLayout implements LayoutManager {
 	private int raw;
 	private int column;
-	private int minWidth, minHeight;
 	private int preferredWidth, preferredHeight;
 	private static final int BORDER = 5;
 
@@ -28,8 +27,6 @@ public class MapLayout implements LayoutManager {
 				* column + 4 * BORDER;
 		preferredHeight = SectorButton.HEIGHT * raw + 4 * SectorButton.RADIUS
 				+ 4 * BORDER;
-		minWidth = preferredWidth;
-		minHeight = preferredHeight;
 	}
 
 	/* Required by LayoutManager. */
@@ -51,7 +48,7 @@ public class MapLayout implements LayoutManager {
 	public void layoutContainer(Container parent) {
 		int x = BORDER;
 		int y = BORDER;
-		int currentRaw = 0;
+		int currentRow = 0;
 		int currentColumn = 0;
 		setSizes();
 		int nComponent = parent.getComponentCount();
@@ -59,18 +56,18 @@ public class MapLayout implements LayoutManager {
 
 			if (currentColumn % column == 0) {
 				currentColumn = 0;
-				currentRaw++;
+				currentRow++;
 				x = BORDER;
-				y = BORDER + SectorButton.RADIUS + currentRaw
+				y = BORDER + SectorButton.RADIUS + currentRow
 						* SectorButton.HEIGHT;
 			}
 
 			Component c = parent.getComponent(i);
 			c.setBounds(x, y, SectorButton.WIDTH, SectorButton.HEIGHT);
 			if (currentColumn % 2 == 0) {
-				y = y + SectorButton.RADIUS;
+				y = y + SectorButton.RADIUS + SectorButton.BORDER_HEIGHT;
 			} else {
-				y = y - SectorButton.RADIUS;
+				y = y - SectorButton.RADIUS - SectorButton.BORDER_WIDTH;
 			}
 			x = x + SectorButton.WIDTH - SectorButton.SHIFT_OBLIQUE_SIDE;
 		}

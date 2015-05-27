@@ -1,4 +1,4 @@
-package it.polimi.ingsw.cerridifebbo.view.GUI;
+package it.polimi.ingsw.cerridifebbo.view.gui;
 
 import java.awt.Component;
 import java.awt.Container;
