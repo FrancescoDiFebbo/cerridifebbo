@@ -16,11 +16,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Server {
+	private static final Logger LOG = Logger.getLogger(Server.class.getName());
 
 	public static void main(String[] args) throws RemoteException, AlreadyBoundException {
-		new Server();
+		new Server().run();
 	}
 
 	private static final int MAX_PLAYERS = 8;
@@ -31,42 +34,39 @@ public class Server {
 	private Thread rmiThread, socketThread;
 	private Map<User, ServerConnection> users = new HashMap<User, ServerConnection>();
 	private List<Game> games = new ArrayList<Game>();
-	private ArrayList<User> buildingMatch = new ArrayList<User>();
-	
+	private List<User> buildingMatch = new ArrayList<User>();
+
 	private Object busy = new Object();
 
-	Server() {
+	public void run() {
 		rmi = ServerConnectionFactory.getConnection(this, ServerConnectionFactory.RMI);
 		try {
 			rmi.start();
 		} catch (AlreadyBoundException | IOException e) {
-			System.err.println("Closing server...");
-			e.printStackTrace();
+			LOG.log(Level.WARNING, "Closing server...", e);
 			return;
 		}
 		System.out.println("RMI server is started...");
 
 		socket = ServerConnectionFactory.getConnection(this, ServerConnectionFactory.SOCKET);
-		Thread socketThread = new Thread((Runnable) socket);
+		socketThread = new Thread((Runnable) socket);
 		socketThread.start();
 		System.out.println("Socket server is started...\nServer is ready! :)");
 		Scanner in = new Scanner(System.in);
-		while(true){
+		while (true) {
 			System.out.println("Press 'q' to exit");
 			String line = in.nextLine();
-			if(line.equals("q")){
+			if (line.equals("q")) {
 				try {
 					rmi.close();
 					socket.close();
 					break;
 				} catch (NotBoundException | IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					System.exit(-1);
+					LOG.log(Level.WARNING, "", e);
+					return;
 				}
 			}
 		}
-		System.exit(0);
 	}
 
 	public void registerClientOnServer(UUID idClient, ServerConnection connection) {
@@ -94,18 +94,17 @@ public class Server {
 		Game game = new Game(this, buildingMatch);
 		games.add(game);
 		for (User user : buildingMatch) {
-
 		}
 		buildingMatch.clear();
 		System.out.println("Starting new game");
 		game.run();
 	}
-	
-	public Move getMoveFromUser(User user){
-		//TODO 
+
+	public Move getMoveFromUser(User user) {
+		// TODO
 		return null;
 	}
-	
+
 	public void declareSector(User user, Sector sector, boolean spotlight) {
 		// TODO se sector è uguale a null il metodo chiederà al controller il
 		// settore da raggiungere altrimenti il controller

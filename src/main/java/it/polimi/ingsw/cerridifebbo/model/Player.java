@@ -100,7 +100,9 @@ public abstract class Player {
 			Card sectorCard = destination.playerEnters(this, game.getDeck());
 			if (sectorCard != null) {
 				Card itemCard = (Card) sectorCard.performAction(this, null, game);
-				this.addCard(itemCard);
+				if (itemCard != null) {
+					this.addCard(itemCard);
+				}				
 			}
 			return true;
 		}

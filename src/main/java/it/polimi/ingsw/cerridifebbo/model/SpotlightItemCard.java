@@ -2,6 +2,8 @@ package it.polimi.ingsw.cerridifebbo.model;
 
 public class SpotlightItemCard extends ItemCard {
 	
+	private static final String NAME = "Spotlight";
+	
 	@Override
 	public Object performAction(Player player, Object target, Game game) {
 		if (player == null || !(player instanceof HumanPlayer)) {
@@ -15,4 +17,8 @@ public class SpotlightItemCard extends ItemCard {
 		return null;
 	}
 
+	@Override
+	public String toString() {
+		return NAME;
+	}
 }

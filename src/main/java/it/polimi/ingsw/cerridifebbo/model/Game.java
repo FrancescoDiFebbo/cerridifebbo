@@ -86,7 +86,6 @@ public class Game {
 	public Move getMoveFromUser(User user) {
 		// il successivo statement e l'ultimo argomento sono per togliere
 		// momentaneamente l'errore in sonar
-		user.getPlayer().addCard(new DefenseItemCard());
-		return new Move(Move.MOVEMENT, map.getCell(7, 9), user.getPlayer().getOwnCards().get(0));
+		return new Move(Move.FINISH, null, null);
 	}
 }

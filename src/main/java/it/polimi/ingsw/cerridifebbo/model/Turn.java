@@ -33,7 +33,6 @@ public class Turn extends GameState {
 			if (player instanceof HumanPlayer) {
 				((HumanPlayer) player).clear();
 			}
-
 		}
 	}
 

@@ -13,7 +13,11 @@ public class NoiseAnySectorCard extends SectorCard {
 		}
 		game.declareSector(player, null, false);
 		if (this.containsItem()) {
-			return game.getDeck().drawItemCard();
+			ItemCard itemCard = (ItemCard) game.getDeck().drawItemCard();
+			if (itemCard != null) {
+				itemCard.setTaken(true);
+			}
+			return itemCard;
 		} else {
 			return null;
 		}

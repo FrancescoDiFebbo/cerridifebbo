@@ -11,4 +11,7 @@ public abstract class ItemCard implements Card {
 	public void setTaken(boolean taken) {
 		this.taken = taken;
 	}
+	
+	@Override
+	public abstract String toString();
 }

@@ -2,6 +2,8 @@ package it.polimi.ingsw.cerridifebbo.model;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -119,5 +121,17 @@ public class Map {
 			}
 		}
 		return null;
+	}
+
+	public List<Sector> getEscapeHatchSectors(){
+		List<Sector> hatches = new ArrayList<Sector>();
+		for (int i = 0; i < ROWMAP; i++) {
+			for (int j = 0; j < COLUMNMAP; j++) {
+				if (grid[i][j] instanceof EscapeHatchSector) {
+					hatches.add(grid[i][j]);
+				}
+			}
+		}
+		return hatches;
 	}
 }

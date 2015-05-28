@@ -1,6 +1,8 @@
 package it.polimi.ingsw.cerridifebbo.model;
 
 public class SedativesItemCard extends ItemCard {
+	
+	private static final String NAME = "Sedatives";
 
 	@Override
 	public Object performAction(Player player, Object target, Game game) {
@@ -12,5 +14,10 @@ public class SedativesItemCard extends ItemCard {
 			throw new IllegalArgumentException();
 		}
 		return null;
+	}
+
+	@Override
+	public String toString() {
+		return NAME;
 	}
 }
