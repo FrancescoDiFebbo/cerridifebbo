@@ -9,6 +9,8 @@ import java.awt.LayoutManager;
 public class MainWindowLayout implements LayoutManager {
 
 	private static final int BORDER = 5;
+	private static final int SPACE_BETWEEN_COMPONENTS = 20;
+	private static final int SPACE_BEFORE_TIMER = 80;
 
 	@Override
 	public void addLayoutComponent(String name, Component comp) {
@@ -44,13 +46,14 @@ public class MainWindowLayout implements LayoutManager {
 		width = temp.getWidth();
 		height = temp.getHeight();
 		temp.setBounds(x, y, width, height);
-		x = x + width;
+		y = y + SPACE_BEFORE_TIMER;
+		x = x + width + SPACE_BETWEEN_COMPONENTS;
 		for (int i = 1; i < parent.getComponentCount(); i++) {
 			temp = parent.getComponent(i);
 			width = temp.getWidth();
 			height = temp.getHeight();
 			temp.setBounds(x, y, temp.getWidth(), temp.getHeight());
-			y = y + height;
+			y = y + height + SPACE_BETWEEN_COMPONENTS;
 		}
 
 	}

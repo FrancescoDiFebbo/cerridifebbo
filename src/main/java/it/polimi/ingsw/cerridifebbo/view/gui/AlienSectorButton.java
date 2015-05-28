@@ -15,6 +15,7 @@ public class AlienSectorButton extends SectorButton {
 
 	@Override
 	public void actionPerformed(ActionEvent ev) {
+		System.out.println("button clicked!" + ev.getActionCommand());
 		if (!isPressed()) {
 			setPressed(true);
 			setForeground(SectorButton.PRESSED_BUTTON);

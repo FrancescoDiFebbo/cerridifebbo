@@ -15,7 +15,7 @@ public class HumanSectorButton extends SectorButton {
 
 	@Override
 	public void actionPerformed(ActionEvent ev) {
-		System.out.println("button clicked!" + this.getName());
+		System.out.println("button clicked!" + ev.getActionCommand());
 		if (!isPressed()) {
 			setPressed(true);
 			setForeground(SectorButton.PRESSED_BUTTON);

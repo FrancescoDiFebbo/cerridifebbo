@@ -14,11 +14,11 @@ public class MapLayout implements LayoutManager {
 		setSizes();
 	}
 
-	/* Required by LayoutManager. */
+	@Override
 	public void addLayoutComponent(String name, Component comp) {
 	}
 
-	/* Required by LayoutManager. */
+	@Override
 	public void removeLayoutComponent(Component comp) {
 	}
 
@@ -29,7 +29,7 @@ public class MapLayout implements LayoutManager {
 				+ 4 * BORDER;
 	}
 
-	/* Required by LayoutManager. */
+	@Override
 	public Dimension preferredLayoutSize(Container parent) {
 		Dimension dim = new Dimension(0, 0);
 		setSizes();
@@ -39,12 +39,12 @@ public class MapLayout implements LayoutManager {
 		return dim;
 	}
 
-	/* Required by LayoutManager. */
+	@Override
 	public Dimension minimumLayoutSize(Container parent) {
 		return preferredLayoutSize(parent);
 	}
 
-	/* Required by LayoutManager. */
+	@Override
 	public void layoutContainer(Container parent) {
 		int x = BORDER;
 		int y = BORDER;

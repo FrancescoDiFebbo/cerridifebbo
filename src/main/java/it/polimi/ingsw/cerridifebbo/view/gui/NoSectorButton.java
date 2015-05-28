@@ -13,6 +13,6 @@ public class NoSectorButton extends SectorButton {
 
 	@Override
 	public void actionPerformed(ActionEvent ev) {
-	
+		//no action performed for a no sector button
 	}
 }

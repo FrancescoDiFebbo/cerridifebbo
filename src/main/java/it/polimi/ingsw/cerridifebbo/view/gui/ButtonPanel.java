@@ -1,9 +1,14 @@
 package it.polimi.ingsw.cerridifebbo.view.gui;
 
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.UIManager;
 
-public class ButtonPanel extends JPanel {
+public class ButtonPanel extends JPanel implements ActionListener {
 
 	private static final long serialVersionUID = 1L;
 	public static final String FINISH_TURN = "Finish Turn";
@@ -23,32 +28,56 @@ public class ButtonPanel extends JPanel {
 	public ButtonPanel() {
 		setButton();
 		setSize(WIDTH, HEIGHT);
-		setBackground(GUIGraphic.BACKGROUND_COLOR);
-		setForeground(GUIGraphic.FOREGROUND_COLOR);
+		setBackground(GUIGraphics.BACKGROUND_COLOR);
+		setForeground(GUIGraphics.FOREGROUND_COLOR);
 
 	}
 
 	private void setButton() {
 		finishTurn = new JButton(FINISH_TURN);
-		finishTurn.setBackground(GUIGraphic.BACKGROUND_COLOR);
-		finishTurn.setForeground(GUIGraphic.FOREGROUND_COLOR);
+		finishTurn.setBackground(GUIGraphics.BACKGROUND_COLOR);
+		finishTurn.setForeground(GUIGraphics.FOREGROUND_COLOR);
 		movement = new JButton(MOVEMENT);
-		movement.setBackground(GUIGraphic.BACKGROUND_COLOR);
-		movement.setForeground(GUIGraphic.FOREGROUND_COLOR);
+		movement.setBackground(GUIGraphics.BACKGROUND_COLOR);
+		movement.setForeground(GUIGraphics.FOREGROUND_COLOR);
 		useCard = new JButton(USE_CARD);
-		useCard.setBackground(GUIGraphic.BACKGROUND_COLOR);
-		useCard.setForeground(GUIGraphic.FOREGROUND_COLOR);
+		useCard.setBackground(GUIGraphics.BACKGROUND_COLOR);
+		useCard.setForeground(GUIGraphics.FOREGROUND_COLOR);
 		deleteCard = new JButton(DELETE_CARD);
-		deleteCard.setBackground(GUIGraphic.BACKGROUND_COLOR);
-		deleteCard.setForeground(GUIGraphic.FOREGROUND_COLOR);
+		deleteCard.setBackground(GUIGraphics.BACKGROUND_COLOR);
+		deleteCard.setForeground(GUIGraphics.FOREGROUND_COLOR);
 		attack = new JButton(ATTACK);
-		attack.setBackground(GUIGraphic.BACKGROUND_COLOR);
-		attack.setForeground(GUIGraphic.FOREGROUND_COLOR);
+		attack.setBackground(GUIGraphics.BACKGROUND_COLOR);
+		attack.setForeground(GUIGraphics.FOREGROUND_COLOR);
 		add(useCard);
 		add(deleteCard);
 		add(movement);
 		add(attack);
 		add(finishTurn);
 
+	}
+
+	public void addListenersToButton() {
+		useCard.setEnabled(true);
+		deleteCard.setEnabled(true);
+		movement.setEnabled(true);
+		attack.setEnabled(true);
+		finishTurn.setEnabled(true);
+	}
+
+	public void deleteListenersToButton() {
+		UIManager.getDefaults().put("Button.disabledText",
+				GUIGraphics.FOREGROUND_COLOR);
+		useCard.setEnabled(false);
+		deleteCard.setEnabled(false);
+		movement.setEnabled(false);
+		attack.setEnabled(false);
+		finishTurn.setEnabled(false);
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		e.getActionCommand();
+		
 	}
 }

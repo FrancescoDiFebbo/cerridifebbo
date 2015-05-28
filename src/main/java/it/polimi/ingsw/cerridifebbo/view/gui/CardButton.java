@@ -11,15 +11,12 @@ public class CardButton extends JButton implements ActionListener {
 
 	private static final long serialVersionUID = 1L;
 	public static final String NO_CARD = "No card";
-	private String cardName;
 
 	public CardButton(String label) {
 		super(label);
-		cardName = label;
-		addActionListener(this);
 		setFont(new Font("Arial", Font.PLAIN, 10));
-		setBackground(GUIGraphic.BACKGROUND_COLOR);
-		setForeground(GUIGraphic.FOREGROUND_COLOR);
+		setBackground(GUIGraphics.BACKGROUND_COLOR);
+		setForeground(GUIGraphics.FOREGROUND_COLOR);
 		setOpaque(false);
 		if (label != NO_CARD) {
 			String cardPath = System.getProperty("user.dir")
@@ -31,8 +28,9 @@ public class CardButton extends JButton implements ActionListener {
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent ev) {
-		System.out.println("button clicked!" + cardName);
+	public void actionPerformed(ActionEvent e) {
+		System.out.println("button clicked! "+e.getActionCommand());
+		
 	}
 
 }

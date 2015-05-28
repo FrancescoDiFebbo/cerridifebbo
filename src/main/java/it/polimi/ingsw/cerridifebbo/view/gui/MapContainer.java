@@ -13,10 +13,9 @@ public class MapContainer extends Container {
 	private LayoutManager mapLayout;
 
 	public MapContainer(Map map) {
-
 		mapLayout = new MapLayout(Map.ROWMAP, Map.COLUMNMAP);
 		SectorButtonFactory factory = new ConcreteSectorButtonFactory();
-		setForeground(GUIGraphic.FOREGROUND_COLOR);
+		setForeground(GUIGraphics.FOREGROUND_COLOR);
 		for (int i = 0; i < Map.ROWMAP; i++) {
 			for (int j = 0; j < Map.COLUMNMAP; j++) {
 				Sector temp = map.getCell(i, j);
@@ -35,4 +34,27 @@ public class MapContainer extends Container {
 		setLayout(mapLayout);
 		setSize(mapLayout.preferredLayoutSize(this));
 	}
+
+	public void addListenersToButton() {
+		int nComp = getComponentCount();
+		SectorButton button;
+		for (int i = 0; i < nComp; i++)
+			if (getComponent(i) != null) {
+				button = (SectorButton) getComponent(i);
+				button.addActionListener(button);
+			}
+
+	}
+
+	public void deleteListenersToButton() {
+		int nComp = getComponentCount();
+		SectorButton button;
+		for (int i = 0; i < nComp; i++)
+			if (getComponent(i) != null) {
+				button = (SectorButton) getComponent(i);
+				button.removeActionListener(button);
+			}
+
+	}
+
 }
