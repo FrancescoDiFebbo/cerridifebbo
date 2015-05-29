@@ -13,15 +13,4 @@ public class EscapeHatchSectorButton extends SectorButton {
 		this.setForeground(ESCAPE_HATCH_COLOR);
 	}
 
-	@Override
-	public void actionPerformed(ActionEvent ev) {
-		System.out.println("button clicked!" + ev.getActionCommand());
-		if (!isPressed()) {
-			setPressed(true);
-			setForeground(SectorButton.PRESSED_BUTTON);
-		} else {
-			setPressed(false);
-			setForeground(ESCAPE_HATCH_COLOR);
-		}
-	}
 }

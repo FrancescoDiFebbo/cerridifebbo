@@ -13,15 +13,4 @@ public class HumanSectorButton extends SectorButton {
 		this.setForeground(HUMAN_COLOR);
 	}
 
-	@Override
-	public void actionPerformed(ActionEvent ev) {
-		System.out.println("button clicked!" + ev.getActionCommand());
-		if (!isPressed()) {
-			setPressed(true);
-			setForeground(SectorButton.PRESSED_BUTTON);
-		} else {
-			setPressed(false);
-			setForeground(HUMAN_COLOR);
-		}
-	}
 }

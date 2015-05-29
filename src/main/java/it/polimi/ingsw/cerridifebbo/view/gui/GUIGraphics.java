@@ -1,10 +1,11 @@
 package it.polimi.ingsw.cerridifebbo.view.gui;
 
 import it.polimi.ingsw.cerridifebbo.controller.client.Graphics;
+import it.polimi.ingsw.cerridifebbo.model.AttackItemCard;
 import it.polimi.ingsw.cerridifebbo.model.Game;
 import it.polimi.ingsw.cerridifebbo.model.Map;
+import it.polimi.ingsw.cerridifebbo.model.Move;
 import it.polimi.ingsw.cerridifebbo.model.Player;
-import it.polimi.ingsw.cerridifebbo.model.SedativesItemCard;
 import it.polimi.ingsw.cerridifebbo.model.User;
 
 import java.awt.Color;
@@ -20,10 +21,11 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.UUID;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-public class GUIGraphics extends Graphics {
+public class GUIGraphics extends Graphics implements ActionListener {
 
 	private static final String FRAME_NAME = "ESCAPE FROM THE ALIENS IN OUTER SPACE";
 	public static final Color BACKGROUND_COLOR = Color.BLACK;
@@ -36,6 +38,7 @@ public class GUIGraphics extends Graphics {
 	private JFrame frame;
 	private Container contentPane;
 	private String move;
+	private boolean waitMove;
 
 	public void setMove(String move) {
 		this.move = move;
@@ -78,40 +81,51 @@ public class GUIGraphics extends Graphics {
 		users.add(new User(UUID.randomUUID()));
 		Game game = new Game(null, users);
 		game.run();
-		users.get(0).getPlayer().addCard(new SedativesItemCard());
 		GUIGraphics gui = new GUIGraphics();
+		game.getUsers().get(0).getPlayer().addCard(new AttackItemCard());
 		gui.initialize(game.getMap(), game.getUsers().get(0).getPlayer());
+
 		gui.startTurn();
+		System.out.println(gui.declareMove(game.getUsers().get(0).getPlayer()));
 
 	}
 
 	@Override
 	public void startTurn() {
 		timerPanel.startTimer();
-		mapGrid.addListenersToButton();
-		cards.addListenersToButton();
-		buttonPanel.addListenersToButton();
-		
 	}
 
 	@Override
 	public void endTurn() {
 		timerPanel.setVisible(false);
-		mapGrid.deleteListenersToButton();
-		cards.deleteListenersToButton();
-		buttonPanel.deleteListenersToButton();
 	}
 
 	@Override
 	public String declareMove(Player player) {
-		move = null;
-		mapGrid.addListenersToButton();
-		cards.addListenersToButton();
-		buttonPanel.addListenersToButton();
-		while (move != null) {
-
-		}
+		ActionListener moveListener = this;
+		waitMove = true;
+		mapGrid.addListenersToButton(moveListener);
+		cards.addListenersToButton(moveListener);
+		buttonPanel.addListenersToButton(moveListener);
+		
+		//mapGrid.deleteListenersToButton(moveListener);
+		//cards.deleteListenersToButton(moveListener);
+		//buttonPanel.deleteListenersToButton(moveListener);
 		return move;
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource() instanceof SectorButton) {
+			move = Move.MOVEMENT + " " + e.getActionCommand();
+		} else if (e.getSource() instanceof CardButton) {
+			move = Move.USEITEMCARD + " " + e.getActionCommand();
+		} else if (e.getSource().equals(buttonPanel.getComponent(0))) {
+			move = Move.ATTACK;
+		} else if (e.getSource().equals(buttonPanel.getComponent(1))) {
+			move = Move.FINISH;
+		}
+		serverMessage.addText(move);
 	}
 
 }

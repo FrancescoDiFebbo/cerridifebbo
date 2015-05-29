@@ -1,6 +1,7 @@
 package it.polimi.ingsw.cerridifebbo.view.gui;
 
 import java.awt.Color;
+import java.awt.event.ActionListener;
 
 import it.polimi.ingsw.cerridifebbo.model.Card;
 import it.polimi.ingsw.cerridifebbo.model.Player;
@@ -25,24 +26,24 @@ public class CardsPanel extends JPanel {
 		setBackground(GUIGraphics.BACKGROUND_COLOR);
 	}
 
-	public void addListenersToButton() {
+	public void addListenersToButton(ActionListener moveListener) {
 		int nComp = getComponentCount();
 		CardButton card;
 		for (int i = 0; i < nComp; i++)
 			if (getComponent(i) != null) {
 				card = (CardButton) getComponent(i);
-				card.addActionListener(card);
+				card.addActionListener(moveListener);
 			}
 
 	}
 
-	public void deleteListenersToButton() {
+	public void deleteListenersToButton(ActionListener moveListener) {
 		int nComp = getComponentCount();
 		CardButton card;
 		for (int i = 0; i < nComp; i++)
 			if (getComponent(i) != null) {
 				card = (CardButton) getComponent(i);
-				card.removeActionListener(card);
+				card.removeActionListener(moveListener);
 			}
 
 	}

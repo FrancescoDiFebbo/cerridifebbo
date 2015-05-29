@@ -13,15 +13,4 @@ public class DangerousSectorButton extends SectorButton {
 		this.setForeground(DANGEROUS_COLOR);
 	}
 
-	@Override
-	public void actionPerformed(ActionEvent ev) {
-		System.out.println("button clicked!" + ev.getActionCommand());
-		if (!isPressed()) {
-			setPressed(true);
-			setForeground(SectorButton.PRESSED_BUTTON);
-		} else {
-			setPressed(false);
-			setForeground(DANGEROUS_COLOR);
-		}
-	}
 }

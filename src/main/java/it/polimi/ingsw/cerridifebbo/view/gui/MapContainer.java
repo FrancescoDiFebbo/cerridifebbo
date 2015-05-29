@@ -2,10 +2,12 @@ package it.polimi.ingsw.cerridifebbo.view.gui;
 
 import it.polimi.ingsw.cerridifebbo.model.Map;
 import it.polimi.ingsw.cerridifebbo.model.Sector;
+import it.polimi.ingsw.cerridifebbo.view.gui.ConcreteSectorButtonFactory;
 
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.LayoutManager;
+import java.awt.event.ActionListener;
 
 public class MapContainer extends Container {
 
@@ -35,24 +37,24 @@ public class MapContainer extends Container {
 		setSize(mapLayout.preferredLayoutSize(this));
 	}
 
-	public void addListenersToButton() {
+	public void addListenersToButton(ActionListener moveListener) {
 		int nComp = getComponentCount();
 		SectorButton button;
 		for (int i = 0; i < nComp; i++)
 			if (getComponent(i) != null) {
 				button = (SectorButton) getComponent(i);
-				button.addActionListener(button);
+				button.addActionListener(moveListener);
 			}
 
 	}
 
-	public void deleteListenersToButton() {
+	public void deleteListenersToButton(ActionListener moveListener) {
 		int nComp = getComponentCount();
 		SectorButton button;
 		for (int i = 0; i < nComp; i++)
 			if (getComponent(i) != null) {
 				button = (SectorButton) getComponent(i);
-				button.removeActionListener(button);
+				button.removeActionListener(moveListener);
 			}
 
 	}

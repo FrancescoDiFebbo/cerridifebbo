@@ -10,9 +10,4 @@ public class NoSectorButton extends SectorButton {
 		super(label);
 		this.setVisible(false);
 	}
-
-	@Override
-	public void actionPerformed(ActionEvent ev) {
-		//no action performed for a no sector button
-	}
 }

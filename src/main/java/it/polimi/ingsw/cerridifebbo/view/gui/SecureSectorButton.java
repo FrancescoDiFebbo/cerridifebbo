@@ -3,6 +3,8 @@ package it.polimi.ingsw.cerridifebbo.view.gui;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 
+import javax.swing.JButton;
+
 public class SecureSectorButton extends SectorButton {
 
 	private static final long serialVersionUID = 1L;
@@ -13,15 +15,4 @@ public class SecureSectorButton extends SectorButton {
 		this.setForeground(SECURE_COLOR);
 	}
 
-	@Override
-	public void actionPerformed(ActionEvent ev) {
-		System.out.println("button clicked!" + ev.getActionCommand());
-		if (!isPressed()) {
-			setPressed(true);
-			setForeground(SectorButton.PRESSED_BUTTON);
-		} else {
-			setPressed(false);
-			setForeground(SECURE_COLOR);
-		}
-	}
 }

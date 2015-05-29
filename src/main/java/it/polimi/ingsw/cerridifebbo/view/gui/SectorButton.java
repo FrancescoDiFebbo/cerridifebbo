@@ -10,7 +10,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 
-public abstract class SectorButton extends JButton implements ActionListener {
+public abstract class SectorButton extends JButton {
 
 	private static final long serialVersionUID = 1L;
 	public static final Color BORDER_COLOR = Color.BLACK;

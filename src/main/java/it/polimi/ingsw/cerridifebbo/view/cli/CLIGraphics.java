@@ -15,16 +15,17 @@ import it.polimi.ingsw.cerridifebbo.model.Move;
 import it.polimi.ingsw.cerridifebbo.model.Player;
 import it.polimi.ingsw.cerridifebbo.model.Sector;
 import it.polimi.ingsw.cerridifebbo.model.SecureSector;
-import it.polimi.ingsw.cerridifebbo.model.SedativesItemCard;
+
 import it.polimi.ingsw.cerridifebbo.model.User;
 
 public class CLIGraphics extends Graphics {
 
-	private static final String SECURE_SECTOR = "S";
-	private static final String DANGEROUS_SECTOR = "D";
-	private static final String ALIEN_SECTOR = "A";
-	private static final String HUMAN_SECTOR = "H";
-	private static final String ESCAPE_HATCH_SECTOR = "E";
+	private static final String RESET_COLOR = "\u001B[0m";
+	private static final String SECURE_SECTOR = "\u001B[37m";
+	private static final String DANGEROUS_SECTOR = "\u001B[31m";
+	private static final String ALIEN_SECTOR = "\u001B[32m";
+	private static final String HUMAN_SECTOR = "\u001B[34m";
+	private static final String ESCAPE_HATCH_SECTOR = "\u001B[33m";
 	private static final String START_TURN_MESSAGE = "Start Turn";
 	private static final String END_TURN_MESSAGE = "End Turn";
 
@@ -47,33 +48,44 @@ public class CLIGraphics extends Graphics {
 	}
 
 	private void printMap(Map map) {
-		for (int i = 0; i < Map.ROWMAP; i++) {
-			for (int j = 0; j < Map.COLUMNMAP; j++) {
-				Sector currentCell = map.getCell(i, j);
-				if (j % 2 == 0) {
-					if (currentCell != null) {
-						System.out.print(printTypeOfSector(currentCell)
-								+ currentCell.toString() + " ");
-					} else {
-						System.out.print(("      "));
-					}
-				}
-			}
-			System.out.println();
-			System.out.print("      ");
-			for (int j = 0; j < Map.COLUMNMAP; j++) {
-				Sector currentCell = map.getCell(i, j);
-				if (j % 2 == 0) {
-					if (currentCell != null) {
-						System.out.print(printTypeOfSector(currentCell)
-								+ currentCell.toString() + " ");
-					} else {
-						System.out.print(("      "));
-					}
-				}
-			}
-			System.out.println();
+		for (int i = 0; i < Map.COLUMNMAP; i = i + 2) {
+			System.out.print(" ___    ");
 		}
+		System.out.println();
+		for (int i = 0; i < Map.ROWMAP; i++) {
+			for (int j = 0; j < Map.COLUMNMAP; j = j + 2) {
+				Sector currentCell = map.getCell(i, j);
+				System.out.print("/");
+				if (currentCell != null) {
+					System.out.print(printTypeOfSector(currentCell)
+							+ currentCell.toString() + RESET_COLOR);
+				} else {
+					System.out.print("   ");
+
+				}
+				if (j != Map.COLUMNMAP - 1)
+					System.out.print("\\___");
+			}
+			System.out.println("\\");
+			for (int j = 1; j < Map.COLUMNMAP; j = j + 2) {
+				System.out.print("\\___/");
+				Sector currentCell = map.getCell(i, j);
+				if (currentCell != null) {
+					System.out.print(printTypeOfSector(currentCell)
+							+ currentCell.toString() + RESET_COLOR);
+				} else {
+					System.out.print("   ");
+				}
+
+			}
+			System.out.println("\\___/");
+		}
+		System.out.print("    \\___/");
+		for (int i = 3; i < Map.COLUMNMAP; i = i + 2) {
+			System.out.print("   \\___/");
+		}
+		System.out.println();
+
 	}
 
 	private void printPlayer(Player player) {
@@ -84,15 +96,15 @@ public class CLIGraphics extends Graphics {
 
 	private String printTypeOfSector(Sector currentCell) {
 		if (currentCell instanceof SecureSector) {
-			return (SECURE_SECTOR + " ");
+			return SECURE_SECTOR;
 		} else if (currentCell instanceof DangerousSector) {
-			return (DANGEROUS_SECTOR + " ");
+			return DANGEROUS_SECTOR;
 		} else if (currentCell instanceof AlienSector) {
-			return (ALIEN_SECTOR + " ");
+			return ALIEN_SECTOR;
 		} else if (currentCell instanceof HumanSector) {
-			return (HUMAN_SECTOR + " ");
+			return HUMAN_SECTOR;
 		} else if (currentCell instanceof EscapeHatchSector) {
-			return (ESCAPE_HATCH_SECTOR + " ");
+			return ESCAPE_HATCH_SECTOR;
 		} else
 			return null;
 	}
@@ -117,7 +129,6 @@ public class CLIGraphics extends Graphics {
 		users.add(new User(UUID.randomUUID()));
 		Game game = new Game(null, users);
 		game.run();
-		users.get(0).getPlayer().addCard(new SedativesItemCard());
 		CLIGraphics cli = new CLIGraphics();
 		cli.initialize(game.getMap(), game.getUsers().get(0).getPlayer());
 		cli.startTurn();
@@ -165,7 +176,7 @@ public class CLIGraphics extends Graphics {
 				printCardPlayer(player);
 				line = in.next();
 				move = move + " " + line;
-				if (line.equals("Sedatives") || line.equals("Spotlight")) {
+				if ("Sedatives".equals(line) || "Spotlight".equals(line)) {
 					System.out.println(SECTOR_SELECTION);
 					line = in.next();
 					move = move + " " + line;
@@ -176,7 +187,7 @@ public class CLIGraphics extends Graphics {
 				move = Move.FINISH;
 				break;
 			}
-		} while (true);
+		} while (move != null);
 		in.close();
 		return move;
 	}

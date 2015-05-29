@@ -7,7 +7,7 @@ import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
-public class CardButton extends JButton implements ActionListener {
+public class CardButton extends JButton {
 
 	private static final long serialVersionUID = 1L;
 	public static final String NO_CARD = "No card";
@@ -25,12 +25,6 @@ public class CardButton extends JButton implements ActionListener {
 			setIcon(img);
 		}
 
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		System.out.println("button clicked! "+e.getActionCommand());
-		
 	}
 
 }
