@@ -16,24 +16,7 @@ public class SocketInterface implements NetworkInterface {
 	private Socket socket;
 	private PrintWriter out;
 	private BufferedReader in;
-
-	@Override
-	public boolean registerClientOnServer(UUID id, int port) throws RemoteException {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void sendMessage(UUID client, String message) throws RemoteException {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void broadcastMessage(String message) throws RemoteException {
-		// TODO Auto-generated method stub
-
-	}
+	private UUID id = UUID.randomUUID();
 
 	@Override
 	public void connect() throws IOException{
@@ -62,6 +45,7 @@ public class SocketInterface implements NetworkInterface {
 			socket.close();
 			return;
 		}
+		registerClientOnServer();
 	}
 
 	@Override
@@ -69,6 +53,18 @@ public class SocketInterface implements NetworkInterface {
 		in.close();
 		out.close();
 		socket.close();
+	}
+	
+	public boolean registerClientOnServer() {
+		out.println("action=register&id=" + id.toString());
+		try {
+			String line = in.readLine();
+			System.out.println(line);
+			return true;
+		} catch (IOException e) {
+			System.out.println("no");
+			return false;
+		}
 	}
 
 }

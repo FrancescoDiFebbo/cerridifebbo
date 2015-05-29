@@ -11,17 +11,22 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class SocketHandler extends Thread {
+	private static final Logger LOG = Logger.getLogger(SocketHandler.class.getName());
 
 	private Socket socket;
+	private ServerConnection server;
 	private boolean stop;
 	private PrintWriter out;
 	private BufferedReader in;
 
-	public SocketHandler(Socket socket) {
+	public SocketHandler(Socket socket, ServerConnection server) {
 		super();
-		this.setSocket(socket);
+		this.socket = socket;
+		this.server = server;
 		this.stop = false;
 	}
 
@@ -30,20 +35,21 @@ public class SocketHandler extends Thread {
 		try {
 			out = new PrintWriter(socket.getOutputStream(), true);
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			System.out.println("Client connected on socket");
+	
 			String input, output;
 			while ((input = in.readLine()) != null && !stop) {
 
 				String[] splitted = input.split("&");
 				Map<String, String> params = new HashMap<String, String>();
 				for (String s : splitted) {
+					//TODO Gestire input errati
 					params.put(s.split("=")[0], s.split("=")[1]);
 				}
-				output = CommandHandler.handleCommand(params);
+				output = CommandHandler.handleCommand(this, params);
 				out.println(output);
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOG.log(Level.WARNING, e.getMessage(), e);
 		}
 	}
 
@@ -54,12 +60,11 @@ public class SocketHandler extends Thread {
 		socket.close();
 	}
 
+	public ServerConnection getServer() {
+		return server;
+	}
+
 	public Socket getSocket() {
 		return socket;
 	}
-
-	public void setSocket(Socket socket) {
-		this.socket = socket;
-	}
-
 }

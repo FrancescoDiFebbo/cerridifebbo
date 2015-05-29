@@ -47,26 +47,18 @@ public class RMIInterface implements NetworkInterface {
 			e.printStackTrace();
 			return;
 		}
-        registerClientOnServer(id, port);
+        registerClientOnServer();
 	}
 
 	public void close() {
 		//UNBINDA ROBA
 	}
 
-	@Override
-	public boolean registerClientOnServer(UUID id, int port) throws RemoteException {
-		return server.registerClientOnServer(id, port);		
-	}
-
-	@Override
-	public void sendMessage(UUID client, String message) throws RemoteException {
-		server.sendMessage(client, message);
-	}
-
-	@Override
-	public void broadcastMessage(String message) throws RemoteException {
-		// TODO Auto-generated method stub
-		
+	public boolean registerClientOnServer() {
+		try {
+			return server.registerClientOnServer(id, port);
+		} catch (RemoteException e) {
+			return false;
+		}		
 	}
 }
