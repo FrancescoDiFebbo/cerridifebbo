@@ -71,4 +71,9 @@ public class Client {
 		graphics.setClient(this);
 		in.close();
 	}
+
+	public void sendToServer(String move) {
+		System.out.println("message to server " + move);
+	}
+
 }

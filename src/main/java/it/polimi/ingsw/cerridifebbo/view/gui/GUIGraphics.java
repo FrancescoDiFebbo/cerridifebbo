@@ -38,7 +38,7 @@ public class GUIGraphics extends Graphics implements ActionListener {
 	private JFrame frame;
 	private Container contentPane;
 	private String move;
-	private boolean waitMove;
+	private ActionListener moveListener;
 
 	public void setMove(String move) {
 		this.move = move;
@@ -84,10 +84,8 @@ public class GUIGraphics extends Graphics implements ActionListener {
 		GUIGraphics gui = new GUIGraphics();
 		game.getUsers().get(0).getPlayer().addCard(new AttackItemCard());
 		gui.initialize(game.getMap(), game.getUsers().get(0).getPlayer());
-
 		gui.startTurn();
-		System.out.println(gui.declareMove(game.getUsers().get(0).getPlayer()));
-
+		gui.declareMove(game.getUsers().get(0).getPlayer());
 	}
 
 	@Override
@@ -101,29 +99,38 @@ public class GUIGraphics extends Graphics implements ActionListener {
 	}
 
 	@Override
-	public String declareMove(Player player) {
-		ActionListener moveListener = this;
-		waitMove = true;
+	public void declareMove(Player player) {
+		moveListener = this;
 		mapGrid.addListenersToButton(moveListener);
 		cards.addListenersToButton(moveListener);
 		buttonPanel.addListenersToButton(moveListener);
-		
-		//mapGrid.deleteListenersToButton(moveListener);
-		//cards.deleteListenersToButton(moveListener);
-		//buttonPanel.deleteListenersToButton(moveListener);
-		return move;
+
+	}
+
+	private void deleteListeners(ActionListener moveListener) {
+		mapGrid.deleteListenersToButton(moveListener);
+		cards.deleteListenersToButton(moveListener);
+		buttonPanel.deleteListenersToButton(moveListener);
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() instanceof SectorButton) {
 			move = Move.MOVEMENT + " " + e.getActionCommand();
+			// getClient().sendToServer(move);
+			deleteListeners(moveListener);
 		} else if (e.getSource() instanceof CardButton) {
 			move = Move.USEITEMCARD + " " + e.getActionCommand();
+			// getClient().sendToServer(move);
+			deleteListeners(moveListener);
 		} else if (e.getSource().equals(buttonPanel.getComponent(0))) {
+			// getClient().sendToServer(move);
 			move = Move.ATTACK;
+			deleteListeners(moveListener);
 		} else if (e.getSource().equals(buttonPanel.getComponent(1))) {
+			// getClient().sendToServer(move);
 			move = Move.FINISH;
+			deleteListeners(moveListener);
 		}
 		serverMessage.addText(move);
 	}
