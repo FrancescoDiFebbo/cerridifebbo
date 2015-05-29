@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.UUID;
 
+import it.polimi.ingsw.cerridifebbo.controller.client.Client;
 import it.polimi.ingsw.cerridifebbo.controller.client.Graphics;
 import it.polimi.ingsw.cerridifebbo.model.AlienSector;
 import it.polimi.ingsw.cerridifebbo.model.DangerousSector;
@@ -15,7 +16,6 @@ import it.polimi.ingsw.cerridifebbo.model.Move;
 import it.polimi.ingsw.cerridifebbo.model.Player;
 import it.polimi.ingsw.cerridifebbo.model.Sector;
 import it.polimi.ingsw.cerridifebbo.model.SecureSector;
-
 import it.polimi.ingsw.cerridifebbo.model.User;
 
 public class CLIGraphics extends Graphics {
@@ -132,7 +132,7 @@ public class CLIGraphics extends Graphics {
 		CLIGraphics cli = new CLIGraphics();
 		cli.initialize(game.getMap(), game.getUsers().get(0).getPlayer());
 		cli.startTurn();
-		System.out.println(cli.declareMove(game.getUsers().get(0).getPlayer()));
+		cli.declareMove(game.getUsers().get(0).getPlayer());
 	}
 
 	@Override
@@ -153,7 +153,7 @@ public class CLIGraphics extends Graphics {
 	}
 
 	@Override
-	public String declareMove(Player player) {
+	public void declareMove(Player player) {
 		String move = null;
 		Scanner in = new Scanner(System.in);
 		do {
@@ -189,6 +189,6 @@ public class CLIGraphics extends Graphics {
 			}
 		} while (move != null);
 		in.close();
-		return move;
+		//getClient().sendToServer(move);
 	}
 }

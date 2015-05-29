@@ -5,7 +5,11 @@ import it.polimi.ingsw.cerridifebbo.model.Player;
 
 public abstract class Graphics {
 
-	Client client;
+	private Client client;
+
+	public Client getClient() {
+		return client;
+	}
 
 	public abstract void initialize(Map map, Player player);
 
@@ -19,7 +23,7 @@ public abstract class Graphics {
 		this.client = client;
 	}
 
-	public abstract String declareMove(Player player);
+	public abstract void declareMove(Player player);
 
 	public void sendToClient(String move) {
 

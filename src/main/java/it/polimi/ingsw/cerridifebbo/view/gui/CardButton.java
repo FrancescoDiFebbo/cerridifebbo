@@ -13,7 +13,7 @@ public class CardButton extends JButton {
 	public static final String NO_CARD = "No card";
 
 	public CardButton(String label) {
-		super(label);
+		setText(label);
 		setFont(new Font("Arial", Font.PLAIN, 10));
 		setBackground(GUIGraphics.BACKGROUND_COLOR);
 		setForeground(GUIGraphics.FOREGROUND_COLOR);

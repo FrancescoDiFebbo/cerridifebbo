@@ -74,4 +74,9 @@ public class Client {
 	public void sendToServer(String move) {
 		System.out.println("message to server " + move);
 	}
+
+	public void sendToServer(String move) {
+		System.out.println("message to server " + move);
+	}
+
 }
