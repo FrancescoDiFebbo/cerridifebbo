@@ -5,12 +5,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.rmi.RemoteException;
-import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -66,5 +62,9 @@ public class SocketHandler extends Thread {
 
 	public Socket getSocket() {
 		return socket;
+	}
+
+	public void sendMessage(String string) {
+		out.println(string);		
 	}
 }

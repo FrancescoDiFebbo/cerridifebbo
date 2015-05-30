@@ -1,4 +1,4 @@
-package it.polimi.ingsw.cerridifebbo.controller.server;
+package it.polimi.ingsw.cerridifebbo.controller.common;
 
 public class Application {
 
@@ -16,5 +16,9 @@ public class Application {
 
 	private static void exit(int exitStatus) {
 		System.exit(exitStatus);
+	}
+	
+	public static void print(String message){
+		System.out.println(message);
 	}
 }

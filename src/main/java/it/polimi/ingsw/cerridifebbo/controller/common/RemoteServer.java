@@ -12,6 +12,5 @@ public interface RemoteServer extends Remote {
 
 	public void sendMessage(UUID client, String message) throws RemoteException;
 	
-	public void broadcastMessage(String message) throws RemoteException;
 
 }

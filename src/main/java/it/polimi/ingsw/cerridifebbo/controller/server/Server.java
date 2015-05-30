@@ -1,5 +1,6 @@
 package it.polimi.ingsw.cerridifebbo.controller.server;
 
+import it.polimi.ingsw.cerridifebbo.controller.common.Application;
 import it.polimi.ingsw.cerridifebbo.model.CharacterDeckFactory;
 import it.polimi.ingsw.cerridifebbo.model.Game;
 import it.polimi.ingsw.cerridifebbo.model.Move;
@@ -9,8 +10,6 @@ import it.polimi.ingsw.cerridifebbo.model.User;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.rmi.AlreadyBoundException;
-import java.rmi.NotBoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,8 +35,8 @@ public class Server {
 		rmi = ServerConnectionFactory.getConnection(this, ServerConnectionFactory.RMI);
 		try {
 			rmi.start();
-		} catch (IOException | AlreadyBoundException e) {
-			LOG.log(Level.SEVERE, "RMI server error. Closing.", e);
+		} catch (IOException e) {
+			LOG.log(Level.SEVERE, e.getMessage(), e);
 			Application.exitError();
 		}
 
@@ -45,34 +44,41 @@ public class Server {
 		socket = ServerConnectionFactory.getConnection(this, ServerConnectionFactory.SOCKET);
 		try {
 			socket.start();
-		} catch (IOException | AlreadyBoundException e1) {
-			LOG.log(Level.SEVERE, "Socket server error. Closing.", e1);
+		} catch (IOException e) {
+			LOG.log(Level.SEVERE, e.getMessage(), e);
 			Application.exitError();
 		}
 
 		// Server ready
-		LOG.log(Level.INFO, "Server ready :)");
+		Application.print("Server ready :)");
 		while (true) {
 			String line = readLine("Press 'q' to exit");
 			if ("q".equals(line)) {
-				try {
-					rmi.close();
-					socket.close();
-					break;
-				} catch (NotBoundException | IOException e) {
-					LOG.log(Level.WARNING, "", e);
-					Application.exitError();
-				}
+				stop();
+			}
+			if ("d".equals(line)) {
+				declareSector((User) users.keySet().toArray()[0], null, false);
 			}
 		}
-		Application.exitSuccess();
+
+	}
+
+	public void stop() {
+		try {
+			rmi.close();
+			socket.close();
+			Application.exitSuccess();
+		} catch (IOException e) {
+			LOG.log(Level.WARNING, "", e);
+			Application.exitError();
+		}
 	}
 
 	private String readLine(String format, Object... args) {
 		if (System.console() != null) {
 			return System.console().readLine(format, args);
 		}
-		LOG.info(String.format(format, args));
+		Application.print(String.format(format, args));
 
 		BufferedReader br = null;
 		InputStreamReader isr = null;
@@ -83,6 +89,7 @@ public class Server {
 		try {
 			read = br.readLine();
 		} catch (IOException e) {
+			LOG.log(Level.WARNING, e.getMessage(), e);
 			read = null;
 		}
 		return read;
@@ -114,5 +121,12 @@ public class Server {
 		// TODO se sector è uguale a null il metodo chiederà al controller il
 		// settore da raggiungere altrimenti il controller
 		// si occuperà di mostrare il settore dichiarato
+		for (User u : users.keySet()) {
+			try {
+				users.get(u).sendMessage("Alieno avvistato nel settore E15", u.getId());
+			} catch (IOException e) {
+				LOG.log(Level.WARNING, e.getMessage(), e);
+			}
+		}
 	}
 }

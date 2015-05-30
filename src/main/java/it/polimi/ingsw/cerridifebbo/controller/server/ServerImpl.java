@@ -2,13 +2,8 @@ package it.polimi.ingsw.cerridifebbo.controller.server;
 
 import it.polimi.ingsw.cerridifebbo.controller.common.*;
 
-import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 public class ServerImpl extends UnicastRemoteObject implements RemoteServer {
@@ -17,8 +12,8 @@ public class ServerImpl extends UnicastRemoteObject implements RemoteServer {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private final ServerConnection serverConnection;
-	
+	private transient ServerConnection serverConnection;
+
 	protected ServerImpl(ServerConnection serverConnection) throws RemoteException {
 		super();
 		this.serverConnection = serverConnection;
@@ -31,13 +26,16 @@ public class ServerImpl extends UnicastRemoteObject implements RemoteServer {
 
 	@Override
 	public void sendMessage(UUID client, String message) {
-		System.out.println(client.toString().split("-")[0] + ") " + message);
-
+		Application.print(client.toString().split("-")[0] + ") " + message);
 	}
-
+	
 	@Override
-	public void broadcastMessage(String message) throws RemoteException {
-		
+	public boolean equals(Object obj) {
+		return super.equals(obj);
 	}
-
+	
+	@Override
+	public int hashCode() {
+		return super.hashCode();
+	}
 }

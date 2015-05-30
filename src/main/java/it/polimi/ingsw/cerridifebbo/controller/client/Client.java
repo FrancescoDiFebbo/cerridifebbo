@@ -1,6 +1,6 @@
 package it.polimi.ingsw.cerridifebbo.controller.client;
 
-import it.polimi.ingsw.cerridifebbo.controller.server.Application;
+import it.polimi.ingsw.cerridifebbo.controller.common.Application;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,8 +12,8 @@ import java.util.logging.Logger;
 public class Client {
 	private static final Logger LOG = Logger.getLogger(Client.class.getName());
 
-	private static String NETWORK_INTERFACE_SELECTION = "Select '1' for RMI interface, '2' for socket interface";
-	private static String GRAPHICS_SELECTION = "Select '1' for GUI graphics, '2' for cli graphics";
+	private static String NETWORK_INTERFACE_SELECTION = "Select '1' for RMI interface, '2' for socket interface\n";
+	private static String GRAPHICS_SELECTION = "Select '1' for GUI graphics, '2' for cli graphics\n";
 	private static String CHOICE_ONE = "1";
 	private static String CHOICE_TWO = "2";
 
@@ -22,17 +22,18 @@ public class Client {
 	}
 
 	private void run() throws IOException {
-		NetworkInterface network;
+		NetworkInterface network = null;
 		Graphics graphics;
-		while (true) {
+		boolean chosen = false;
+		while (!chosen) {
 			String line = readLine(NETWORK_INTERFACE_SELECTION);
 			if (CHOICE_ONE.equals(line)) {
 				network = NetworkInterfaceFactory.getInterface(NetworkInterfaceFactory.RMI_INTERFACE);
-				break;
+				chosen = true;
 			}
 			if (CHOICE_TWO.equals(line)) {
 				network = NetworkInterfaceFactory.getInterface(NetworkInterfaceFactory.SOCKET_INTERFACE);
-				break;
+				chosen = true;
 			}
 		}
 		try {
@@ -41,15 +42,16 @@ public class Client {
 			LOG.log(Level.SEVERE, e.getMessage(), e);
 			Application.exitError();
 		}
-		while (true) {
+		chosen = false;
+		while (!chosen) {
 			String line = readLine(GRAPHICS_SELECTION);
 			if (CHOICE_ONE.equals(line)) {
 				graphics = GraphicsFactory.getInterface(GraphicsFactory.GUI_INTERFACE);
-				break;
+				chosen = true;
 			}
 			if (CHOICE_TWO.equals(line)) {
 				graphics = GraphicsFactory.getInterface(GraphicsFactory.CLI_INTERFACE);
-				break;
+				chosen = true;
 			}
 		}
 	}
@@ -58,7 +60,7 @@ public class Client {
 		if (System.console() != null) {
 			return System.console().readLine(format, args);
 		}
-		System.out.print(String.format(format, args));
+		Application.print(String.format(format, args));
 
 		BufferedReader br = null;
 		InputStreamReader isr = null;

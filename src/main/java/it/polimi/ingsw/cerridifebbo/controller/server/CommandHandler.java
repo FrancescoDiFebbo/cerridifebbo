@@ -7,6 +7,10 @@ public class CommandHandler {
 	private static final String ACTION = "action";
 	private static final String REGISTER = "register";
 	private static final String WRONG_CALL = "wrong_call";
+	
+	private CommandHandler(){
+		
+	}
 
 	public static String handleCommand(SocketHandler handler, Map<String, String> params) {
 		String action = params.get(ACTION);

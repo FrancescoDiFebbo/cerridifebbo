@@ -1,5 +1,6 @@
 package it.polimi.ingsw.cerridifebbo.controller.server;
 
+import it.polimi.ingsw.cerridifebbo.controller.common.Application;
 import it.polimi.ingsw.cerridifebbo.controller.common.Connection;
 import it.polimi.ingsw.cerridifebbo.controller.common.RemoteClient;
 import it.polimi.ingsw.cerridifebbo.controller.common.RemoteServer;
@@ -11,6 +12,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -28,21 +30,31 @@ public class RMIServer extends ServerConnection {
 	}
 
 	@Override
-	public void start() throws RemoteException, AlreadyBoundException {
+	public void start() throws RemoteException {
 		remoteServer = new ServerImpl(this);
 		registry = LocateRegistry.createRegistry(Connection.SERVER_REGISTRY_PORT);
-		registry.bind(RemoteServer.RMI_ID, remoteServer);
+		try {
+			registry.bind(RemoteServer.RMI_ID, remoteServer);
+		} catch (AlreadyBoundException e) {
+			LOG.log(Level.SEVERE, e.getMessage(), e);
+			Application.exitError();
+		}
 	}
 
 	@Override
-	public void close() throws RemoteException, NotBoundException {
+	public void close() throws RemoteException {
 		if (registry != null) {
-			registry.unbind(RemoteServer.RMI_ID);
-		}		
+			try {
+				registry.unbind(RemoteServer.RMI_ID);
+			} catch (NotBoundException e) {
+				LOG.log(Level.SEVERE, e.getMessage(), e);
+				Application.exitError();
+			}
+		}
 	}
 
 	@Override
-	public boolean registerClientOnServer(UUID id, Object clientInterface){
+	public boolean registerClientOnServer(UUID id, Object clientInterface) {
 		int port = (Integer) clientInterface;
 		RemoteClient client;
 		try {
@@ -63,4 +75,16 @@ public class RMIServer extends ServerConnection {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public void sendMessage(String string, UUID selected) throws RemoteException {
+		if (selected == null) {
+			for (UUID id : clients.keySet()) {
+				clients.get(id).sendMessage(string);
+			}
+		} else {
+			clients.get(selected).sendMessage(string);
+		}
+	}
+
 }

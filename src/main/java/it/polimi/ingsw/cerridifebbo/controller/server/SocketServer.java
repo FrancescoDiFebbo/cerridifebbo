@@ -1,16 +1,11 @@
 package it.polimi.ingsw.cerridifebbo.controller.server;
 
-import it.polimi.ingsw.cerridifebbo.controller.common.RemoteClient;
 import it.polimi.ingsw.cerridifebbo.model.User;
 
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.rmi.NotBoundException;
-import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -58,7 +53,7 @@ public class SocketServer extends ServerConnection implements Runnable {
 			thread.interrupt();
 		}
 		endListening();
-		
+
 	}
 
 	@Override
@@ -71,7 +66,7 @@ public class SocketServer extends ServerConnection implements Runnable {
 		}
 	}
 
-	private void startListening() throws IOException{
+	private void startListening() throws IOException {
 		if (!listening) {
 			serverSocket = new ServerSocket(port);
 			status = "listening";
@@ -88,8 +83,8 @@ public class SocketServer extends ServerConnection implements Runnable {
 			}
 		}
 	}
-	
-	private void endListening() throws IOException{
+
+	private void endListening() throws IOException {
 		if (listening) {
 			listening = false;
 			for (SocketHandler sh : handlers)
@@ -132,6 +127,18 @@ public class SocketServer extends ServerConnection implements Runnable {
 	public String getMoveFromUser(User user) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void sendMessage(String string, UUID selected) throws IOException {
+		if (selected == null) {
+			for (UUID id : clients.keySet()) {
+				clients.get(id).sendMessage(string);
+			}
+		} else {
+			clients.get(selected).sendMessage(string);
+		}
+
 	}
 
 }
