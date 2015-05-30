@@ -1,7 +1,6 @@
 package it.polimi.ingsw.cerridifebbo.view.gui;
 
 import java.awt.Color;
-import java.awt.event.ActionEvent;
 
 public class HumanSectorButton extends SectorButton {
 

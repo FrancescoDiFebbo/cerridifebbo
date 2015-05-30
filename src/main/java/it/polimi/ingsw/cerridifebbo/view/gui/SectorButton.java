@@ -6,14 +6,12 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.RenderingHints;
-import java.awt.event.ActionListener;
-
 import javax.swing.JButton;
 
 public abstract class SectorButton extends JButton {
 
 	private static final long serialVersionUID = 1L;
-	public static final Color BORDER_COLOR = Color.BLACK;
+	public static final Color FONT_COLOR = Color.BLACK;
 	public static final Color HEXAGON_BORDER_COLOR = Color.WHITE;
 	public static final Color PRESSED_BUTTON = Color.WHITE;
 	public static final int SIDE = 24;
@@ -67,7 +65,7 @@ public abstract class SectorButton extends JButton {
 		graphics2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 				RenderingHints.VALUE_ANTIALIAS_ON);
 		g.fillPolygon(hexagon);
-		g.setColor(BORDER_COLOR);
+		g.setColor(FONT_COLOR);
 		g.setFont(new Font("Arial", Font.BOLD, 11));
 		g.drawString(this.getName(), WIDTH / 2 - 10, HEIGHT / 2);
 		g.setColor(HEXAGON_BORDER_COLOR);

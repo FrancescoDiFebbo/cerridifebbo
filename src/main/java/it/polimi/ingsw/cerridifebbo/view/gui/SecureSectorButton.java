@@ -1,9 +1,6 @@
 package it.polimi.ingsw.cerridifebbo.view.gui;
 
 import java.awt.Color;
-import java.awt.event.ActionEvent;
-
-import javax.swing.JButton;
 
 public class SecureSectorButton extends SectorButton {
 

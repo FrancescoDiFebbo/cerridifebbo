@@ -5,14 +5,13 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
 
 public class ButtonPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	public static final String FINISH_TURN = "Finish Turn";
-	public static final String MOVEMENT = "Movement";
-	public static final String USE_CARD = "Use Card";
-	public static final String DELETE_CARD = "Delete Card";
 	public static final String ATTACK = "Attack";
 	public static final int WIDTH = 400;
 	public static final int HEIGHT = 50;
@@ -30,6 +29,7 @@ public class ButtonPanel extends JPanel {
 	}
 
 	private void setButton() {
+		Border thickBorder = new LineBorder(GUIGraphics.FOREGROUND_COLOR, 2);
 		finishTurn = new JButton(FINISH_TURN);
 		finishTurn.setBackground(GUIGraphics.BACKGROUND_COLOR);
 		finishTurn.setForeground(GUIGraphics.FOREGROUND_COLOR);
@@ -37,7 +37,9 @@ public class ButtonPanel extends JPanel {
 		attack.setBackground(GUIGraphics.BACKGROUND_COLOR);
 		attack.setForeground(GUIGraphics.FOREGROUND_COLOR);
 		add(attack);
+		attack.setBorder(thickBorder);
 		add(finishTurn);
+		finishTurn.setBorder(thickBorder);
 
 	}
 

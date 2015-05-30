@@ -25,7 +25,7 @@ public class TimerPanel extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 			numberOfUpdate++;
 			if (numberOfUpdate < delay / period) {
-				int remainingSeconds = (delay - period * numberOfUpdate )/ 1000;
+				int remainingSeconds = (delay - period * numberOfUpdate) / 1000;
 				int remainingMinutes = 0;
 				while (remainingSeconds >= 60) {
 					remainingSeconds = remainingSeconds - 60;

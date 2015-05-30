@@ -1,13 +1,10 @@
 package it.polimi.ingsw.cerridifebbo.view.gui;
 
-import java.awt.Color;
 import java.awt.event.ActionListener;
 
-import it.polimi.ingsw.cerridifebbo.model.Card;
 import it.polimi.ingsw.cerridifebbo.model.Player;
 
 import javax.swing.JPanel;
-import javax.swing.UIManager;
 
 public class CardsPanel extends JPanel {
 
@@ -47,4 +44,13 @@ public class CardsPanel extends JPanel {
 			}
 
 	}
+
+	public void remove(String cardName) {
+		int nComp = getComponentCount();
+		for (int i = 0; i < nComp; i++) {
+			if (getComponent(i).getName().equals(cardName))
+				remove(getComponent(i));
+		}
+	}
+
 }

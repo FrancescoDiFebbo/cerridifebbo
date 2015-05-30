@@ -1,15 +1,12 @@
 package it.polimi.ingsw.cerridifebbo.controller.client;
 
+import it.polimi.ingsw.cerridifebbo.model.Card;
 import it.polimi.ingsw.cerridifebbo.model.Map;
 import it.polimi.ingsw.cerridifebbo.model.Player;
 
 public abstract class Graphics {
 
-	private Client client;
-
-	public Client getClient() {
-		return client;
-	}
+	private NetworkInterface network;
 
 	public abstract void initialize(Map map, Player player);
 
@@ -19,13 +16,19 @@ public abstract class Graphics {
 
 	public abstract void endTurn();
 
-	public void setClient(Client client) {
-		this.client = client;
+	public void setNetworkInterface(NetworkInterface network) {
+		this.network = network;
 	}
 
-	public abstract void declareMove(Player player);
+	public abstract void declareMove();
 
-	public void sendToClient(String move) {
+	public abstract void declareSector();
 
-	}
+	public abstract void updatePlayerPosition(Player player);
+
+	public abstract void declareCard();
+
+	public abstract void deletePlayerCard(Player player , Card card);
+
+	public abstract void addPlayerCard(Player player, Card card);
 }

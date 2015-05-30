@@ -2,12 +2,11 @@ package it.polimi.ingsw.cerridifebbo.view.gui;
 
 import java.awt.Container;
 import java.awt.Font;
-import java.sql.Date;
-import java.util.Calendar;
-
 import javax.swing.BoxLayout;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
 
 public class ServerScrollPane extends JScrollPane {
 
@@ -30,7 +29,7 @@ public class ServerScrollPane extends JScrollPane {
 	Container textContainer = new Container();
 
 	public ServerScrollPane() {
-
+		Border thickBorder = new LineBorder(GUIGraphics.FOREGROUND_COLOR, 2);
 		setViewportView(textContainer);
 		textContainer.setLayout(new BoxLayout(textContainer, BoxLayout.Y_AXIS));
 		addText(INITIAL_MESSAGE);
@@ -40,6 +39,7 @@ public class ServerScrollPane extends JScrollPane {
 		verticalScrollBar.setBackground(GUIGraphics.BACKGROUND_COLOR);
 		verticalScrollBar.setForeground(GUIGraphics.FOREGROUND_COLOR);
 		verticalScrollBar.setAutoscrolls(true);
+		setBorder(thickBorder);
 
 	}
 

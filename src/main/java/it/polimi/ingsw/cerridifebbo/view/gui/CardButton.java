@@ -1,11 +1,10 @@
 package it.polimi.ingsw.cerridifebbo.view.gui;
 
 import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
 
 public class CardButton extends JButton {
 
@@ -13,7 +12,9 @@ public class CardButton extends JButton {
 	public static final String NO_CARD = "No card";
 
 	public CardButton(String label) {
-		setText(label);
+		setName(label);
+		Border thickBorder = new LineBorder(GUIGraphics.FOREGROUND_COLOR, 2);
+		setText(" " + label + " ");
 		setFont(new Font("Arial", Font.PLAIN, 10));
 		setBackground(GUIGraphics.BACKGROUND_COLOR);
 		setForeground(GUIGraphics.FOREGROUND_COLOR);
@@ -24,6 +25,7 @@ public class CardButton extends JButton {
 			ImageIcon img = new ImageIcon(cardPath);
 			setIcon(img);
 		}
+		setBorder(thickBorder);
 
 	}
 

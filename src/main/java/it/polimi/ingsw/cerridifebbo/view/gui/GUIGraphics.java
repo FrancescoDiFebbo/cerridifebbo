@@ -2,28 +2,24 @@ package it.polimi.ingsw.cerridifebbo.view.gui;
 
 import it.polimi.ingsw.cerridifebbo.controller.client.Graphics;
 import it.polimi.ingsw.cerridifebbo.model.AttackItemCard;
+import it.polimi.ingsw.cerridifebbo.model.Card;
 import it.polimi.ingsw.cerridifebbo.model.Game;
 import it.polimi.ingsw.cerridifebbo.model.Map;
 import it.polimi.ingsw.cerridifebbo.model.Move;
 import it.polimi.ingsw.cerridifebbo.model.Player;
+import it.polimi.ingsw.cerridifebbo.model.SedativesItemCard;
+import it.polimi.ingsw.cerridifebbo.model.SpotlightItemCard;
 import it.polimi.ingsw.cerridifebbo.model.User;
 
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.Reader;
-import java.nio.CharBuffer;
 import java.util.ArrayList;
-import java.util.Observable;
-import java.util.Observer;
+import java.util.List;
 import java.util.UUID;
 
-import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 
 public class GUIGraphics extends Graphics implements ActionListener {
 
@@ -39,14 +35,14 @@ public class GUIGraphics extends Graphics implements ActionListener {
 	private Container contentPane;
 	private String move;
 	private ActionListener moveListener;
-
-	public void setMove(String move) {
-		this.move = move;
-	}
+	private boolean declareSector;
+	private boolean declareCard;
+	private Player player;
 
 	@Override
 	public void initialize(Map map, Player player) {
 
+		this.player = player;
 		frame = new JFrame(FRAME_NAME);
 		contentPane = frame.getContentPane();
 		contentPane.setBackground(BACKGROUND_COLOR);
@@ -65,6 +61,7 @@ public class GUIGraphics extends Graphics implements ActionListener {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.pack();
 		frame.setVisible(true);
+		moveListener = this;
 
 	}
 
@@ -75,7 +72,7 @@ public class GUIGraphics extends Graphics implements ActionListener {
 	}
 
 	public static void main(String args[]) {
-		ArrayList<User> users = new ArrayList<User>();
+		List<User> users = new ArrayList<User>();
 		users.add(new User(UUID.randomUUID()));
 		users.add(new User(UUID.randomUUID()));
 		users.add(new User(UUID.randomUUID()));
@@ -85,7 +82,12 @@ public class GUIGraphics extends Graphics implements ActionListener {
 		game.getUsers().get(0).getPlayer().addCard(new AttackItemCard());
 		gui.initialize(game.getMap(), game.getUsers().get(0).getPlayer());
 		gui.startTurn();
-		gui.declareMove(game.getUsers().get(0).getPlayer());
+		game.getUsers().get(0).getPlayer().addCard(new SedativesItemCard());
+		gui.deletePlayerCard(game.getUsers().get(0).getPlayer(), game
+				.getUsers().get(0).getPlayer().getOwnCards().get(0));
+		gui.addPlayerCard(game.getUsers().get(0).getPlayer(),
+				new SpotlightItemCard());
+
 	}
 
 	@Override
@@ -99,12 +101,14 @@ public class GUIGraphics extends Graphics implements ActionListener {
 	}
 
 	@Override
-	public void declareMove(Player player) {
-		moveListener = this;
+	public void declareMove() {
+		addListeners(moveListener);
+	}
+
+	private void addListeners(ActionListener moveListener) {
 		mapGrid.addListenersToButton(moveListener);
 		cards.addListenersToButton(moveListener);
 		buttonPanel.addListenersToButton(moveListener);
-
 	}
 
 	private void deleteListeners(ActionListener moveListener) {
@@ -116,16 +120,30 @@ public class GUIGraphics extends Graphics implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() instanceof SectorButton) {
-			move = Move.MOVEMENT + " " + e.getActionCommand();
-			// getClient().sendToServer(move);
-			deleteListeners(moveListener);
+			if (declareSector) {
+				move = e.getActionCommand();
+				// getClient().sendToServer(move);
+				mapGrid.deleteListenersToButton(moveListener);
+				declareSector = false;
+			} else {
+				move = Move.MOVEMENT + " " + e.getActionCommand();
+				// getClient().sendToServer(move);
+				deleteListeners(moveListener);
+			}
 		} else if (e.getSource() instanceof CardButton) {
-			move = Move.USEITEMCARD + " " + e.getActionCommand();
-			// getClient().sendToServer(move);
-			deleteListeners(moveListener);
+			if (declareCard) {
+				move = e.getActionCommand();
+				// getClient().sendToServer(move);
+				cards.deleteListenersToButton(moveListener);
+				declareCard = false;
+			} else {
+				move = Move.USEITEMCARD + " " + e.getActionCommand();
+				// getClient().sendToServer(move);
+				deleteListeners(moveListener);
+			}
 		} else if (e.getSource().equals(buttonPanel.getComponent(0))) {
 			// getClient().sendToServer(move);
-			move = Move.ATTACK;
+			move = Move.ATTACK + " " + player.getPosition();
 			deleteListeners(moveListener);
 		} else if (e.getSource().equals(buttonPanel.getComponent(1))) {
 			// getClient().sendToServer(move);
@@ -133,6 +151,37 @@ public class GUIGraphics extends Graphics implements ActionListener {
 			deleteListeners(moveListener);
 		}
 		serverMessage.addText(move);
+	}
+
+	@Override
+	public void declareSector() {
+		declareSector = true;
+		mapGrid.addListenersToButton(moveListener);
+	}
+
+	@Override
+	public void updatePlayerPosition(Player player) {
+		this.player = player;
+	}
+
+	@Override
+	public void declareCard() {
+		declareCard = true;
+		cards.addListenersToButton(moveListener);
+	}
+
+	@Override
+	public void deletePlayerCard(Player player, Card card) {
+		this.player = player;
+		cards.remove(card.toString());
+		cards.repaint();
+	}
+
+	@Override
+	public void addPlayerCard(Player player, Card card) {
+		this.player = player;
+		cards.add(new CardButton(card.toString()));
+
 	}
 
 }
