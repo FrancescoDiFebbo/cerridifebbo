@@ -20,7 +20,7 @@ public class TimerPanel extends JPanel {
 	private JTextArea timeLeft;
 	private Timer timer;
 
-	private ActionListener updateTimer = new ActionListener() {
+	private transient ActionListener updateTimer = new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			numberOfUpdate++;

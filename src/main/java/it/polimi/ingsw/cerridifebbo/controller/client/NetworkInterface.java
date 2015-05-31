@@ -18,5 +18,7 @@ public interface NetworkInterface {
 	 * @return
 	 */
 	public boolean registerClientOnServer();
+
+	public void sendToServer(String move);
 	
 }

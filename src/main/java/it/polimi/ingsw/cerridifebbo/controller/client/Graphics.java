@@ -20,6 +20,10 @@ public abstract class Graphics {
 		this.network = network;
 	}
 
+	public NetworkInterface getNetworkInterface() {
+		return network;
+	}
+
 	public abstract void declareMove();
 
 	public abstract void declareSector();
@@ -28,7 +32,7 @@ public abstract class Graphics {
 
 	public abstract void declareCard();
 
-	public abstract void deletePlayerCard(Player player , Card card);
+	public abstract void deletePlayerCard(Player player, Card card);
 
 	public abstract void addPlayerCard(Player player, Card card);
 }

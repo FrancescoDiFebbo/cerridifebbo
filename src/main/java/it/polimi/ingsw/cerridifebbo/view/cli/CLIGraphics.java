@@ -6,18 +6,13 @@ import it.polimi.ingsw.cerridifebbo.model.AlienSector;
 import it.polimi.ingsw.cerridifebbo.model.Card;
 import it.polimi.ingsw.cerridifebbo.model.DangerousSector;
 import it.polimi.ingsw.cerridifebbo.model.EscapeHatchSector;
-import it.polimi.ingsw.cerridifebbo.model.Game;
 import it.polimi.ingsw.cerridifebbo.model.HumanSector;
 import it.polimi.ingsw.cerridifebbo.model.Map;
 import it.polimi.ingsw.cerridifebbo.model.Move;
 import it.polimi.ingsw.cerridifebbo.model.Player;
 import it.polimi.ingsw.cerridifebbo.model.Sector;
 import it.polimi.ingsw.cerridifebbo.model.SecureSector;
-import it.polimi.ingsw.cerridifebbo.model.User;
-
-import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.UUID;
 
 public class CLIGraphics extends Graphics {
 
@@ -41,6 +36,9 @@ public class CLIGraphics extends Graphics {
 
 	private static final String SECTOR_SELECTION = "Which sector?";
 	private static final String CARD_SELECTION = "Which card?";
+	private static final String CARD_PLAYER = "Player cards: ";
+	private static final String NO_CARD_PLAYER = "No card!";
+	private static final String PLAYER_POSITION = "Player position : ";
 
 	private Player player;
 	private Map map;
@@ -55,42 +53,42 @@ public class CLIGraphics extends Graphics {
 
 	private void printMap() {
 		for (int i = 0; i < Map.COLUMNMAP; i = i + 2) {
-			System.out.print(" ___    ");
+			Application.print(" ___    ");
 		}
-		System.out.println();
+		Application.println("");
 		for (int i = 0; i < Map.ROWMAP; i++) {
 			for (int j = 0; j < Map.COLUMNMAP; j = j + 2) {
 				Sector currentCell = map.getCell(i, j);
-				System.out.print("/");
+				Application.print("/");
 				if (currentCell != null) {
-					System.out.print(printTypeOfSector(currentCell)
+					Application.print(printTypeOfSector(currentCell)
 							+ currentCell.toString() + RESET_COLOR);
 				} else {
-					System.out.print("   ");
+					Application.print("   ");
 
 				}
 				if (j != Map.COLUMNMAP - 1)
-					System.out.print("\\___");
+					Application.print("\\___");
 			}
-			Application.print("\\");
+			Application.println("\\");
 			for (int j = 1; j < Map.COLUMNMAP; j = j + 2) {
-				System.out.print("\\___/");
+				Application.print("\\___/");
 				Sector currentCell = map.getCell(i, j);
 				if (currentCell != null) {
-					System.out.print(printTypeOfSector(currentCell)
+					Application.print(printTypeOfSector(currentCell)
 							+ currentCell.toString() + RESET_COLOR);
 				} else {
-					System.out.print("   ");
+					Application.print("   ");
 				}
 
 			}
-			Application.print("\\___/");
+			Application.println("\\___/");
 		}
-		System.out.print("    \\___/");
+		Application.print("    \\___/");
 		for (int i = 3; i < Map.COLUMNMAP; i = i + 2) {
-			System.out.print("   \\___/");
+			Application.print("   \\___/");
 		}
-		Application.print("");
+		Application.println("");
 
 	}
 
@@ -101,7 +99,7 @@ public class CLIGraphics extends Graphics {
 	}
 
 	private void printPlayerPosition() {
-		Application.print("player position: " + player.getPosition());
+		Application.println(PLAYER_POSITION + player.getPosition());
 	}
 
 	private String printTypeOfSector(Sector currentCell) {
@@ -120,46 +118,33 @@ public class CLIGraphics extends Graphics {
 	}
 
 	private void printCardPlayer() {
-		System.out.print("player cards: ");
+		Application.print(CARD_PLAYER);
 		int nCard = player.getOwnCards().size();
 		if (nCard != 0) {
 			for (int i = 0; i < nCard; i++) {
-				System.out.print(player.getOwnCards().get(i) + " ");
+				Application.print(player.getOwnCards().get(i) + " ");
 			}
-			Application.print("");
+			Application.println("");
 		} else {
-			Application.print("no card!");
+			Application.println(NO_CARD_PLAYER);
 		}
-	}
-
-	public static void main(String args[]) {
-		ArrayList<User> users = new ArrayList<User>();
-		users.add(new User(UUID.randomUUID()));
-		users.add(new User(UUID.randomUUID()));
-		users.add(new User(UUID.randomUUID()));
-		Game game = new Game(null, users);
-		game.run();
-		CLIGraphics cli = new CLIGraphics();
-		cli.initialize(game.getMap(), game.getUsers().get(0).getPlayer());
-		cli.startTurn();
-		cli.declareMove();
 	}
 
 	@Override
 	public void sendMessage(String message) {
-		Application.print(message);
+		Application.println(message);
 	}
 
 	@Override
 	public void startTurn() {
 		printMap();
-		Application.print(START_TURN_MESSAGE);
+		Application.println(START_TURN_MESSAGE);
 
 	}
 
 	@Override
 	public void endTurn() {
-		Application.print(END_TURN_MESSAGE);
+		Application.println(END_TURN_MESSAGE);
 
 	}
 
@@ -169,7 +154,7 @@ public class CLIGraphics extends Graphics {
 		String move = null;
 		Scanner in = new Scanner(System.in);
 		do {
-			Application.print(MOVE_OPTIONS);
+			Application.println(MOVE_OPTIONS);
 			String line = in.next();
 			if (line.equals(CHOICE_ONE)) {
 				move = Move.ATTACK + " " + player.getPosition();
@@ -177,14 +162,14 @@ public class CLIGraphics extends Graphics {
 			}
 			if (line.equals(CHOICE_TWO)) {
 				move = Move.MOVEMENT;
-				Application.print(SECTOR_SELECTION);
+				Application.println(SECTOR_SELECTION);
 				line = in.next();
 				move = move + " " + line;
 				break;
 			}
 			if (line.equals(CHOICE_THREE)) {
 				move = Move.USEITEMCARD;
-				Application.print(CARD_SELECTION);
+				Application.println(CARD_SELECTION);
 				printCardPlayer();
 				line = in.next();
 				move = move + " " + line;
@@ -196,18 +181,18 @@ public class CLIGraphics extends Graphics {
 			}
 		} while (move != null);
 		in.close();
-		// getClient().sendToServer(move);
+		getNetworkInterface().sendToServer(move);
 	}
 
 	@Override
 	public void declareSector() {
 		printMap();
-		Application.print(SECTOR_SELECTION);
+		Application.println(SECTOR_SELECTION);
 		String move = null;
 		Scanner in = new Scanner(System.in);
 		move = in.next();
 		in.close();
-		// getClient().sendToServer(move);
+		getNetworkInterface().sendToServer(move);
 
 	}
 
@@ -221,12 +206,12 @@ public class CLIGraphics extends Graphics {
 	@Override
 	public void declareCard() {
 		printCardPlayer();
-		Application.print(CARD_SELECTION);
+		Application.println(CARD_SELECTION);
 		String move = null;
 		Scanner in = new Scanner(System.in);
 		move = in.next();
 		in.close();
-		// getClient().sendToServer(move);
+		getNetworkInterface().sendToServer(move);
 	}
 
 	@Override

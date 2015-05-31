@@ -69,4 +69,10 @@ public class RMIInterface implements NetworkInterface {
 			return false;
 		}		
 	}
+
+	@Override
+	public void sendToServer(String move) {
+		// TODO Auto-generated method stub
+		
+	}
 }

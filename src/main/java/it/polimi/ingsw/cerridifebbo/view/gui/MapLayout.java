@@ -1,8 +1,11 @@
 package it.polimi.ingsw.cerridifebbo.view.gui;
 
 import java.awt.*;
+import java.io.Serializable;
 
-public class MapLayout implements LayoutManager {
+public class MapLayout implements LayoutManager, Serializable {
+
+	private static final long serialVersionUID = -5980749297800669540L;
 	private int raw;
 	private int column;
 	private int preferredWidth, preferredHeight;
