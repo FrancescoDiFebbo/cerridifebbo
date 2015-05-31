@@ -6,6 +6,8 @@ import java.util.UUID;
 
 import it.polimi.ingsw.cerridifebbo.controller.common.Application;
 import it.polimi.ingsw.cerridifebbo.controller.common.RemoteClient;
+import it.polimi.ingsw.cerridifebbo.model.Map;
+import it.polimi.ingsw.cerridifebbo.model.Player;
 
 public class ClientImpl extends UnicastRemoteObject implements RemoteClient {
 
@@ -23,7 +25,7 @@ public class ClientImpl extends UnicastRemoteObject implements RemoteClient {
 
 	@Override
 	public void sendMessage(String message) throws RemoteException {
-		Application.print("SERVER) " + message);
+		Application.println("SERVER) " + message);
 
 	}
 
@@ -41,6 +43,12 @@ public class ClientImpl extends UnicastRemoteObject implements RemoteClient {
 	public int hashCode() {
 		// TODO Auto-generated method stub
 		return super.hashCode();
+	}
+
+	@Override
+	public void sendGameInformation(int size, Map map, Player player) throws RemoteException {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

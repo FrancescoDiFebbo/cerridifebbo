@@ -12,8 +12,8 @@ import java.util.logging.Logger;
 public class Client {
 	private static final Logger LOG = Logger.getLogger(Client.class.getName());
 
-	private static String NETWORK_INTERFACE_SELECTION = "Select '1' for RMI interface, '2' for socket interface\n";
-	private static String GRAPHICS_SELECTION = "Select '1' for GUI graphics, '2' for cli graphics\n";
+	private static String NETWORK_INTERFACE_SELECTION = "Select '1' for RMI interface, '2' for socket interface";
+	private static String GRAPHICS_SELECTION = "Select '1' for GUI graphics, '2' for cli graphics";
 	private static String CHOICE_ONE = "1";
 	private static String CHOICE_TWO = "2";
 
@@ -60,7 +60,7 @@ public class Client {
 		if (System.console() != null) {
 			return System.console().readLine(format, args);
 		}
-		Application.print(String.format(format, args));
+		Application.println(String.format(format, args));
 
 		BufferedReader br = null;
 		InputStreamReader isr = null;
@@ -72,9 +72,4 @@ public class Client {
 
 		return read;
 	}
-
-	public void sendToServer(String move) {
-		System.out.println("message to server " + move);
-	}
-
 }

@@ -2,6 +2,10 @@ package it.polimi.ingsw.cerridifebbo.model;
 
 public class AdrenalineItemCard extends ItemCard {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private static final int ADRENALINEMOVEMENT = 2;
 	private static final String NAME = "Adrenaline";
 

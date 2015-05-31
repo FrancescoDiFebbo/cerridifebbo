@@ -15,6 +15,7 @@ public class StartGame extends GameState {
 		Deck deck = new ConcreteDeckFactory().createDeck(users.size());
 		game.setDeck(deck);
 		initializePlayers();
+		game.broadcastToPlayers("Partita avviata");
 		game.nextTurn();
 	}
 
@@ -27,7 +28,7 @@ public class StartGame extends GameState {
 			} else {
 				throw new NullPointerException("Player not returned");
 			}
-
+			game.sendGameInformation(game.getUsers().size(), game.getMap(), user);
 		}
 	}
 }

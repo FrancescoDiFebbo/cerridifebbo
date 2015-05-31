@@ -1,10 +1,15 @@
 package it.polimi.ingsw.cerridifebbo.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Player {
+public abstract class Player implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7274673996298525756L;
 	private CharacterCard playerCard;
 	private List<Card> ownCards;
 	private Sector pos;

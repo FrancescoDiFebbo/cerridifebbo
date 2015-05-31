@@ -26,7 +26,7 @@ public class ServerImpl extends UnicastRemoteObject implements RemoteServer {
 
 	@Override
 	public void sendMessage(UUID client, String message) {
-		Application.print(client.toString().split("-")[0] + ") " + message);
+		Application.println(client.toString().split("-")[0] + ") " + message);
 	}
 	
 	@Override

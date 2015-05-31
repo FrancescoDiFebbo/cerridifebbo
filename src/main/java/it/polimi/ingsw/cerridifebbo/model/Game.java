@@ -72,6 +72,10 @@ public class Game {
 	public void run() {
 		state.handle();
 	}
+	
+	public void broadcastToPlayers(String message){
+		server.broadcastPlayers(this, message);
+	}
 
 	public void declareSector(Player player, Sector sector, boolean spotlight) {
 		User found = null;
@@ -87,5 +91,10 @@ public class Game {
 		// il successivo statement e l'ultimo argomento sono per togliere
 		// momentaneamente l'errore in sonar
 		return new Move(Move.FINISH, null, null);
+	}
+
+	public void sendGameInformation(int size, Map map, User user) {
+		server.sendGameInformation(size, map, user);
+		
 	}
 }

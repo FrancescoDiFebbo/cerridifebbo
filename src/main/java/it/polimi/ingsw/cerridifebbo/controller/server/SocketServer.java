@@ -141,4 +141,10 @@ public class SocketServer extends ServerConnection implements Runnable {
 
 	}
 
+	@Override
+	public void sendGameInformation(int size, it.polimi.ingsw.cerridifebbo.model.Map map, User user) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

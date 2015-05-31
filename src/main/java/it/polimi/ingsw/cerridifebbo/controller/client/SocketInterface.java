@@ -64,7 +64,7 @@ public class SocketInterface implements NetworkInterface {
 		out.println("action=register&id=" + id.toString());
 		try {
 			String line = in.readLine();
-			Application.print(line);
+			Application.println(line);
 			return true;
 		} catch (IOException e) {
 			LOG.log(Level.SEVERE, e.getMessage(), e);
@@ -76,7 +76,7 @@ public class SocketInterface implements NetworkInterface {
 		while (true) {
 			try {
 				String line = in.readLine();
-				Application.print(line);
+				Application.println(line);
 			} catch (IOException e) {
 				LOG.log(Level.SEVERE, e.getMessage(), e);
 			}

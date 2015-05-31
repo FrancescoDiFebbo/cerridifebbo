@@ -1,5 +1,6 @@
 package it.polimi.ingsw.cerridifebbo.controller.server;
 
+import it.polimi.ingsw.cerridifebbo.model.Map;
 import it.polimi.ingsw.cerridifebbo.model.User;
 
 import java.io.IOException;
@@ -22,5 +23,7 @@ public abstract class ServerConnection {
 	public abstract String getMoveFromUser(User user);
 
 	public abstract void sendMessage(String string, UUID selected) throws IOException;
+
+	public abstract void sendGameInformation(int size, Map map, User user);
 	
 }

@@ -87,4 +87,14 @@ public class RMIServer extends ServerConnection {
 		}
 	}
 
+
+	@Override
+	public void sendGameInformation(int size, it.polimi.ingsw.cerridifebbo.model.Map map, User user) {
+		try {
+			clients.get(user.getId()).sendGameInformation(size, map, user.getPlayer());
+		} catch (RemoteException e) {
+			LOG.log(Level.WARNING, e.getMessage(), e);
+		}	
+	}
+
 }

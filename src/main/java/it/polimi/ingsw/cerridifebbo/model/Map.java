@@ -2,13 +2,20 @@ package it.polimi.ingsw.cerridifebbo.model;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Map {
+public class Map implements Serializable{
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -789290281145148337L;
+
 	private static final Logger LOG = Logger.getLogger(Map.class.getName());
 
 	public static final int COLUMNMAP = 23;

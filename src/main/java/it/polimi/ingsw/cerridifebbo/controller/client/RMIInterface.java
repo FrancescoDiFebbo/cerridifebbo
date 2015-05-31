@@ -35,7 +35,7 @@ public class RMIInterface implements NetworkInterface {
 		RemoteClient client = new ClientImpl(id);
 		try {
 			registry.bind(RemoteClient.RMI_ID, client);
-			Application.print("Client bound at port " + port);
+			Application.println("Client bound at port " + port);
 		} catch (RemoteException | AlreadyBoundException e) {
 			LOG.log(Level.SEVERE, "Client not bound.\nClosing client...", e);
 			Application.exitError();
