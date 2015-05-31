@@ -72,8 +72,11 @@ public class Game {
 	public void run() {
 		state.handle();
 	}
-	
-	public void broadcastToPlayers(String message){
+
+	public void broadcastToPlayers(String message) {
+		if (server == null) {
+			return;
+		}
 		server.broadcastPlayers(this, message);
 	}
 
@@ -83,6 +86,9 @@ public class Game {
 			if (user.getPlayer() == player) {
 				found = user;
 			}
+		}
+		if (server == null) {
+			return;
 		}
 		server.declareSector(found, sector, spotlight);
 	}
@@ -94,7 +100,9 @@ public class Game {
 	}
 
 	public void sendGameInformation(int size, Map map, User user) {
+		if (server == null) {
+			return;
+		}
 		server.sendGameInformation(size, map, user);
-		
 	}
 }

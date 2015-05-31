@@ -3,7 +3,6 @@ package it.polimi.ingsw.cerridifebbo;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import it.polimi.ingsw.cerridifebbo.controller.server.Server;
 import it.polimi.ingsw.cerridifebbo.model.AlienPlayer;
 import it.polimi.ingsw.cerridifebbo.model.Card;
 import it.polimi.ingsw.cerridifebbo.model.CharacterDeckFactory;
@@ -65,7 +64,7 @@ public class GameTest {
 		for (int i = 0; i < CharacterDeckFactory.MAX_PLAYERS; i++) {
 			users.add(new User(UUID.randomUUID()));
 		}
-		Game game = new Game(new Server(), users);
+		Game game = new Game(null, users);
 		game.run();
 		Deck deck = game.getDeck();
 		Player player = null;
@@ -89,7 +88,7 @@ public class GameTest {
 		for (int i = 0; i < CharacterDeckFactory.MAX_PLAYERS; i++) {
 			users.add(new User(UUID.randomUUID()));
 		}
-		Game game = new Game(new Server(), users);
+		Game game = new Game(null, users);
 		game.run();
 		for (int i = 0; i < 39; i++) {
 			for (int k = 0; k < CharacterDeckFactory.MAX_PLAYERS; k++) {
@@ -108,7 +107,7 @@ public class GameTest {
 		for (int i = 0; i < CharacterDeckFactory.MAX_PLAYERS; i++) {
 			users.add(new User(UUID.randomUUID()));
 		}
-		Game game = new Game(new Server(), users);
+		Game game = new Game(null, users);
 		game.run();
 		List<Sector> hatches = game.getMap().getEscapeHatchSectors();
 		int sector = 0;
