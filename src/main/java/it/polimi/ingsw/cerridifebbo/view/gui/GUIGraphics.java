@@ -1,24 +1,14 @@
 package it.polimi.ingsw.cerridifebbo.view.gui;
 
 import it.polimi.ingsw.cerridifebbo.controller.client.Graphics;
-import it.polimi.ingsw.cerridifebbo.model.AttackItemCard;
 import it.polimi.ingsw.cerridifebbo.model.Card;
-import it.polimi.ingsw.cerridifebbo.model.Game;
 import it.polimi.ingsw.cerridifebbo.model.Map;
 import it.polimi.ingsw.cerridifebbo.model.Move;
 import it.polimi.ingsw.cerridifebbo.model.Player;
-import it.polimi.ingsw.cerridifebbo.model.SedativesItemCard;
-import it.polimi.ingsw.cerridifebbo.model.SpotlightItemCard;
-import it.polimi.ingsw.cerridifebbo.model.User;
-
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
 import javax.swing.JFrame;
 
 public class GUIGraphics extends Graphics implements ActionListener {
@@ -71,25 +61,6 @@ public class GUIGraphics extends Graphics implements ActionListener {
 
 	}
 
-	public static void main(String args[]) {
-		List<User> users = new ArrayList<User>();
-		users.add(new User(UUID.randomUUID()));
-		users.add(new User(UUID.randomUUID()));
-		users.add(new User(UUID.randomUUID()));
-		Game game = new Game(null, users);
-		game.run();
-		GUIGraphics gui = new GUIGraphics();
-		game.getUsers().get(0).getPlayer().addCard(new AttackItemCard());
-		gui.initialize(game.getMap(), game.getUsers().get(0).getPlayer());
-		gui.startTurn();
-		game.getUsers().get(0).getPlayer().addCard(new SedativesItemCard());
-		gui.deletePlayerCard(game.getUsers().get(0).getPlayer(), game
-				.getUsers().get(0).getPlayer().getOwnCards().get(0));
-		gui.addPlayerCard(game.getUsers().get(0).getPlayer(),
-				new SpotlightItemCard());
-
-	}
-
 	@Override
 	public void startTurn() {
 		timerPanel.startTimer();
@@ -122,31 +93,31 @@ public class GUIGraphics extends Graphics implements ActionListener {
 		if (e.getSource() instanceof SectorButton) {
 			if (declareSector) {
 				move = e.getActionCommand();
-				// getClient().sendToServer(move);
+				getNetworkInterface().sendToServer(move);
 				mapGrid.deleteListenersToButton(moveListener);
 				declareSector = false;
 			} else {
 				move = Move.MOVEMENT + " " + e.getActionCommand();
-				// getClient().sendToServer(move);
+				getNetworkInterface().sendToServer(move);
 				deleteListeners(moveListener);
 			}
 		} else if (e.getSource() instanceof CardButton) {
 			if (declareCard) {
 				move = e.getActionCommand();
-				// getClient().sendToServer(move);
+				getNetworkInterface().sendToServer(move);
 				cards.deleteListenersToButton(moveListener);
 				declareCard = false;
 			} else {
 				move = Move.USEITEMCARD + " " + e.getActionCommand();
-				// getClient().sendToServer(move);
+				getNetworkInterface().sendToServer(move);
 				deleteListeners(moveListener);
 			}
 		} else if (e.getSource().equals(buttonPanel.getComponent(0))) {
-			// getClient().sendToServer(move);
+			getNetworkInterface().sendToServer(move);
 			move = Move.ATTACK + " " + player.getPosition();
 			deleteListeners(moveListener);
 		} else if (e.getSource().equals(buttonPanel.getComponent(1))) {
-			// getClient().sendToServer(move);
+			getNetworkInterface().sendToServer(move);
 			move = Move.FINISH;
 			deleteListeners(moveListener);
 		}
@@ -174,7 +145,6 @@ public class GUIGraphics extends Graphics implements ActionListener {
 	public void deletePlayerCard(Player player, Card card) {
 		this.player = player;
 		cards.remove(card.toString());
-		cards.repaint();
 	}
 
 	@Override

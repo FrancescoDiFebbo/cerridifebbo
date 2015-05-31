@@ -83,4 +83,10 @@ public class SocketInterface implements NetworkInterface {
 		}
 	}
 
+	@Override
+	public void sendToServer(String move) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
