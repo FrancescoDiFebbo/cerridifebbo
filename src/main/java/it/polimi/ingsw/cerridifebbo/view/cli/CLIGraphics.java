@@ -158,26 +158,19 @@ public class CLIGraphics extends Graphics {
 			String line = in.next();
 			if (line.equals(CHOICE_ONE)) {
 				move = Move.ATTACK + " " + player.getPosition();
-				break;
-			}
-			if (line.equals(CHOICE_TWO)) {
+			} else if (line.equals(CHOICE_TWO)) {
 				move = Move.MOVEMENT;
 				Application.println(SECTOR_SELECTION);
 				line = in.next();
 				move = move + " " + line;
-				break;
-			}
-			if (line.equals(CHOICE_THREE)) {
+			} else if (line.equals(CHOICE_THREE)) {
 				move = Move.USEITEMCARD;
 				Application.println(CARD_SELECTION);
 				printCardPlayer();
 				line = in.next();
 				move = move + " " + line;
-				break;
-			}
-			if (line.equals(CHOICE_FOUR)) {
+			} else if (line.equals(CHOICE_FOUR)) {
 				move = Move.FINISH;
-				break;
 			}
 		} while (move != null);
 		in.close();

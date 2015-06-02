@@ -12,7 +12,7 @@ public abstract class Sector {
 	private Sector southEast;
 	private Sector northWest;
 	private Sector southWest;
-
+	
 	public Sector(int row, int column, boolean passable) {
 		coordinate = new Coordinate(row, column);
 		setPassable(passable);
