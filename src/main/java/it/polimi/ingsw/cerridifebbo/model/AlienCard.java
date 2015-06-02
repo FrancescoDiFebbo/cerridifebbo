@@ -2,10 +2,12 @@ package it.polimi.ingsw.cerridifebbo.model;
 
 public class AlienCard extends CharacterCard {
 
+	
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 8866769745221525174L;
 
 	AlienCard(String characterName) {
 		super(characterName);

@@ -5,7 +5,7 @@ public class RedEscapeHatchCard extends EscapeHatchCard {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -2455595422967351201L;
 
 	@Override
 	public Object performAction(Player player, Object target, Game game) {

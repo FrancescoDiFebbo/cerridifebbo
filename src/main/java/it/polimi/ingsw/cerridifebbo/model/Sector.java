@@ -1,9 +1,14 @@
 package it.polimi.ingsw.cerridifebbo.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Sector {
+public abstract class Sector implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7531375122364670820L;
 	private Coordinate coordinate;
 	private boolean passable;
 	private Sector north;

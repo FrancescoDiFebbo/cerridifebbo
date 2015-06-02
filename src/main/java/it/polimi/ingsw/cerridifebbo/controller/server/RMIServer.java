@@ -12,7 +12,6 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -67,6 +66,11 @@ public class RMIServer extends ServerConnection {
 		clients.put(id, client);
 		LOG.info("Client " + id + " connected at port " + clientInterface);
 		server.registerClientOnServer(id, this);
+		try {
+			clients.get(id).sendMessage("You are connected to the server");
+		} catch (RemoteException e) {
+			LOG.log(Level.WARNING, e.getMessage(), e);
+		}
 		return true;
 	}
 
@@ -87,14 +91,13 @@ public class RMIServer extends ServerConnection {
 		}
 	}
 
-
 	@Override
 	public void sendGameInformation(int size, it.polimi.ingsw.cerridifebbo.model.Map map, User user) {
 		try {
 			clients.get(user.getId()).sendGameInformation(size, map, user.getPlayer());
 		} catch (RemoteException e) {
 			LOG.log(Level.WARNING, e.getMessage(), e);
-		}	
+		}
 	}
 
 }

@@ -1,7 +1,13 @@
 package it.polimi.ingsw.cerridifebbo.model;
 
-public class Coordinate {
+import java.io.Serializable;
+
+public class Coordinate implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1215679744721260626L;
 	private int column;
 	private int row;
 	

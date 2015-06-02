@@ -4,7 +4,6 @@ import it.polimi.ingsw.cerridifebbo.controller.common.Application;
 import it.polimi.ingsw.cerridifebbo.model.CharacterDeckFactory;
 import it.polimi.ingsw.cerridifebbo.model.Game;
 import it.polimi.ingsw.cerridifebbo.model.Move;
-import it.polimi.ingsw.cerridifebbo.model.Player;
 import it.polimi.ingsw.cerridifebbo.model.Sector;
 import it.polimi.ingsw.cerridifebbo.model.User;
 
@@ -61,7 +60,7 @@ public class Server {
 				stop();
 			}
 			if ("b".equals(line)) {
-				broadcastEverybody("Sei connesso al server");
+				broadcastEverybody("You are connected to the server");
 			}
 		}
 	}
@@ -88,14 +87,14 @@ public class Server {
 			@Override
 			public void run() {
 				if (room.size() == 1) {
-					broadcastToRoom("In attesa di un altro giocatore...", null);
+					broadcastToRoom("Waiting for another player...", null);
 					return;
 				}
 				createNewGame();
 				
 			}
 		}, 10000);
-		broadcastToRoom("Nuovo giocatore connesso", newUser);
+		broadcastToRoom("New player connected", newUser);
 		if (room.size() == CharacterDeckFactory.MAX_PLAYERS) {
 			timeout.cancel();
 			createNewGame();

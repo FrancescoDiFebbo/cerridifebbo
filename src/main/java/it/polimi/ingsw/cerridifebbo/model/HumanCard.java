@@ -2,10 +2,12 @@ package it.polimi.ingsw.cerridifebbo.model;
 
 public class HumanCard extends CharacterCard {
 
+	
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 3437849611858239415L;
 
 	HumanCard(String characterName) {
 		super(characterName);

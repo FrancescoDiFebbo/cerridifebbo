@@ -2,10 +2,12 @@ package it.polimi.ingsw.cerridifebbo.model;
 
 public class GreenEscapeHatchCard extends EscapeHatchCard {
 
+	
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -4333041069849793818L;
 
 	@Override
 	public Object performAction(Player player, Object target, Game game) {

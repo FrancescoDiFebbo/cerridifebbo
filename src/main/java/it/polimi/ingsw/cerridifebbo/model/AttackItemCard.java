@@ -2,10 +2,11 @@ package it.polimi.ingsw.cerridifebbo.model;
 
 public class AttackItemCard extends ItemCard {
 
+	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -3464462104730522474L;
 	private static final String NAME = "Attack";
 
 	@Override

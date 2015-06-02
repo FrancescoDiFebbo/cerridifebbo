@@ -12,15 +12,17 @@ import it.polimi.ingsw.cerridifebbo.model.Player;
 public class ClientImpl extends UnicastRemoteObject implements RemoteClient {
 
 	private final UUID id;
+	private transient RMIInterface rmiInterface;
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	protected ClientImpl(UUID id) throws RemoteException {
+	protected ClientImpl(UUID id, RMIInterface rmiInterface) throws RemoteException {
 		super();
-		this.id = id;		
+		this.id = id;
+		this.rmiInterface = rmiInterface;
 	}
 
 	@Override
@@ -47,7 +49,8 @@ public class ClientImpl extends UnicastRemoteObject implements RemoteClient {
 
 	@Override
 	public void sendGameInformation(int size, Map map, Player player) throws RemoteException {
-		// TODO Auto-generated method stub
+		Application.println("SERVER) Number of players is " + size);
+		rmiInterface.setGameInformation(map, player);
 		
 	}
 

@@ -2,10 +2,12 @@ package it.polimi.ingsw.cerridifebbo.model;
 
 public class SilenceCard extends SectorCard {
 
+	
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -801729118797150396L;
 
 	SilenceCard() {
 		super(false);

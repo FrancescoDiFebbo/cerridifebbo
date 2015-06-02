@@ -2,10 +2,11 @@ package it.polimi.ingsw.cerridifebbo.model;
 
 public class SpotlightItemCard extends ItemCard {
 	
+	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -7609400676872636169L;
 	private static final String NAME = "Spotlight";
 	
 	@Override

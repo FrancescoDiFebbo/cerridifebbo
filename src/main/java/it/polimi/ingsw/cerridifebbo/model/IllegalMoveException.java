@@ -1,6 +1,6 @@
 package it.polimi.ingsw.cerridifebbo.model;
 
-public class IllegalMoveException extends Exception{
+public class IllegalMoveException extends RuntimeException{
 
 	/**
 	 * 

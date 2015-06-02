@@ -23,7 +23,7 @@ public class Client {
 
 	private void run() throws IOException {
 		NetworkInterface network = null;
-		Graphics graphics;
+		Graphics graphics = null;
 		boolean chosen = false;
 		while (!chosen) {
 			String line = readLine(NETWORK_INTERFACE_SELECTION);
@@ -35,12 +35,6 @@ public class Client {
 				network = NetworkInterfaceFactory.getInterface(NetworkInterfaceFactory.SOCKET_INTERFACE);
 				chosen = true;
 			}
-		}
-		try {
-			network.connect();
-		} catch (IOException e) {
-			LOG.log(Level.SEVERE, e.getMessage(), e);
-			Application.exitError();
 		}
 		chosen = false;
 		while (!chosen) {
@@ -54,6 +48,13 @@ public class Client {
 				chosen = true;
 			}
 		}
+		try {
+			network.connect();
+		} catch (IOException e) {
+			LOG.log(Level.SEVERE, e.getMessage(), e);
+			Application.exitError();
+		}
+		network.setGraphicInterface(graphics);
 	}
 
 	private static String readLine(String format, Object... args) throws IOException {

@@ -2,10 +2,11 @@ package it.polimi.ingsw.cerridifebbo.model;
 
 public class HumanPlayer extends Player {
 
+	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -2920770936102414367L;
 	private boolean escaped;
 	private boolean sedatives;
 

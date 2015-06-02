@@ -1,5 +1,6 @@
 package it.polimi.ingsw.cerridifebbo.controller.server;
 
+import it.polimi.ingsw.cerridifebbo.controller.common.Connection;
 import it.polimi.ingsw.cerridifebbo.model.User;
 
 import java.io.IOException;
@@ -16,7 +17,6 @@ import java.util.logging.Logger;
 
 public class SocketServer extends ServerConnection implements Runnable {
 	private static final Logger LOG = Logger.getLogger(SocketServer.class.getName());
-	private static final String IP = InetAddress.getLoopbackAddress().getHostAddress();
 	private static final int PORT = 8888;
 
 	private int port;
@@ -29,7 +29,7 @@ public class SocketServer extends ServerConnection implements Runnable {
 	private Map<UUID, SocketHandler> clients = new HashMap<UUID, SocketHandler>();
 
 	public SocketServer(Server server) {
-		this(server, PORT, IP);
+		this(server, PORT, Connection.SERVER_SOCKET_ADDRESS);
 	}
 
 	public SocketServer(Server server, int port, String address) {
@@ -100,6 +100,7 @@ public class SocketServer extends ServerConnection implements Runnable {
 		clients.put(id, handler);
 		LOG.info("Client " + id + " connected on socket");
 		server.registerClientOnServer(id, this);
+		clients.get(id).sendMessage("You are connected to the server");
 		return true;
 	}
 
@@ -143,7 +144,7 @@ public class SocketServer extends ServerConnection implements Runnable {
 
 	@Override
 	public void sendGameInformation(int size, it.polimi.ingsw.cerridifebbo.model.Map map, User user) {
-		// TODO Auto-generated method stub
+		clients.get(user.getId()).sendGameInformation(size, map, user);
 		
 	}
 

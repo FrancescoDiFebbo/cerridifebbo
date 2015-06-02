@@ -2,6 +2,11 @@ package it.polimi.ingsw.cerridifebbo.model;
 
 public class NoiseInSectorCard extends SectorCard {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6014743013899926936L;
+
 	NoiseInSectorCard(boolean item) {
 		super(item);
 	}

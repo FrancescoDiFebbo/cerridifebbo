@@ -2,10 +2,11 @@ package it.polimi.ingsw.cerridifebbo.model;
 
 public class AlienPlayer extends Player {
 
+	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -6879251381186250824L;
 	private static final int MOVEMENT_BEFORE_EATING = 2;
 	private static final int MOVEMENT_AFTER_EATING = 3;
 

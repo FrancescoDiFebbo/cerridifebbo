@@ -5,7 +5,6 @@ import it.polimi.ingsw.cerridifebbo.model.Player;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.util.UUID;
 
 public interface RemoteClient extends Remote {
 

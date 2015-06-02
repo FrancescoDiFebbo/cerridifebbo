@@ -2,10 +2,11 @@ package it.polimi.ingsw.cerridifebbo.model;
 
 public class SedativesItemCard extends ItemCard {
 	
+	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 2206994454307437871L;
 	private static final String NAME = "Sedatives";
 
 	@Override
