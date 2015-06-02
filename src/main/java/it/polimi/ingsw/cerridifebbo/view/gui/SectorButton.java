@@ -15,9 +15,9 @@ public abstract class SectorButton extends JButton {
 	public static final Color HEXAGON_BORDER_COLOR = Color.WHITE;
 	public static final Color PRESSED_BUTTON = Color.WHITE;
 	public static final int SIDE = 24;
-	public static final int SHIFT_OBLIQUE_SIDE = (int) ((int) SIDE * Math
+	public static final int SHIFT_OBLIQUE_SIDE = (int) (SIDE * Math
 			.sin((30 * Math.PI) / 180));
-	public static final int RADIUS = (int) ((int) SIDE * Math
+	public static final int RADIUS = (int) (SIDE * Math
 			.cos((30 * Math.PI) / 180));
 	public static final int BORDER_WIDTH = 3;
 	public static final int BORDER_HEIGHT = 3;
@@ -25,15 +25,6 @@ public abstract class SectorButton extends JButton {
 			* BORDER_WIDTH;
 	public static final int HEIGHT = 2 * RADIUS + 2 * BORDER_HEIGHT;
 	private static Polygon hexagon;
-	private boolean pressed;
-
-	public boolean isPressed() {
-		return pressed;
-	}
-
-	public void setPressed(boolean pressed) {
-		this.pressed = pressed;
-	}
 
 	public SectorButton(String label) {
 		super(label);
@@ -41,8 +32,6 @@ public abstract class SectorButton extends JButton {
 		initializeHexagon();
 		setBackground(GUIGraphics.BACKGROUND_COLOR);
 		setOpaque(false);
-		pressed = false;
-
 	}
 
 	protected void initializeHexagon() {

@@ -14,8 +14,8 @@ public class TimerPanel extends JPanel {
 	public static final int WIDTH = 300;
 	public static final int HEIGHT = 50;
 	private static final String TIME_FINISHED = "Time out!";
-	private static final int delay = 90000;
-	private static final int period = 1000;
+	private static final int DELAY = 90000;
+	private static final int PERIOD = 1000;
 	private int numberOfUpdate = 0;
 	private JTextArea timeLeft;
 	private Timer timer;
@@ -24,15 +24,15 @@ public class TimerPanel extends JPanel {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			numberOfUpdate++;
-			if (numberOfUpdate < delay / period) {
-				int remainingSeconds = (delay - period * numberOfUpdate) / 1000;
+			if (numberOfUpdate < DELAY / PERIOD) {
+				int remainingSeconds = (DELAY - PERIOD * numberOfUpdate) / 1000;
 				int remainingMinutes = 0;
 				while (remainingSeconds >= 60) {
 					remainingSeconds = remainingSeconds - 60;
 					remainingMinutes++;
 				}
-				timeLeft.setText(String.valueOf(remainingMinutes) + " : "
-						+ String.valueOf(remainingSeconds));
+				timeLeft.setText(String.valueOf(remainingMinutes + " : "
+						+ remainingSeconds));
 			} else {
 				timeLeft.setText(TIME_FINISHED);
 				timer.stop();
@@ -54,7 +54,7 @@ public class TimerPanel extends JPanel {
 	}
 
 	public void startTimer() {
-		timer = new Timer(period, updateTimer);
+		timer = new Timer(PERIOD, updateTimer);
 		timer.start();
 		timeLeft.setVisible(true);
 	}

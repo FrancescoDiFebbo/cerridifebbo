@@ -31,13 +31,13 @@ public class GUIGraphics extends Graphics implements ActionListener {
 
 	@Override
 	public void initialize(Map map, Player player) {
-
 		this.player = player;
 		frame = new JFrame(FRAME_NAME);
 		contentPane = frame.getContentPane();
 		contentPane.setBackground(BACKGROUND_COLOR);
 		frame.setBackground(BACKGROUND_COLOR);
 		mapGrid = new MapContainer(map);
+		mapGrid.setPlayerPawn(player);
 		serverMessage = new ServerScrollPane();
 		timerPanel = new TimerPanel();
 		cards = new CardsPanel(player);
@@ -133,6 +133,7 @@ public class GUIGraphics extends Graphics implements ActionListener {
 	@Override
 	public void updatePlayerPosition(Player player) {
 		this.player = player;
+		mapGrid.setPlayerPawn(player);
 	}
 
 	@Override

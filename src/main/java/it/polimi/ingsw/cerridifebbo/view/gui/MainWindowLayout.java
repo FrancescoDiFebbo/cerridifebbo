@@ -14,10 +14,12 @@ public class MainWindowLayout implements LayoutManager {
 
 	@Override
 	public void addLayoutComponent(String name, Component comp) {
+		//No need to add layout components
 	}
 
 	@Override
 	public void removeLayoutComponent(Component comp) {
+		//No need to remove layout components
 	}
 
 	@Override
