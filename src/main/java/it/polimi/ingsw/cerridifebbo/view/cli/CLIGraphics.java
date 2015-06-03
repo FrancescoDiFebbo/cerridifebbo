@@ -2,16 +2,19 @@ package it.polimi.ingsw.cerridifebbo.view.cli;
 
 import it.polimi.ingsw.cerridifebbo.controller.client.Graphics;
 import it.polimi.ingsw.cerridifebbo.controller.common.Application;
+import it.polimi.ingsw.cerridifebbo.controller.common.Command;
 import it.polimi.ingsw.cerridifebbo.model.AlienSector;
 import it.polimi.ingsw.cerridifebbo.model.Card;
 import it.polimi.ingsw.cerridifebbo.model.DangerousSector;
 import it.polimi.ingsw.cerridifebbo.model.EscapeHatchSector;
+import it.polimi.ingsw.cerridifebbo.model.HumanPlayer;
 import it.polimi.ingsw.cerridifebbo.model.HumanSector;
 import it.polimi.ingsw.cerridifebbo.model.Map;
 import it.polimi.ingsw.cerridifebbo.model.Move;
 import it.polimi.ingsw.cerridifebbo.model.Player;
 import it.polimi.ingsw.cerridifebbo.model.Sector;
 import it.polimi.ingsw.cerridifebbo.model.SecureSector;
+
 import java.util.Scanner;
 
 public class CLIGraphics extends Graphics {
@@ -39,6 +42,8 @@ public class CLIGraphics extends Graphics {
 	private static final String CARD_PLAYER = "Player cards: ";
 	private static final String NO_CARD_PLAYER = "No card!";
 	private static final String PLAYER_POSITION = "Player position : ";
+	private static final String PLAYER_RACE_HUMAN = "You are a human. Your name is ";
+	private static final String PLAYER_RACE_ALIEN = "You are an alien. Your name is ";
 
 	private Player player;
 	private Map map;
@@ -49,6 +54,7 @@ public class CLIGraphics extends Graphics {
 		this.map = map;
 		printMap();
 		printPlayer();
+		initialized = true;
 	}
 
 	private void printMap() {
@@ -93,6 +99,12 @@ public class CLIGraphics extends Graphics {
 	}
 
 	private void printPlayer() {
+		if (player instanceof HumanPlayer) {
+			Application.print(PLAYER_RACE_HUMAN);
+		} else {
+			Application.print(PLAYER_RACE_ALIEN);
+		}
+		Application.println(player.getPlayerCard().getCharacterName());
 		printPlayerPosition();
 		printCardPlayer();
 
@@ -157,20 +169,18 @@ public class CLIGraphics extends Graphics {
 			Application.println(MOVE_OPTIONS);
 			String line = in.next();
 			if (line.equals(CHOICE_ONE)) {
-				move = Move.ATTACK + " " + player.getPosition();
+				move = Command.build(Move.ATTACK, null);
 			} else if (line.equals(CHOICE_TWO)) {
-				move = Move.MOVEMENT;
 				Application.println(SECTOR_SELECTION);
 				line = in.next();
-				move = move + " " + line;
+				move = Command.build(Move.MOVEMENT, line);
 			} else if (line.equals(CHOICE_THREE)) {
-				move = Move.USEITEMCARD;
-				Application.println(CARD_SELECTION);
 				printCardPlayer();
+				Application.println(CARD_SELECTION);
 				line = in.next();
-				move = move + " " + line;
+				move = Command.build(Move.USEITEMCARD, line);
 			} else if (line.equals(CHOICE_FOUR)) {
-				move = Move.FINISH;
+				move = Command.build(Move.FINISH, null);
 			}
 		} while (move != null);
 		in.close();

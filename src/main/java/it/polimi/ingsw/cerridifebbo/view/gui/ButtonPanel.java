@@ -18,24 +18,27 @@ public class ButtonPanel extends JPanel {
 
 	private JButton finishTurn;
 	private JButton attack;
+	private String playerRace;
 
-	public ButtonPanel() {
+	public ButtonPanel(String playerRace) {
+		this.playerRace = playerRace;
 		setButton();
 		setSize(WIDTH, HEIGHT);
 		setBackground(GUIGraphics.BACKGROUND_COLOR);
-		setForeground(GUIGraphics.FOREGROUND_COLOR);
+		setForeground(GUIGraphics.getColorRace(playerRace));
 		setLayout(new GridLayout());
 
 	}
 
 	private void setButton() {
-		Border thickBorder = new LineBorder(GUIGraphics.FOREGROUND_COLOR, 2);
+		Border thickBorder = new LineBorder(
+				GUIGraphics.getColorRace(playerRace), 2);
 		finishTurn = new JButton(FINISH_TURN);
 		finishTurn.setBackground(GUIGraphics.BACKGROUND_COLOR);
-		finishTurn.setForeground(GUIGraphics.FOREGROUND_COLOR);
+		finishTurn.setForeground(GUIGraphics.getColorRace(playerRace));
 		attack = new JButton(ATTACK);
 		attack.setBackground(GUIGraphics.BACKGROUND_COLOR);
-		attack.setForeground(GUIGraphics.FOREGROUND_COLOR);
+		attack.setForeground(GUIGraphics.getColorRace(playerRace));
 		add(attack);
 		attack.setBorder(thickBorder);
 		add(finishTurn);

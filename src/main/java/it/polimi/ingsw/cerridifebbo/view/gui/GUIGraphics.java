@@ -1,21 +1,28 @@
 package it.polimi.ingsw.cerridifebbo.view.gui;
 
 import it.polimi.ingsw.cerridifebbo.controller.client.Graphics;
+import it.polimi.ingsw.cerridifebbo.controller.common.Command;
 import it.polimi.ingsw.cerridifebbo.model.Card;
+import it.polimi.ingsw.cerridifebbo.model.HumanPlayer;
 import it.polimi.ingsw.cerridifebbo.model.Map;
 import it.polimi.ingsw.cerridifebbo.model.Move;
 import it.polimi.ingsw.cerridifebbo.model.Player;
+
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import javax.swing.JFrame;
 
 public class GUIGraphics extends Graphics implements ActionListener {
 
 	private static final String FRAME_NAME = "ESCAPE FROM THE ALIENS IN OUTER SPACE";
 	public static final Color BACKGROUND_COLOR = Color.BLACK;
-	public static final Color FOREGROUND_COLOR = Color.GREEN;
+	public static final Color FOREGROUND_COLOR_ALIEN = Color.GREEN;
+	public static final Color FOREGROUND_COLOR_HUMAN = Color.BLUE;
+	private static final String PLAYER_RACE_HUMAN = "You are a human. Your name is ";
+	private static final String PLAYER_RACE_ALIEN = "You are an alien. Your name is ";
 	private MapContainer mapGrid;
 	private ServerScrollPane serverMessage;
 	private TimerPanel timerPanel;
@@ -28,20 +35,28 @@ public class GUIGraphics extends Graphics implements ActionListener {
 	private boolean declareSector;
 	private boolean declareCard;
 	private Player player;
+	private String playerRace;
+	private static String HUMAN = "HUMAN";
+	private static String ALIEN = "ALIEN";
 
 	@Override
 	public void initialize(Map map, Player player) {
 		this.player = player;
+		if (player instanceof HumanPlayer) {
+			playerRace = HUMAN;
+		} else {
+			playerRace = ALIEN;
+		}
 		frame = new JFrame(FRAME_NAME);
 		contentPane = frame.getContentPane();
 		contentPane.setBackground(BACKGROUND_COLOR);
 		frame.setBackground(BACKGROUND_COLOR);
 		mapGrid = new MapContainer(map);
 		mapGrid.setPlayerPawn(player);
-		serverMessage = new ServerScrollPane();
-		timerPanel = new TimerPanel();
-		cards = new CardsPanel(player);
-		buttonPanel = new ButtonPanel();
+		serverMessage = new ServerScrollPane(playerRace);
+		timerPanel = new TimerPanel(playerRace);
+		cards = new CardsPanel(player, playerRace);
+		buttonPanel = new ButtonPanel(playerRace);
 		contentPane.add(mapGrid);
 		contentPane.add(timerPanel);
 		contentPane.add(serverMessage);
@@ -52,7 +67,23 @@ public class GUIGraphics extends Graphics implements ActionListener {
 		frame.pack();
 		frame.setVisible(true);
 		moveListener = this;
+		initialized = true;
+		String message;
+		if (playerRace.equals(HUMAN)) {
+			message = PLAYER_RACE_HUMAN;
+		} else {
+			message = PLAYER_RACE_ALIEN;
+		}
+		serverMessage.addText(message
+				+ player.getPlayerCard().getCharacterName());
 
+	}
+
+	public static Color getColorRace(String race) {
+		if (race.equals(HUMAN)) {
+			return FOREGROUND_COLOR_HUMAN;
+		}
+		return FOREGROUND_COLOR_ALIEN;
 	}
 
 	@Override
@@ -92,36 +123,35 @@ public class GUIGraphics extends Graphics implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() instanceof SectorButton) {
 			if (declareSector) {
-				move = e.getActionCommand();
+				move = Command.build(Move.SECTOR, e.getActionCommand());
 				getNetworkInterface().sendToServer(move);
 				mapGrid.deleteListenersToButton(moveListener);
 				declareSector = false;
 			} else {
-				move = Move.MOVEMENT + " " + e.getActionCommand();
+				move = Command.build(Move.MOVEMENT, e.getActionCommand());
 				getNetworkInterface().sendToServer(move);
 				deleteListeners(moveListener);
 			}
 		} else if (e.getSource() instanceof CardButton) {
 			if (declareCard) {
-				move = e.getActionCommand();
+				move = Command.build(Move.DELETECARD, e.getActionCommand());
 				getNetworkInterface().sendToServer(move);
 				cards.deleteListenersToButton(moveListener);
 				declareCard = false;
 			} else {
-				move = Move.USEITEMCARD + " " + e.getActionCommand();
+				move = Command.build(Move.USEITEMCARD, e.getActionCommand());
 				getNetworkInterface().sendToServer(move);
 				deleteListeners(moveListener);
 			}
 		} else if (e.getSource().equals(buttonPanel.getComponent(0))) {
+			move = Command.build(Move.ATTACK, null);
 			getNetworkInterface().sendToServer(move);
-			move = Move.ATTACK + " " + player.getPosition();
 			deleteListeners(moveListener);
 		} else if (e.getSource().equals(buttonPanel.getComponent(1))) {
+			move = Command.build(Move.FINISH, null);
 			getNetworkInterface().sendToServer(move);
-			move = Move.FINISH;
 			deleteListeners(moveListener);
 		}
-		serverMessage.addText(move);
 	}
 
 	@Override
@@ -151,7 +181,7 @@ public class GUIGraphics extends Graphics implements ActionListener {
 	@Override
 	public void addPlayerCard(Player player, Card card) {
 		this.player = player;
-		cards.add(new CardButton(card.toString()));
+		cards.add(new CardButton(card.toString(), playerRace));
 
 	}
 

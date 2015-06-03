@@ -17,7 +17,8 @@ public class Client {
 	private static String CHOICE_ONE = "1";
 	private static String CHOICE_TWO = "2";
 
-	public static void main(String[] args) throws IOException, NotBoundException {
+	public static void main(String[] args) throws IOException,
+			NotBoundException {
 		new Client().run();
 	}
 
@@ -28,11 +29,13 @@ public class Client {
 		while (!chosen) {
 			String line = readLine(NETWORK_INTERFACE_SELECTION);
 			if (CHOICE_ONE.equals(line)) {
-				network = NetworkInterfaceFactory.getInterface(NetworkInterfaceFactory.RMI_INTERFACE);
+				network = NetworkInterfaceFactory
+						.getInterface(NetworkInterfaceFactory.RMI_INTERFACE);
 				chosen = true;
 			}
 			if (CHOICE_TWO.equals(line)) {
-				network = NetworkInterfaceFactory.getInterface(NetworkInterfaceFactory.SOCKET_INTERFACE);
+				network = NetworkInterfaceFactory
+						.getInterface(NetworkInterfaceFactory.SOCKET_INTERFACE);
 				chosen = true;
 			}
 		}
@@ -40,11 +43,13 @@ public class Client {
 		while (!chosen) {
 			String line = readLine(GRAPHICS_SELECTION);
 			if (CHOICE_ONE.equals(line)) {
-				graphics = GraphicsFactory.getInterface(GraphicsFactory.GUI_INTERFACE);
+				graphics = GraphicsFactory
+						.getInterface(GraphicsFactory.GUI_INTERFACE);
 				chosen = true;
 			}
 			if (CHOICE_TWO.equals(line)) {
-				graphics = GraphicsFactory.getInterface(GraphicsFactory.CLI_INTERFACE);
+				graphics = GraphicsFactory
+						.getInterface(GraphicsFactory.CLI_INTERFACE);
 				chosen = true;
 			}
 		}
@@ -55,9 +60,11 @@ public class Client {
 			Application.exitError();
 		}
 		network.setGraphicInterface(graphics);
+		graphics.setNetworkInterface(network);
 	}
 
-	private static String readLine(String format, Object... args) throws IOException {
+	private static String readLine(String format, Object... args)
+			throws IOException {
 		if (System.console() != null) {
 			return System.console().readLine(format, args);
 		}

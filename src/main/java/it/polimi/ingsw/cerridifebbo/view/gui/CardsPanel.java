@@ -12,11 +12,11 @@ public class CardsPanel extends JPanel {
 	public static final int WIDTH = 455;
 	public static final int HEIGHT = 100;
 
-	public CardsPanel(Player player) {
+	public CardsPanel(Player player, String playerRace) {
 
 		if (player.getOwnCards() != null) {
 			for (int i = 0; i < player.getOwnCards().size(); i++) {
-				add(new CardButton(player.getOwnCards().get(i).toString()));
+				add(new CardButton(player.getOwnCards().get(i).toString(), playerRace));
 			}
 		}
 		setSize(WIDTH, HEIGHT);

@@ -1,7 +1,10 @@
 package it.polimi.ingsw.cerridifebbo.view.gui;
 
+import it.polimi.ingsw.cerridifebbo.model.Player;
+
 import java.awt.Container;
 import java.awt.Font;
+
 import javax.swing.BoxLayout;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -26,10 +29,14 @@ public class ServerScrollPane extends JScrollPane {
 			+ "  forcefully block him while he was trying to devour Bibsy-332,\n"
 			+ "  an experimental monkey carrying the spores.\n \n"
 			+ "  On the 28th of July all communication with spaceship SELVA ceased.\n\n";
+
+	private String playerRace;
 	Container textContainer = new Container();
 
-	public ServerScrollPane() {
-		Border thickBorder = new LineBorder(GUIGraphics.FOREGROUND_COLOR, 2);
+	public ServerScrollPane(String playerRace) {
+		this.playerRace = playerRace;
+		Border thickBorder = new LineBorder(
+				GUIGraphics.getColorRace(playerRace), 2);
 		setViewportView(textContainer);
 		textContainer.setLayout(new BoxLayout(textContainer, BoxLayout.Y_AXIS));
 		addText(INITIAL_MESSAGE);
@@ -37,7 +44,7 @@ public class ServerScrollPane extends JScrollPane {
 		setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		setSize(WIDTH, HEIGHT);
 		verticalScrollBar.setBackground(GUIGraphics.BACKGROUND_COLOR);
-		verticalScrollBar.setForeground(GUIGraphics.FOREGROUND_COLOR);
+		verticalScrollBar.setForeground(GUIGraphics.getColorRace(playerRace));
 		verticalScrollBar.setAutoscrolls(true);
 		setBorder(thickBorder);
 
@@ -48,7 +55,7 @@ public class ServerScrollPane extends JScrollPane {
 		text.setEditable(false);
 		text.setFont(new Font("Arial", Font.BOLD, 11));
 		text.setBackground(GUIGraphics.BACKGROUND_COLOR);
-		text.setForeground(GUIGraphics.FOREGROUND_COLOR);
+		text.setForeground(GUIGraphics.getColorRace(playerRace));
 		textContainer.add(text);
 	}
 }
