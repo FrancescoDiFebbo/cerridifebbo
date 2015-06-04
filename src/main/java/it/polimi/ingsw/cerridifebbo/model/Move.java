@@ -1,5 +1,6 @@
 package it.polimi.ingsw.cerridifebbo.model;
 
+
 public class Move {
 	public static final String MOVEMENT = "MOVEMENT";
 	public static final String ATTACK = "ATTACK";
