@@ -41,6 +41,7 @@ public class Client implements Runnable {
 				chosen = true;
 			}
 		}
+
 		Graphics graphic = null;
 		chosen = false;
 		while (!chosen) {
@@ -54,16 +55,22 @@ public class Client implements Runnable {
 			if (CHOICE_ONE.equals(line)) {
 				graphic = GraphicsFactory.getInterface(GraphicsFactory.GUI_INTERFACE);
 				chosen = true;
+
 			} else if (CHOICE_TWO.equals(line)) {
 				graphic = GraphicsFactory.getInterface(GraphicsFactory.CLI_INTERFACE);
-				chosen = true;
+
 			}
+
+			chosen = true;
 		}
+
 		if (network == null) {
 			return;
 		}
+		graphic.setNetworkInterface(network);
 		network.setGraphicInterface(graphic);
 		network.connect();
+
 	}
 
 	private static String readLine(String format, Object... args) throws IOException {
