@@ -9,7 +9,7 @@ import java.rmi.NotBoundException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Client {
+public class Client implements Runnable {
 	private static final Logger LOG = Logger.getLogger(Client.class.getName());
 
 	private static String NETWORK_INTERFACE_SELECTION = "Select '1' for RMI interface, '2' for socket interface";
@@ -21,40 +21,49 @@ public class Client {
 		new Client().run();
 	}
 
-	private void run() throws IOException {
+	@Override
+	public void run() {
 		NetworkInterface network = null;
-		Graphics graphics = null;
 		boolean chosen = false;
 		while (!chosen) {
-			String line = readLine(NETWORK_INTERFACE_SELECTION);
+			String line = null;
+			try {
+				line = readLine(NETWORK_INTERFACE_SELECTION);
+			} catch (IOException e) {
+				LOG.log(Level.SEVERE, e.getMessage(), e);
+				return;
+			}
 			if (CHOICE_ONE.equals(line)) {
 				network = NetworkInterfaceFactory.getInterface(NetworkInterfaceFactory.RMI_INTERFACE);
 				chosen = true;
-			}
-			if (CHOICE_TWO.equals(line)) {
+			} else if (CHOICE_TWO.equals(line)) {
 				network = NetworkInterfaceFactory.getInterface(NetworkInterfaceFactory.SOCKET_INTERFACE);
 				chosen = true;
 			}
 		}
+		Graphics graphic = null;
 		chosen = false;
 		while (!chosen) {
-			String line = readLine(GRAPHICS_SELECTION);
+			String line = null;
+			try {
+				line = readLine(GRAPHICS_SELECTION);
+			} catch (IOException e) {
+				LOG.log(Level.SEVERE, e.getMessage(), e);
+				return;
+			}
 			if (CHOICE_ONE.equals(line)) {
-				graphics = GraphicsFactory.getInterface(GraphicsFactory.GUI_INTERFACE);
+				graphic = GraphicsFactory.getInterface(GraphicsFactory.GUI_INTERFACE);
 				chosen = true;
-			}
-			if (CHOICE_TWO.equals(line)) {
-				graphics = GraphicsFactory.getInterface(GraphicsFactory.CLI_INTERFACE);
+			} else if (CHOICE_TWO.equals(line)) {
+				graphic = GraphicsFactory.getInterface(GraphicsFactory.CLI_INTERFACE);
 				chosen = true;
 			}
 		}
-		try {
-			network.connect();
-		} catch (IOException e) {
-			LOG.log(Level.SEVERE, e.getMessage(), e);
-			Application.exitError();
+		if (network == null) {
+			return;
 		}
-		network.setGraphicInterface(graphics);
+		network.setGraphicInterface(graphic);
+		network.connect();
 	}
 
 	private static String readLine(String format, Object... args) throws IOException {
@@ -63,13 +72,9 @@ public class Client {
 		}
 		Application.println(String.format(format, args));
 
-		BufferedReader br = null;
-		InputStreamReader isr = null;
-		String read = null;
-
-		isr = new InputStreamReader(System.in);
-		br = new BufferedReader(isr);
-		read = br.readLine();
+		InputStreamReader isr = new InputStreamReader(System.in);
+		BufferedReader br = new BufferedReader(isr);
+		String read = br.readLine();
 
 		return read;
 	}

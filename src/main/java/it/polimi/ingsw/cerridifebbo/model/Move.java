@@ -16,6 +16,7 @@ public class Move {
 		this.target = target;
 		this.selectedCard = selectedCard;
 	}
+	
 
 	public String getAction() {
 		return action;
