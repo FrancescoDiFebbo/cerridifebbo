@@ -1,6 +1,7 @@
 package it.polimi.ingsw.cerridifebbo.controller.server;
 
 import it.polimi.ingsw.cerridifebbo.controller.common.*;
+import it.polimi.ingsw.cerridifebbo.model.Move;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -37,5 +38,10 @@ public class ServerImpl extends UnicastRemoteObject implements RemoteServer {
 	@Override
 	public int hashCode() {
 		return super.hashCode();
+	}
+
+	@Override
+	public void sendMove(UUID id, String action, String target) {
+		serverConnection.sendMove(id, action, target);		
 	}
 }

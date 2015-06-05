@@ -40,17 +40,17 @@ public class TimerPanel extends JPanel {
 		}
 	};
 
-	public TimerPanel() {
+	public TimerPanel(String playerRace) {
 
 		timeLeft = new JTextArea();
 		timeLeft.setBackground(GUIGraphics.BACKGROUND_COLOR);
-		timeLeft.setForeground(GUIGraphics.FOREGROUND_COLOR);
+		timeLeft.setForeground(GUIGraphics.getColorRace(playerRace));
 		timeLeft.setFont(new Font("Arial", Font.PLAIN, 40));
 		timeLeft.setEditable(false);
 		add(timeLeft);
 		setSize(WIDTH, HEIGHT);
 		setBackground(GUIGraphics.BACKGROUND_COLOR);
-		setForeground(GUIGraphics.FOREGROUND_COLOR);
+		setForeground(GUIGraphics.getColorRace(playerRace));
 	}
 
 	public void startTimer() {

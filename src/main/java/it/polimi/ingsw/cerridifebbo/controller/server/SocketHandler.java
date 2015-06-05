@@ -78,6 +78,7 @@ public class SocketHandler extends Thread {
 			info.add(map);
 			info.add(user.getPlayer());
 			oos.writeObject((ArrayList<Object>)info);
+			oos.close();
 		} catch (IOException e) {
 			LOG.log(Level.SEVERE, e.getMessage(), e);
 		}	

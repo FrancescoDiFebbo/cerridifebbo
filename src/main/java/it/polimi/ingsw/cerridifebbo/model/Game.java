@@ -93,10 +93,11 @@ public class Game {
 		server.declareSector(found, sector, spotlight);
 	}
 
-	public Move getMoveFromUser(User user) {
-		// il successivo statement e l'ultimo argomento sono per togliere
-		// momentaneamente l'errore in sonar
-		return new Move(Move.FINISH, null, null);
+	public void askMoveFromUser(User user) {
+		if (server == null) {
+			return;
+		}
+		server.askMoveFromUser(user);
 	}
 
 	public void sendGameInformation(int size, Map map, User user) {
@@ -104,5 +105,9 @@ public class Game {
 			return;
 		}
 		server.sendGameInformation(size, map, user);
+	}
+	
+	public boolean serverIsOn(){
+		return server!=null;
 	}
 }

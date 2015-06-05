@@ -11,6 +11,8 @@ public interface RemoteServer extends Remote {
 	public boolean registerClientOnServer(UUID id, int port) throws RemoteException;
 
 	public void sendMessage(UUID client, String message) throws RemoteException;
+
+	public void sendMove(UUID id, String action, String target) throws RemoteException;
 	
 
 }

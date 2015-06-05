@@ -4,11 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Player implements Serializable{
+public abstract class Player implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 7274673996298525756L;
 	private CharacterCard playerCard;
 	private List<Card> ownCards;
@@ -73,7 +70,8 @@ public abstract class Player implements Serializable{
 		boolean humanEaten = false;
 		for (User user : game.getUsers()) {
 			Player player = user.getPlayer();
-			if (player.getPosition() == this.getPosition() && player != this && !hasDefenseCard(game, player)) {
+			if (player.getPosition() == this.getPosition() && player != this
+					&& !hasDefenseCard(game, player)) {
 				player.kill();
 				humanEaten = isHumanEaten(humanEaten, player);
 			}
@@ -100,14 +98,16 @@ public abstract class Player implements Serializable{
 	}
 
 	public boolean movement(Sector destination, Game game) {
-		if (getPosition().getReachableSectors(getMaxMovement()).contains(destination)) {
+		if (getPosition().getReachableSectors(getMaxMovement()).contains(
+				destination)) {
 			setPosition(destination);
 			Card sectorCard = destination.playerEnters(this, game.getDeck());
 			if (sectorCard != null) {
-				Card itemCard = (Card) sectorCard.performAction(this, null, game);
+				Card itemCard = (Card) sectorCard.performAction(this, null,
+						game);
 				if (itemCard != null) {
 					this.addCard(itemCard);
-				}				
+				}
 			}
 			return true;
 		}

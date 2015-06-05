@@ -14,4 +14,6 @@ public interface RemoteClient extends Remote {
 
 	public void sendGameInformation(int size, Map map, Player player) throws RemoteException;
 
+	public void askForMove() throws RemoteException;
+
 }

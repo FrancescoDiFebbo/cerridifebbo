@@ -1,5 +1,7 @@
 package it.polimi.ingsw.cerridifebbo.controller.client;
 
+import java.rmi.RemoteException;
+
 public class NetworkInterfaceFactory {
 
 	public static final String SOCKET_INTERFACE = "socket_interface";
@@ -18,7 +20,11 @@ public class NetworkInterfaceFactory {
 		case SOCKET_INTERFACE:
 			return new SocketInterface();
 		case RMI_INTERFACE:
-			return new RMIInterface();
+			try {
+				return new RMIInterface();
+			} catch (RemoteException e) {
+				return null;
+			}
 		default:
 			return null;
 		}

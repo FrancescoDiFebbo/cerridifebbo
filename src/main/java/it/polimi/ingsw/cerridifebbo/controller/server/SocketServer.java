@@ -125,12 +125,6 @@ public class SocketServer extends ServerConnection implements Runnable {
 	}
 
 	@Override
-	public String getMoveFromUser(User user) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public void sendMessage(String string, UUID selected) throws IOException {
 		if (selected == null) {
 			for (UUID id : clients.keySet()) {
@@ -145,6 +139,24 @@ public class SocketServer extends ServerConnection implements Runnable {
 	@Override
 	public void sendGameInformation(int size, it.polimi.ingsw.cerridifebbo.model.Map map, User user) {
 		clients.get(user.getId()).sendGameInformation(size, map, user);
+
+	}
+
+	@Override
+	public void askMoveFromUser(User user, int time) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void askForSector(User user) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void sendMove(UUID id, String action, String target) {
+		// TODO Auto-generated method stub
 		
 	}
 

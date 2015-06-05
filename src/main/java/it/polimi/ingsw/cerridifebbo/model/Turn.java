@@ -23,7 +23,14 @@ public class Turn extends GameState {
 		Player player = user.getPlayer();
 		if (canPlay(player)) {
 			while (!state.finish) {
-				Move move = game.getMoveFromUser(user);
+				Move move = null;
+				if (game.serverIsOn()) {
+					game.askMoveFromUser(user);
+					while (move == null) {
+						move = user.getMove();
+					}
+				}
+				move = new Move(Move.FINISH, null, null);
 				try {
 					perform(player, move, state);
 				} catch (IllegalMoveException e) {

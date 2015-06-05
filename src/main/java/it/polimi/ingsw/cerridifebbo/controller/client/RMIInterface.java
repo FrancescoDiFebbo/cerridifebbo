@@ -2,6 +2,7 @@ package it.polimi.ingsw.cerridifebbo.controller.client;
 
 import it.polimi.ingsw.cerridifebbo.controller.common.*;
 import it.polimi.ingsw.cerridifebbo.model.Map;
+import it.polimi.ingsw.cerridifebbo.model.Move;
 import it.polimi.ingsw.cerridifebbo.model.Player;
 
 import java.rmi.AlreadyBoundException;
@@ -9,35 +10,45 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.Random;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class RMIInterface implements NetworkInterface {
+public class RMIInterface extends UnicastRemoteObject implements NetworkInterface, RemoteClient{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private static final Logger LOG = Logger.getLogger(RMIInterface.class.getName());
+	private static final int MAX_ATTEMPTS = 5;
 
 	private RemoteServer server;
-	private int port;
 	private UUID id = UUID.randomUUID();
+	private int port;	
 	private Graphics graphics;
+	
+	protected RMIInterface() throws RemoteException {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 
 	@Override
-	public void connect() throws RemoteException {
+	public void connect() {
 		Registry registry;
+		Random random = new Random();
 		while (true) {
-			try {
-				Random random = new Random();
+			try {				
 				port = random.nextInt(65535);
 				registry = LocateRegistry.createRegistry(port);
 				break;
 			} catch (RemoteException e) {
-				LOG.log(Level.WARNING, port + " not available", e);
+				LOG.log(Level.INFO, port + " not available", e);
 			}
-		}
-		RemoteClient client = new ClientImpl(id, this);
+		}		
 		try {
-			registry.bind(RemoteClient.RMI_ID, client);
+			registry.bind(RemoteClient.RMI_ID, this);
 		} catch (RemoteException | AlreadyBoundException e) {
 			LOG.log(Level.SEVERE, "Client not bound.\nClosing client...", e);
 			Application.exitError();
@@ -60,8 +71,13 @@ public class RMIInterface implements NetworkInterface {
 	}
 
 	@Override
-	public void close() {
-		// UNBINDA ROBA
+	public void close() {		
+		try {
+			Registry registry = LocateRegistry.getRegistry(port);
+			registry.unbind(RemoteClient.RMI_ID);
+		} catch (RemoteException | NotBoundException e) {
+			LOG.log(Level.WARNING, e.getMessage(), e);
+		}		
 	}
 
 	@Override
@@ -73,22 +89,57 @@ public class RMIInterface implements NetworkInterface {
 			return false;
 		}
 	}
-
+	
 	@Override
-	public void sendToServer(String move) {
-		// TODO Auto-generated method stub
-
+	public void sendMessage(String message) throws RemoteException {
+		showMessage(message);		
 	}
-
-	@Override
-	public void setGameInformation(Map map, Player player) {
-		graphics.initialize(map, player);
-
+	
+	public void showMessage(String message){
+		if (graphics.isInitialized()) {
+			graphics.sendMessage(message);
+			return;
+		}
+		Application.println("SERVER) " + message);
 	}
 
 	@Override
 	public void setGraphicInterface(Graphics graphics) {
 		this.graphics = graphics;
 
+	}
+
+	@Override
+	public void sendGameInformation(int size, Map map, Player player) throws RemoteException {
+		Application.println("SERVER) Number of players is " + size);
+		setGameInformation(map, player);		
+	}
+	
+	@Override
+	public void setGameInformation(Map map, Player player) {
+		graphics.initialize(map, player);
+	}
+
+	@Override
+	public void askForMove() throws RemoteException {
+		if (graphics.isInitialized()) {
+			graphics.declareMove();
+			return;
+		}
+	}
+
+	@Override
+	public void sendToServer(String action, String target) {
+		int attempts = 0;
+		while (attempts < MAX_ATTEMPTS) {
+			try {
+				server.sendMove(id, action, target);
+				System.out.println(action + " " + target) ;
+				break;
+			} catch (RemoteException e) {
+				attempts++;
+				LOG.log(Level.INFO, e.getMessage(), e);
+			}	
+		}		
 	}
 }

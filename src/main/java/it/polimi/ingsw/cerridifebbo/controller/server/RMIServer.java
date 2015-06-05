@@ -4,6 +4,7 @@ import it.polimi.ingsw.cerridifebbo.controller.common.Application;
 import it.polimi.ingsw.cerridifebbo.controller.common.Connection;
 import it.polimi.ingsw.cerridifebbo.controller.common.RemoteClient;
 import it.polimi.ingsw.cerridifebbo.controller.common.RemoteServer;
+import it.polimi.ingsw.cerridifebbo.model.Move;
 import it.polimi.ingsw.cerridifebbo.model.User;
 
 import java.rmi.AlreadyBoundException;
@@ -20,8 +21,10 @@ import java.util.logging.Logger;
 public class RMIServer extends ServerConnection {
 	private static final Logger LOG = Logger.getLogger(ServerConnection.class.getName());
 
+	private static final int MAX_ATTEMPTS = 5;
+
 	private Registry registry;
-	private RemoteServer remoteServer;
+
 	private Map<UUID, RemoteClient> clients = new HashMap<UUID, RemoteClient>();
 
 	public RMIServer(Server server) {
@@ -30,7 +33,7 @@ public class RMIServer extends ServerConnection {
 
 	@Override
 	public void start() throws RemoteException {
-		remoteServer = new ServerImpl(this);
+		RemoteServer remoteServer = new ServerImpl(this);
 		registry = LocateRegistry.createRegistry(Connection.SERVER_REGISTRY_PORT);
 		try {
 			registry.bind(RemoteServer.RMI_ID, remoteServer);
@@ -75,9 +78,23 @@ public class RMIServer extends ServerConnection {
 	}
 
 	@Override
-	public String getMoveFromUser(User user) {
+	public void askMoveFromUser(User user, int time) {
+		int attempts = 0;
+		while (attempts < MAX_ATTEMPTS) {
+			try {
+				clients.get(user.getId()).askForMove();
+				break;
+			} catch (RemoteException e) {
+				attempts++;
+				LOG.log(Level.INFO, e.getMessage(), e);
+			}
+		}
+	}
+
+	@Override
+	public void askForSector(User user) {
 		// TODO Auto-generated method stub
-		return null;
+
 	}
 
 	@Override
@@ -100,4 +117,16 @@ public class RMIServer extends ServerConnection {
 		}
 	}
 
+	
+	@Override
+	public void sendMove(UUID id, String action, String target) {
+		switch (action) {
+		case Move.ATTACK:
+			break;
+
+		default:
+			break;
+		}
+		
+	}
 }

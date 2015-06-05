@@ -12,10 +12,7 @@ public abstract class Command {
 	public static final String WRONG_CALL = "wrong_call";
 
 	public static final String DATA = "data";
-	public static final String GAME_INFORMATION = "game_information";
-
-	
-	
+	public static final String GAME_INFORMATION = "game_information";	
 
 	protected static java.util.Map<String, String> translateCommand(String line) {
 		java.util.Map<String, String> params = new HashMap<String, String>();

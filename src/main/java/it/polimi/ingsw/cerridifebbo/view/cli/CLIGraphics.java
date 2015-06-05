@@ -6,12 +6,14 @@ import it.polimi.ingsw.cerridifebbo.model.AlienSector;
 import it.polimi.ingsw.cerridifebbo.model.Card;
 import it.polimi.ingsw.cerridifebbo.model.DangerousSector;
 import it.polimi.ingsw.cerridifebbo.model.EscapeHatchSector;
+import it.polimi.ingsw.cerridifebbo.model.HumanPlayer;
 import it.polimi.ingsw.cerridifebbo.model.HumanSector;
 import it.polimi.ingsw.cerridifebbo.model.Map;
 import it.polimi.ingsw.cerridifebbo.model.Move;
 import it.polimi.ingsw.cerridifebbo.model.Player;
 import it.polimi.ingsw.cerridifebbo.model.Sector;
 import it.polimi.ingsw.cerridifebbo.model.SecureSector;
+
 import java.util.Scanner;
 
 public class CLIGraphics extends Graphics {
@@ -29,16 +31,16 @@ public class CLIGraphics extends Graphics {
 	private static final String CHOICE_TWO = "2";
 	private static final String CHOICE_THREE = "3";
 	private static final String CHOICE_FOUR = "4";
-	private static final String MOVE_OPTIONS = "What do you want to do?" + "\n"
-			+ CHOICE_ONE + Move.ATTACK + "\n" + CHOICE_TWO + Move.MOVEMENT
-			+ "\n" + CHOICE_THREE + Move.USEITEMCARD + "\n" + CHOICE_FOUR
-			+ Move.FINISH;
+	private static final String MOVE_OPTIONS = "What do you want to do?" + "\n" + CHOICE_ONE + Move.ATTACK + "\n" + CHOICE_TWO + Move.MOVEMENT + "\n"
+			+ CHOICE_THREE + Move.USEITEMCARD + "\n" + CHOICE_FOUR + Move.FINISH;
 
 	private static final String SECTOR_SELECTION = "Which sector?";
 	private static final String CARD_SELECTION = "Which card?";
 	private static final String CARD_PLAYER = "Player cards: ";
 	private static final String NO_CARD_PLAYER = "No card!";
 	private static final String PLAYER_POSITION = "Player position : ";
+	private static final String PLAYER_RACE_HUMAN = "You are a human. Your name is ";
+	private static final String PLAYER_RACE_ALIEN = "You are an alien. Your name is ";
 
 	private Player player;
 	private Map map;
@@ -49,6 +51,7 @@ public class CLIGraphics extends Graphics {
 		this.map = map;
 		printMap();
 		printPlayer();
+		initialized = true;
 	}
 
 	private void printMap() {
@@ -61,8 +64,7 @@ public class CLIGraphics extends Graphics {
 				Sector currentCell = map.getCell(i, j);
 				Application.print("/");
 				if (currentCell != null) {
-					Application.print(printTypeOfSector(currentCell)
-							+ currentCell.toString() + RESET_COLOR);
+					Application.print(printTypeOfSector(currentCell) + currentCell.toString() + RESET_COLOR);
 				} else {
 					Application.print("   ");
 
@@ -75,8 +77,7 @@ public class CLIGraphics extends Graphics {
 				Application.print("\\___/");
 				Sector currentCell = map.getCell(i, j);
 				if (currentCell != null) {
-					Application.print(printTypeOfSector(currentCell)
-							+ currentCell.toString() + RESET_COLOR);
+					Application.print(printTypeOfSector(currentCell) + currentCell.toString() + RESET_COLOR);
 				} else {
 					Application.print("   ");
 				}
@@ -93,6 +94,12 @@ public class CLIGraphics extends Graphics {
 	}
 
 	private void printPlayer() {
+		if (player instanceof HumanPlayer) {
+			Application.print(PLAYER_RACE_HUMAN);
+		} else {
+			Application.print(PLAYER_RACE_ALIEN);
+		}
+		Application.println(player.getPlayerCard().getCharacterName());
 		printPlayerPosition();
 		printCardPlayer();
 
@@ -150,31 +157,32 @@ public class CLIGraphics extends Graphics {
 
 	@Override
 	public void declareMove() {
+		boolean chosen = false;
 		printMap();
-		String move = null;
 		Scanner in = new Scanner(System.in);
 		do {
 			Application.println(MOVE_OPTIONS);
 			String line = in.next();
 			if (line.equals(CHOICE_ONE)) {
-				move = Move.ATTACK + " " + player.getPosition();
+				getNetworkInterface().sendToServer(Move.ATTACK, null);
+				chosen = true;
 			} else if (line.equals(CHOICE_TWO)) {
-				move = Move.MOVEMENT;
 				Application.println(SECTOR_SELECTION);
 				line = in.next();
-				move = move + " " + line;
+				getNetworkInterface().sendToServer(Move.MOVEMENT, line);
+				chosen = true;
 			} else if (line.equals(CHOICE_THREE)) {
-				move = Move.USEITEMCARD;
-				Application.println(CARD_SELECTION);
 				printCardPlayer();
+				Application.println(CARD_SELECTION);
 				line = in.next();
-				move = move + " " + line;
+				getNetworkInterface().sendToServer(Move.USEITEMCARD, line);
+				chosen = true;
 			} else if (line.equals(CHOICE_FOUR)) {
-				move = Move.FINISH;
+				getNetworkInterface().sendToServer(Move.ATTACK, null);
+				chosen = true;
 			}
-		} while (move != null);
+		} while (!chosen);
 		in.close();
-		getNetworkInterface().sendToServer(move);
 	}
 
 	@Override
@@ -185,8 +193,7 @@ public class CLIGraphics extends Graphics {
 		Scanner in = new Scanner(System.in);
 		move = in.next();
 		in.close();
-		getNetworkInterface().sendToServer(move);
-
+		getNetworkInterface().sendToServer(Move.SECTOR, move);
 	}
 
 	@Override
@@ -204,7 +211,7 @@ public class CLIGraphics extends Graphics {
 		Scanner in = new Scanner(System.in);
 		move = in.next();
 		in.close();
-		getNetworkInterface().sendToServer(move);
+		getNetworkInterface().sendToServer(Move.DELETECARD, move);
 	}
 
 	@Override

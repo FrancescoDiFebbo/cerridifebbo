@@ -28,12 +28,9 @@ public class SocketInterface implements NetworkInterface {
 	private Graphics graphics;
 
 	@Override
-	public void connect() throws IOException {
+	public void connect() {
 		try {
 			socket = new Socket(Connection.SERVER_SOCKET_ADDRESS, Connection.SERVER_SOCKET_PORT);
-		} catch (UnknownHostException e) {
-			LOG.log(Level.SEVERE, e.getMessage(), e);
-			return;
 		} catch (IOException e) {
 			LOG.log(Level.SEVERE, e.getMessage(), e);
 			return;
@@ -43,7 +40,12 @@ public class SocketInterface implements NetworkInterface {
 			out = new PrintWriter(socket.getOutputStream(), true);
 		} catch (IOException e) {
 			LOG.log(Level.SEVERE, e.getMessage(), e);
-			socket.close();
+			try {
+				socket.close();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			return;
 		}
 		try {
@@ -51,7 +53,12 @@ public class SocketInterface implements NetworkInterface {
 		} catch (IOException e) {
 			LOG.log(Level.SEVERE, e.getMessage(), e);
 			out.close();
-			socket.close();
+			try {
+				socket.close();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			return;
 		}
 		if (!registerClientOnServer()) {
@@ -61,10 +68,15 @@ public class SocketInterface implements NetworkInterface {
 	}
 
 	@Override
-	public void close() throws IOException {
-		in.close();
-		out.close();
-		socket.close();
+	public void close() {
+		try {
+			in.close();
+			out.close();
+			socket.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -99,12 +111,6 @@ public class SocketInterface implements NetworkInterface {
 				}
 			}
 		}).start();
-
-	}
-
-	@Override
-	public void sendToServer(String move) {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -163,6 +169,7 @@ public class SocketInterface implements NetworkInterface {
 			try {
 				ObjectInputStream ois = new ObjectInputStream(si.getSocket().getInputStream());
 				List<Object> info = (List<Object>) ois.readObject();
+				ois.close();
 				Map map = (Map) info.get(0);
 				Player player = (Player) info.get(1);
 				si.setGameInformation(map, player);
@@ -170,5 +177,11 @@ public class SocketInterface implements NetworkInterface {
 				LOG.log(Level.WARNING, e.getMessage(), e);
 			}
 		}
+	}
+
+	@Override
+	public void sendToServer(String action, String target) {
+		// TODO Auto-generated method stub
+
 	}
 }

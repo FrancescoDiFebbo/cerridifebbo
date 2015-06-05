@@ -24,7 +24,6 @@ public class MapContainer extends Container {
 	public MapContainer(Map map) {
 		mapLayout = new MapLayout(Map.ROWMAP, Map.COLUMNMAP);
 		SectorButtonFactory factory = new ConcreteSectorButtonFactory();
-		setForeground(GUIGraphics.FOREGROUND_COLOR);
 		for (int i = 0; i < Map.ROWMAP; i++) {
 			for (int j = 0; j < Map.COLUMNMAP; j++) {
 				Sector temp = map.getCell(i, j);

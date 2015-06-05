@@ -63,7 +63,6 @@ public class Client implements Runnable {
 
 			chosen = true;
 		}
-
 		if (network == null) {
 			return;
 		}

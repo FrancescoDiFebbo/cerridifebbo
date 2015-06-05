@@ -20,6 +20,8 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.management.timer.TimerMBean;
+
 public class Server {
 	private static final Logger LOG = Logger.getLogger(Server.class.getName());
 
@@ -28,6 +30,7 @@ public class Server {
 	private List<Game> games = new ArrayList<Game>();
 	private List<User> room = new ArrayList<User>();
 	private Timer timeout = new Timer();
+	private Map<User, Timer> timers = new HashMap<User, Timer>();
 
 	public static void main(String[] args) {
 		new Server().run();
@@ -110,11 +113,6 @@ public class Server {
 		game.run();
 	}
 
-	public Move getMoveFromUser(User user) {
-		users.get(user).getMoveFromUser(user);
-		return null;
-	}
-	
 	private void broadcastToRoom(String message, User excluded){
 		for (User user : room) {
 			if (user == excluded) {
@@ -149,9 +147,14 @@ public class Server {
 	}
 
 	public void declareSector(User user, Sector sector, boolean spotlight) {
+		if (sector == null) {
+			users.get(user).askForSector(user);
+		}
 		// TODO se sector è uguale a null il metodo chiederà al controller il
 		// settore da raggiungere altrimenti il controller
 		// si occuperà di mostrare il settore dichiarato
+		
+		
 		for (User u : users.keySet()) {
 			try {
 				users.get(u).sendMessage("Alieno avvistato nel settore E15", u.getId());
@@ -159,8 +162,37 @@ public class Server {
 				LOG.log(Level.WARNING, e.getMessage(), e);
 			}
 		}
+	}	
+
+	public void sendGameInformation(int size, it.polimi.ingsw.cerridifebbo.model.Map map, User user) {
+		users.get(user).sendGameInformation(size, map, user);
+		
 	}
 
+	public void askMoveFromUser(User user) {
+		users.get(user).askMoveFromUser(user, 10);
+		Timer timer = new Timer();
+		timers.put(user, timer);
+		timer.schedule(new UserTimer(user), 10000);
+		
+	}
+	
+	private class UserTimer extends TimerTask {
+		
+		User user;
+		
+		UserTimer(User user){
+			super();
+			this.user = user;
+		}
+
+		@Override
+		public void run() {
+			user.putMove(new Move(Move.TIMEFINISHED, null, null));			
+		}
+		
+	}
+	
 	private String readLine(String format, Object... args) {
 		if (System.console() != null) {
 			return System.console().readLine(format, args);
@@ -180,10 +212,5 @@ public class Server {
 			read = null;
 		}
 		return read;
-	}
-
-	public void sendGameInformation(int size, it.polimi.ingsw.cerridifebbo.model.Map map, User user) {
-		users.get(user).sendGameInformation(size, map, user);
-		
 	}
 }

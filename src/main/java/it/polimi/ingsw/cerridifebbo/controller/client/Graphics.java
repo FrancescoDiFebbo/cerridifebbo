@@ -7,6 +7,11 @@ import it.polimi.ingsw.cerridifebbo.model.Player;
 public abstract class Graphics {
 
 	private NetworkInterface network;
+	protected boolean initialized;
+
+	public boolean isInitialized() {
+		return initialized;
+	}
 
 	public abstract void initialize(Map map, Player player);
 
