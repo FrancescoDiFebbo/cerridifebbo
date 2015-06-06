@@ -1,7 +1,6 @@
 package it.polimi.ingsw.cerridifebbo.view.gui;
 
 import it.polimi.ingsw.cerridifebbo.controller.client.Graphics;
-import it.polimi.ingsw.cerridifebbo.controller.common.Command;
 import it.polimi.ingsw.cerridifebbo.model.Card;
 import it.polimi.ingsw.cerridifebbo.model.HumanPlayer;
 import it.polimi.ingsw.cerridifebbo.model.Map;
@@ -33,14 +32,12 @@ public class GUIGraphics extends Graphics implements ActionListener {
 	private ActionListener moveListener;
 	private boolean declareSector;
 	private boolean declareCard;
-	private Player player;
 	private String playerRace;
-	private static String HUMAN = "HUMAN";
-	private static String ALIEN = "ALIEN";
+	public static final String HUMAN = "HUMAN";
+	public static final String ALIEN = "ALIEN";
 
 	@Override
 	public void initialize(Map map, Player player) {
-		this.player = player;
 		if (player instanceof HumanPlayer) {
 			playerRace = HUMAN;
 		} else {
@@ -122,27 +119,36 @@ public class GUIGraphics extends Graphics implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() instanceof SectorButton) {
 			if (declareSector) {
-				getNetworkInterface().sendToServer(Move.SECTOR, e.getActionCommand());
+				getNetworkInterface().sendToServer(Move.SECTOR,
+						e.getActionCommand());
 				mapGrid.deleteListenersToButton(moveListener);
 				declareSector = false;
 			} else {
-				getNetworkInterface().sendToServer(Move.MOVEMENT, e.getActionCommand());
+				getNetworkInterface().sendToServer(Move.MOVEMENT,
+						e.getActionCommand());
 				deleteListeners(moveListener);
 			}
 		} else if (e.getSource() instanceof CardButton) {
 			if (declareCard) {
-				getNetworkInterface().sendToServer(Move.DELETECARD, e.getActionCommand());
+				getNetworkInterface().sendToServer(Move.DELETECARD,
+						e.getActionCommand());
 				cards.deleteListenersToButton(moveListener);
 				declareCard = false;
 			} else {
-				getNetworkInterface().sendToServer(Move.USEITEMCARD, e.getActionCommand());
+				getNetworkInterface().sendToServer(Move.USEITEMCARD,
+						e.getActionCommand());
 				deleteListeners(moveListener);
 			}
 		} else if (e.getSource().equals(buttonPanel.getComponent(0))) {
-			getNetworkInterface().sendToServer(Move.ATTACK, null);
+			if (ALIEN.equals(playerRace)) {
+				getNetworkInterface().sendToServer(Move.ATTACK, null);
+			} else {
+				getNetworkInterface().sendToServer(Move.FINISH, null);
+			}
 			deleteListeners(moveListener);
-		} else if (e.getSource().equals(buttonPanel.getComponent(1))) {
-			getNetworkInterface().sendToServer(Move.FINISH,null);
+		} else if (ALIEN.equals(playerRace)
+				&& e.getSource().equals(buttonPanel.getComponent(1))) {
+			getNetworkInterface().sendToServer(Move.FINISH, null);
 			deleteListeners(moveListener);
 		}
 	}
@@ -155,7 +161,6 @@ public class GUIGraphics extends Graphics implements ActionListener {
 
 	@Override
 	public void updatePlayerPosition(Player player) {
-		this.player = player;
 		mapGrid.setPlayerPawn(player);
 	}
 
@@ -167,13 +172,11 @@ public class GUIGraphics extends Graphics implements ActionListener {
 
 	@Override
 	public void deletePlayerCard(Player player, Card card) {
-		this.player = player;
 		cards.remove(card.toString());
 	}
 
 	@Override
 	public void addPlayerCard(Player player, Card card) {
-		this.player = player;
 		cards.add(new CardButton(card.toString(), playerRace));
 
 	}

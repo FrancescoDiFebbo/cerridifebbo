@@ -36,24 +36,29 @@ public class ButtonPanel extends JPanel {
 		finishTurn = new JButton(FINISH_TURN);
 		finishTurn.setBackground(GUIGraphics.BACKGROUND_COLOR);
 		finishTurn.setForeground(GUIGraphics.getColorRace(playerRace));
-		attack = new JButton(ATTACK);
-		attack.setBackground(GUIGraphics.BACKGROUND_COLOR);
-		attack.setForeground(GUIGraphics.getColorRace(playerRace));
-		add(attack);
-		attack.setBorder(thickBorder);
+		if (GUIGraphics.ALIEN.equals(playerRace)) {
+			attack = new JButton(ATTACK);
+			attack.setBackground(GUIGraphics.BACKGROUND_COLOR);
+			attack.setForeground(GUIGraphics.getColorRace(playerRace));
+			add(attack);
+			attack.setBorder(thickBorder);
+		}
 		add(finishTurn);
 		finishTurn.setBorder(thickBorder);
 
 	}
 
 	public void addListenersToButton(ActionListener moveListener) {
-
-		attack.addActionListener(moveListener);
+		if (GUIGraphics.ALIEN.equals(playerRace)) {
+			attack.addActionListener(moveListener);
+		}
 		finishTurn.addActionListener(moveListener);
 	}
 
 	public void deleteListenersToButton(ActionListener moveListener) {
-		attack.removeActionListener(moveListener);
+		if (GUIGraphics.ALIEN.equals(playerRace)) {
+			attack.removeActionListener(moveListener);
+		}
 		finishTurn.removeActionListener(moveListener);
 	}
 

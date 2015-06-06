@@ -41,7 +41,7 @@ public class CLIGraphics extends Graphics {
 	private static final String PLAYER_POSITION = "Player position : ";
 	private static final String PLAYER_RACE_HUMAN = "You are a human. Your name is ";
 	private static final String PLAYER_RACE_ALIEN = "You are an alien. Your name is ";
-
+	private Scanner in = new Scanner(System.in);
 	private Player player;
 	private Map map;
 
@@ -169,7 +169,7 @@ public class CLIGraphics extends Graphics {
 	public void declareMove() {
 		boolean chosen = false;
 		printMap();
-		Scanner in = new Scanner(System.in);
+		printPlayer();
 		do {
 			printOptions();
 			String line = in.nextLine();
@@ -199,7 +199,6 @@ public class CLIGraphics extends Graphics {
 				chosen = true;
 			}
 		} while (!chosen);
-		in.close();
 	}
 
 	@Override
@@ -207,10 +206,10 @@ public class CLIGraphics extends Graphics {
 		printMap();
 		Application.println(SECTOR_SELECTION);
 		String move = null;
-		Scanner in = new Scanner(System.in);
+
 		move = in.nextLine();
 		move = move.replace(" ", "");
-		in.close();
+
 		getNetworkInterface().sendToServer(Move.SECTOR, move);
 	}
 
@@ -226,10 +225,8 @@ public class CLIGraphics extends Graphics {
 		printCardPlayer();
 		Application.println(CARD_SELECTION);
 		String move = null;
-		Scanner in = new Scanner(System.in);
 		move = in.nextLine();
 		move = move.replace(" ", "");
-		in.close();
 		getNetworkInterface().sendToServer(Move.DELETECARD, move);
 	}
 
