@@ -9,7 +9,7 @@ import java.rmi.NotBoundException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Client implements Runnable {
+public class Client {
 	private static final Logger LOG = Logger.getLogger(Client.class.getName());
 
 	private static String NETWORK_INTERFACE_SELECTION = "Select '1' for RMI interface, '2' for socket interface";
@@ -21,7 +21,6 @@ public class Client implements Runnable {
 		new Client().run();
 	}
 
-	@Override
 	public void run() {
 		NetworkInterface network = null;
 		boolean chosen = false;
@@ -80,8 +79,6 @@ public class Client implements Runnable {
 
 		InputStreamReader isr = new InputStreamReader(System.in);
 		BufferedReader br = new BufferedReader(isr);
-		String read = br.readLine();
-
-		return read;
+		return br.readLine();
 	}
 }

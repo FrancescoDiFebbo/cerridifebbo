@@ -4,31 +4,24 @@ import it.polimi.ingsw.cerridifebbo.model.Map;
 import it.polimi.ingsw.cerridifebbo.model.User;
 
 import java.io.IOException;
-import java.util.Timer;
 import java.util.UUID;
 
-public abstract class ServerConnection {
-	
-	protected final Server server;
-	
-	public ServerConnection(Server server) {
-		this.server = server;
-	}
-	
-	public abstract void start() throws IOException;
+public interface ServerConnection extends Runnable{
 
-	public abstract void close() throws IOException;
+	public abstract void start();
+
+	public abstract void close();
 
 	public abstract boolean registerClientOnServer(UUID id, Object clientInterface);
-	
-	public abstract void askMoveFromUser(User user, int time);
 
-	public abstract void sendMessage(String string, UUID selected) throws IOException;
+	public abstract void askMoveFromUser(User user);
 
-	public abstract void sendGameInformation(int size, Map map, User user);
+	public abstract void sendMessage(User user, String string) throws IOException;
 
-	public abstract void sendMove(UUID id, String action, String target);
+	public abstract void sendGameInformation(User user, int size, Map map);
+
+	public abstract void sendMove(User user, String action, String target);
 
 	public abstract void askForSector(User user);
-	
+
 }

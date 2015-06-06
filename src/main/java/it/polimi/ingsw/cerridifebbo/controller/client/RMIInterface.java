@@ -2,7 +2,6 @@ package it.polimi.ingsw.cerridifebbo.controller.client;
 
 import it.polimi.ingsw.cerridifebbo.controller.common.*;
 import it.polimi.ingsw.cerridifebbo.model.Map;
-import it.polimi.ingsw.cerridifebbo.model.Move;
 import it.polimi.ingsw.cerridifebbo.model.Player;
 
 import java.rmi.AlreadyBoundException;
@@ -24,10 +23,10 @@ public class RMIInterface extends UnicastRemoteObject implements NetworkInterfac
 	private static final Logger LOG = Logger.getLogger(RMIInterface.class.getName());
 	private static final int MAX_ATTEMPTS = 5;
 
-	private RemoteServer server;
+	private transient RemoteServer server;
 	private UUID id = UUID.randomUUID();
 	private int port;	
-	private Graphics graphics;
+	private transient Graphics graphics;
 	
 	protected RMIInterface() throws RemoteException {
 		super();
@@ -83,7 +82,7 @@ public class RMIInterface extends UnicastRemoteObject implements NetworkInterfac
 	@Override
 	public boolean registerClientOnServer() {
 		try {
-			return server.registerClientOnServer(id, port);
+			return server.registerOnServer(id, port);
 		} catch (RemoteException e) {
 			LOG.log(Level.SEVERE, e.getMessage(), e);
 			return false;
@@ -134,12 +133,24 @@ public class RMIInterface extends UnicastRemoteObject implements NetworkInterfac
 		while (attempts < MAX_ATTEMPTS) {
 			try {
 				server.sendMove(id, action, target);
-				System.out.println(action + " " + target) ;
+				Application.println(action + " " + target) ;
 				break;
 			} catch (RemoteException e) {
 				attempts++;
 				LOG.log(Level.INFO, e.getMessage(), e);
 			}	
 		}		
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		// TODO Auto-generated method stub
+		return super.equals(obj);
+	}
+	
+	@Override
+	public int hashCode() {
+		// TODO Auto-generated method stub
+		return super.hashCode();
 	}
 }

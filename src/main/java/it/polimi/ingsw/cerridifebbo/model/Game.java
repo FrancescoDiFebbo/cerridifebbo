@@ -4,7 +4,7 @@ import it.polimi.ingsw.cerridifebbo.controller.server.Server;
 
 import java.util.List;
 
-public class Game {
+public class Game implements Runnable{
 
 	private static final int MAX_TURNS = 39;
 
@@ -28,6 +28,14 @@ public class Game {
 
 	public GameState getState() {
 		return state;
+	}
+
+	public void sendToUsers(String message) {
+		server.broadcastPlayers(this, message);
+	}
+
+	public void sendToSpecificUser(User user, String message) {
+		server.sendMessage(user, message);
 	}
 
 	public void nextTurn() {
@@ -69,6 +77,7 @@ public class Game {
 		return turn;
 	}
 
+	@Override
 	public void run() {
 		state.handle();
 	}
@@ -106,8 +115,8 @@ public class Game {
 		}
 		server.sendGameInformation(size, map, user);
 	}
-	
-	public boolean serverIsOn(){
-		return server!=null;
+
+	public boolean serverIsOn() {
+		return server != null;
 	}
 }

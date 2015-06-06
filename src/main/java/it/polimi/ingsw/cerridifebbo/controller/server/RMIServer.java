@@ -12,46 +12,59 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class RMIServer extends ServerConnection {
+public class RMIServer extends UnicastRemoteObject implements ServerConnection, RemoteServer {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private static final Logger LOG = Logger.getLogger(ServerConnection.class.getName());
-
 	private static final int MAX_ATTEMPTS = 5;
 
-	private Registry registry;
+	private transient Registry registry;
+	private transient Thread thread;
+	private transient Map<User, RemoteClient> clients = new HashMap<User, RemoteClient>();
+	private final transient Server server;
 
-	private Map<UUID, RemoteClient> clients = new HashMap<UUID, RemoteClient>();
-
-	public RMIServer(Server server) {
-		super(server);
+	public RMIServer(Server server) throws RemoteException {
+		this.server = server;
 	}
 
 	@Override
-	public void start() throws RemoteException {
-		RemoteServer remoteServer = new ServerImpl(this);
-		registry = LocateRegistry.createRegistry(Connection.SERVER_REGISTRY_PORT);
+	public void run() {
 		try {
-			registry.bind(RemoteServer.RMI_ID, remoteServer);
-		} catch (AlreadyBoundException e) {
+			registry = LocateRegistry.createRegistry(Connection.SERVER_REGISTRY_PORT);
+			registry.bind(RemoteServer.RMI_ID, this);
+		} catch (RemoteException | AlreadyBoundException e) {
 			LOG.log(Level.SEVERE, e.getMessage(), e);
 			Application.exitError();
 		}
 	}
 
 	@Override
-	public void close() throws RemoteException {
+	public void start() {
+		thread = new Thread(this, "RMI_SERVER");
+		thread.start();
+	}
+
+	@Override
+	public void close() {
 		if (registry != null) {
 			try {
 				registry.unbind(RemoteServer.RMI_ID);
-			} catch (NotBoundException e) {
+			} catch (NotBoundException | RemoteException e) {
 				LOG.log(Level.SEVERE, e.getMessage(), e);
 				Application.exitError();
 			}
+		}
+		if (thread != null) {
+			thread.interrupt();
 		}
 	}
 
@@ -66,11 +79,11 @@ public class RMIServer extends ServerConnection {
 			LOG.log(Level.SEVERE, e.getMessage(), e);
 			return false;
 		}
-		clients.put(id, client);
 		LOG.info("Client " + id + " connected at port " + clientInterface);
-		server.registerClientOnServer(id, this);
+		User newUser = server.registerClientOnServer(id, this);
+		clients.put(newUser, client);
 		try {
-			clients.get(id).sendMessage("You are connected to the server");
+			clients.get(newUser).sendMessage("You are connected to the server");
 		} catch (RemoteException e) {
 			LOG.log(Level.WARNING, e.getMessage(), e);
 		}
@@ -78,11 +91,11 @@ public class RMIServer extends ServerConnection {
 	}
 
 	@Override
-	public void askMoveFromUser(User user, int time) {
+	public void askMoveFromUser(User user) {
 		int attempts = 0;
 		while (attempts < MAX_ATTEMPTS) {
 			try {
-				clients.get(user.getId()).askForMove();
+				clients.get(user).askForMove();
 				break;
 			} catch (RemoteException e) {
 				attempts++;
@@ -98,35 +111,69 @@ public class RMIServer extends ServerConnection {
 	}
 
 	@Override
-	public void sendMessage(String string, UUID selected) throws RemoteException {
-		if (selected == null) {
-			for (UUID id : clients.keySet()) {
-				clients.get(id).sendMessage(string);
-			}
-		} else {
-			clients.get(selected).sendMessage(string);
-		}
+	public void sendMessage(User user, String message) throws RemoteException {
+		clients.get(user).sendMessage(message);
 	}
 
 	@Override
-	public void sendGameInformation(int size, it.polimi.ingsw.cerridifebbo.model.Map map, User user) {
+	public void sendGameInformation(User user, int size, it.polimi.ingsw.cerridifebbo.model.Map map) {
 		try {
-			clients.get(user.getId()).sendGameInformation(size, map, user.getPlayer());
+			clients.get(user).sendGameInformation(size, map, user.getPlayer());
 		} catch (RemoteException e) {
 			LOG.log(Level.WARNING, e.getMessage(), e);
 		}
 	}
 
-	
 	@Override
-	public void sendMove(UUID id, String action, String target) {
+	public void sendMove(User user, String action, String target) {
 		switch (action) {
 		case Move.ATTACK:
+			user.putMove(new Move(action, null, null));
 			break;
-
+		case Move.MOVEMENT:
+			user.putMove(new Move(action, null, null));
+			break;
+		case Move.FINISH:
+			user.putMove(new Move(action, null, null));
+			break;
+		case Move.USEITEMCARD:
+			user.putMove(new Move(action, null, null));
+			break;
 		default:
 			break;
 		}
-		
 	}
+
+	@Override
+	public boolean registerOnServer(UUID id, int port) throws RemoteException {
+		return registerClientOnServer(id, port);
+	}
+
+	@Override
+	public void sendMessage(UUID client, String message) throws RemoteException {
+		Application.println(client.toString().split("-")[0] + ") " + message);
+	}
+
+	@Override
+	public void sendMove(UUID id, String action, String target) throws RemoteException {
+		for (User user : clients.keySet()) {
+			if (user.getId().equals(id)) {
+				sendMove(user, action, target);
+				return;
+			}
+		}
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		// TODO Auto-generated method stub
+		return super.equals(obj);
+	}
+
+	@Override
+	public int hashCode() {
+		// TODO Auto-generated method stub
+		return super.hashCode();
+	}
+
 }

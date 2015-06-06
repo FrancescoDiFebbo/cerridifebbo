@@ -27,9 +27,9 @@ public class GameTest {
 	@Test
 	public void test() {
 		ArrayList<User> users = new ArrayList<User>();
-		users.add(new User(UUID.randomUUID()));
-		users.add(new User(UUID.randomUUID()));
-		users.add(new User(UUID.randomUUID()));
+		users.add(new User(null, null));
+		users.add(new User(null, null));
+		users.add(new User(null, null));
 		Game game = new Game(null, users);
 		game.run();
 		assertNotNull(game.getDeck());
@@ -62,7 +62,7 @@ public class GameTest {
 	public void testCards() {
 		ArrayList<User> users = new ArrayList<User>();
 		for (int i = 0; i < CharacterDeckFactory.MAX_PLAYERS; i++) {
-			users.add(new User(UUID.randomUUID()));
+			users.add(new User(null, null));
 		}
 		Game game = new Game(null, users);
 		game.run();
@@ -86,7 +86,7 @@ public class GameTest {
 	public void testMovementAndAttack() {
 		ArrayList<User> users = new ArrayList<User>();
 		for (int i = 0; i < CharacterDeckFactory.MAX_PLAYERS; i++) {
-			users.add(new User(UUID.randomUUID()));
+			users.add(new User(null, null));
 		}
 		Game game = new Game(null, users);
 		game.run();
@@ -105,7 +105,7 @@ public class GameTest {
 	public void testEscapeHatches() {
 		ArrayList<User> users = new ArrayList<User>();
 		for (int i = 0; i < CharacterDeckFactory.MAX_PLAYERS; i++) {
-			users.add(new User(UUID.randomUUID()));
+			users.add(new User(null, null));
 		}
 		Game game = new Game(null, users);
 		game.run();
@@ -115,8 +115,7 @@ public class GameTest {
 			Player player = user.getPlayer();
 			if (player instanceof HumanPlayer) {
 				player.setPosition(hatches.get(sector));
-				hatches.get(sector++).playerEnters(player, game.getDeck())
-						.performAction(player, null, game);
+				hatches.get(sector++).playerEnters(player, game.getDeck()).performAction(player, null, game);
 			}
 		}
 	}

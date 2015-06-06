@@ -15,11 +15,12 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class SocketServer extends ServerConnection implements Runnable {
+public class SocketServer implements ServerConnection {
 	private static final Logger LOG = Logger.getLogger(SocketServer.class.getName());
 	private static final int PORT = 8888;
 
 	private int port;
+	private final Server server;
 	private String address;
 	private ServerSocket serverSocket;
 	private Thread thread;
@@ -33,7 +34,7 @@ public class SocketServer extends ServerConnection implements Runnable {
 	}
 
 	public SocketServer(Server server, int port, String address) {
-		super(server);
+		this.server = server;
 		this.port = port;
 		this.address = address;
 		this.listening = false;
@@ -43,16 +44,16 @@ public class SocketServer extends ServerConnection implements Runnable {
 
 	@Override
 	public void start() {
-		thread = new Thread(this);
+		thread = new Thread(this, "SOCKET_SERVER");
 		thread.start();
 	}
 
 	@Override
-	public void close() throws IOException {
+	public void close() {
+		endListening();
 		if (thread != null) {
 			thread.interrupt();
 		}
-		endListening();
 
 	}
 
@@ -84,12 +85,21 @@ public class SocketServer extends ServerConnection implements Runnable {
 		}
 	}
 
-	private void endListening() throws IOException {
+	private void endListening() {
 		if (listening) {
 			listening = false;
-			for (SocketHandler sh : handlers)
-				sh.close();
-			serverSocket.close();
+			for (SocketHandler sh : handlers) {
+				try {
+					sh.close();
+				} catch (IOException e) {
+					LOG.log(Level.WARNING, e.getMessage(), e);
+				}
+			}
+			try {
+				serverSocket.close();
+			} catch (IOException e) {
+				LOG.log(Level.WARNING, e.getMessage(), e);
+			}
 			status = "closed";
 		}
 	}
@@ -125,25 +135,25 @@ public class SocketServer extends ServerConnection implements Runnable {
 	}
 
 	@Override
-	public void sendMessage(String string, UUID selected) throws IOException {
-		if (selected == null) {
+	public void sendMessage(User user, String string) throws IOException {
+		if (user == null) {
 			for (UUID id : clients.keySet()) {
 				clients.get(id).sendMessage(string);
 			}
 		} else {
-			clients.get(selected).sendMessage(string);
+			clients.get(user).sendMessage(string);
 		}
 
 	}
 
 	@Override
-	public void sendGameInformation(int size, it.polimi.ingsw.cerridifebbo.model.Map map, User user) {
+	public void sendGameInformation(User user, int size, it.polimi.ingsw.cerridifebbo.model.Map map) {
 		clients.get(user.getId()).sendGameInformation(size, map, user);
 
 	}
 
 	@Override
-	public void askMoveFromUser(User user, int time) {
+	public void askMoveFromUser(User user) {
 		// TODO Auto-generated method stub
 
 	}
@@ -151,13 +161,13 @@ public class SocketServer extends ServerConnection implements Runnable {
 	@Override
 	public void askForSector(User user) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
-	public void sendMove(UUID id, String action, String target) {
+	public void sendMove(User user, String action, String target) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

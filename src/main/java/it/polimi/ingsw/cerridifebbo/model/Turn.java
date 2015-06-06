@@ -1,6 +1,9 @@
 package it.polimi.ingsw.cerridifebbo.model;
 
+import it.polimi.ingsw.cerridifebbo.controller.common.Application;
+
 import java.util.List;
+import java.util.Random;
 
 public class Turn extends GameState {
 
@@ -23,14 +26,7 @@ public class Turn extends GameState {
 		Player player = user.getPlayer();
 		if (canPlay(player)) {
 			while (!state.finish) {
-				Move move = null;
-				if (game.serverIsOn()) {
-					game.askMoveFromUser(user);
-					while (move == null) {
-						move = user.getMove();
-					}
-				}
-				move = new Move(Move.FINISH, null, null);
+				Move move = checkForServer(user);
 				try {
 					perform(player, move, state);
 				} catch (IllegalMoveException e) {
@@ -43,8 +39,27 @@ public class Turn extends GameState {
 		}
 	}
 
+	private Move checkForServer(User user) {
+		Move move = null;
+		if (game.serverIsOn()) {
+			user.getConnection().askMoveFromUser(user);
+			do {
+				move = user.getMove();
+			} while (move == null);
+		} else {
+			move = new Move(Move.TIMEFINISHED, null, null);
+		}
+		return move;
+	}
+
 	private boolean canPlay(Player player) {
-		return player.isAlive() && (player instanceof HumanPlayer && !((HumanPlayer) player).isEscaped());
+		if (!player.isAlive()) {
+			return false;
+		}
+		if (player instanceof HumanPlayer && !((HumanPlayer) player).isEscaped()) {
+			return true;
+		}
+		return true;
 	}
 
 	private void perform(Player player, Move move, PlayerTurnState state) throws IllegalMoveException {
@@ -52,7 +67,9 @@ public class Turn extends GameState {
 		Sector target = move.getTarget();
 		switch (action) {
 		case Move.MOVEMENT:
-			movement(player, target, state);
+			Sector sector = randomReachableSector(player);
+			movement(player, sector, state);
+
 			break;
 		case Move.ATTACK:
 			attack(player, state);
@@ -71,8 +88,14 @@ public class Turn extends GameState {
 		}
 	}
 
+	private Sector randomReachableSector(Player player) {
+		Random random = new Random();
+		return player.getPosition().getReachableSectors(player.getMaxMovement())
+				.get(random.nextInt(player.getPosition().getReachableSectors(player.getMaxMovement()).size()));
+	}
+
 	private void movement(Player player, Object target, PlayerTurnState state) throws IllegalMoveException {
-		if (player.movement((Sector) target, null) && !state.noMoreMovement) {
+		if (player.movement((Sector) target, game) && !state.noMoreMovement) {
 			state.noMoreMovement = true;
 		} else {
 			throw new IllegalMoveException();
@@ -104,4 +127,5 @@ public class Turn extends GameState {
 		private boolean finish = false;
 		private boolean noMoreMovement = false;
 	}
+
 }

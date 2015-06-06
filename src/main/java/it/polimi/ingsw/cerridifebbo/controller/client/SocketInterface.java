@@ -12,7 +12,6 @@ import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -43,8 +42,7 @@ public class SocketInterface implements NetworkInterface {
 			try {
 				socket.close();
 			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+				LOG.log(Level.WARNING, e1.getMessage(), e1);
 			}
 			return;
 		}
@@ -56,8 +54,7 @@ public class SocketInterface implements NetworkInterface {
 			try {
 				socket.close();
 			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+				LOG.log(Level.WARNING, e1.getMessage(), e1);
 			}
 			return;
 		}
@@ -74,8 +71,8 @@ public class SocketInterface implements NetworkInterface {
 			out.close();
 			socket.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOG.log(Level.WARNING, e.getMessage(), e);
+			Application.exitError();
 		}
 	}
 
