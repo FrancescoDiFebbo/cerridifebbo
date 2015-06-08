@@ -131,7 +131,7 @@ public class Turn extends GameState {
 	}
 
 	private void attack(User user, PlayerTurnState state) throws IllegalMoveException {
-		if (state.noMoreMovement) {
+		if (state.noMoreMovement && !state.noMoreAttack) {
 			user.getPlayer().attack(game);
 		} else {
 			throw new IllegalMoveException();
@@ -139,6 +139,9 @@ public class Turn extends GameState {
 	}
 
 	private void useCard(User user, String target) throws IllegalMoveException {
+		if (user.getPlayer() instanceof AlienPlayer) {
+			throw new IllegalMoveException();
+		}
 		Card selectedCard = null;
 		for (Card own : user.getPlayer().getOwnCards()) {
 			if (own.toString().equalsIgnoreCase(target)) {
@@ -160,6 +163,7 @@ public class Turn extends GameState {
 	private class PlayerTurnState {
 		private boolean finish = false;
 		private boolean noMoreMovement = false;
+		private boolean noMoreAttack = false;
 	}
 
 }

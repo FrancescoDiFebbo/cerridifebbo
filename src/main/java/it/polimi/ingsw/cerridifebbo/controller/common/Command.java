@@ -23,7 +23,7 @@ public abstract class Command {
 		java.util.Map<String, String> params = new HashMap<String, String>();
 		String[] splitted = line.split("&");
 		for (int i = 0; i < splitted.length; i++) {
-			params.put(splitted[i].split("=")[0], splitted[i].split("=")[1]);
+			params.put(splitted[i].split("=")[0].replace("_", "\n"), splitted[i].split("=")[1].replace("_", "\n"));
 		}
 		return params;
 	}
@@ -39,6 +39,6 @@ public abstract class Command {
 			sb.append("=");
 			sb.append(args[i]);
 		}
-		return sb.toString();
+		return sb.toString().replace("\n", "_");
 	}
 }

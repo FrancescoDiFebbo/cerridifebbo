@@ -1,5 +1,6 @@
 package it.polimi.ingsw.cerridifebbo.controller.server;
 
+import it.polimi.ingsw.cerridifebbo.controller.common.Application;
 import it.polimi.ingsw.cerridifebbo.controller.common.Connection;
 import it.polimi.ingsw.cerridifebbo.model.Card;
 import it.polimi.ingsw.cerridifebbo.model.Move;
@@ -106,9 +107,9 @@ public class SocketServer implements ServerConnection {
 		SocketHandler handler = (SocketHandler) clientInterface;
 		handler.setLinkedUser(newUser);
 		handler.setName("HANDLER-" + id.toString().split("-")[0]);
-		clients.put(newUser, handler);
-		LOG.info("Client " + id + " connected on socket");		
-		clients.get(newUser).sendMessage("You are connected to the server");
+		clients.put(newUser, handler);			
+		clients.get(newUser).sendMessage("You are connected to the server");	
+		Application.println("Client " + id + " connected on socket");
 		return true;
 	}
 

@@ -80,7 +80,6 @@ public class RMIServer extends UnicastRemoteObject implements ServerConnection, 
 			LOG.log(Level.SEVERE, e.getMessage(), e);
 			return false;
 		}
-		LOG.info("Client " + id + " connected at port " + clientInterface);
 		User newUser = server.registerClientOnServer(id, this);
 		clients.put(newUser, client);
 		try {
@@ -88,6 +87,7 @@ public class RMIServer extends UnicastRemoteObject implements ServerConnection, 
 		} catch (RemoteException e) {
 			LOG.log(Level.WARNING, e.getMessage(), e);
 		}
+		Application.println("Client " + id + " connected at port " + clientInterface);
 		return true;
 	}
 

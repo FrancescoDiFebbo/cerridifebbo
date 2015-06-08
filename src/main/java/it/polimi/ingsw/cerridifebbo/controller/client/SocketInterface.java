@@ -176,10 +176,11 @@ public class SocketInterface implements NetworkInterface {
 		private static void receiveUpdate(SocketInterface si) {
 			ObjectInputStream ois = si.getOis();
 			try {
-				List<Object> info = (List<Object>) ois.readObject();
-				Player player = (Player) info.get(0);
-				Card card = (Card) info.get(1);
-				boolean added = (Boolean) info.get(2);
+				List<Object> update = (List<Object>) ois.readObject();
+				Application.println(update.toString());
+				Player player = (Player) update.get(0);
+				Card card = (Card) update.get(1);
+				boolean added = (Boolean) update.get(2);
 				si.updatePlayer(player, card, added);
 			} catch (IOException | ClassNotFoundException e) {
 				LOG.log(Level.WARNING, e.getMessage(), e);
