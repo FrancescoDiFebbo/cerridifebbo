@@ -61,7 +61,7 @@ public class GUIGraphics extends Graphics implements ActionListener {
 		contentPane.add(buttonPanel);
 		contentPane.setLayout(new MainWindowLayout());
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.pack();
+		frame.setMinimumSize(frame.getMinimumSize());
 		frame.setVisible(true);
 		moveListener = this;
 		initialized = true;
@@ -71,8 +71,15 @@ public class GUIGraphics extends Graphics implements ActionListener {
 		} else {
 			message = PLAYER_RACE_ALIEN;
 		}
-		serverMessage.addText(message + player.getPlayerCard().getCharacterName());
-
+		serverMessage.addText(message
+				+ player.getPlayerCard().getCharacterName());
+		if (numberOfPlayers == 2) {
+			serverMessage
+					.addText("You are not alone. There is a creature on the ship");
+		} else {
+			serverMessage.addText("You are not alone. There are "
+					+ (numberOfPlayers - 1) + " creatures on the ship");
+		}
 	}
 
 	public static Color getColorRace(String race) {
@@ -85,7 +92,7 @@ public class GUIGraphics extends Graphics implements ActionListener {
 	@Override
 	public void sendMessage(String message) {
 		serverMessage.addText(message);
-
+		serverMessage.repaint();
 	}
 
 	@Override
@@ -93,12 +100,13 @@ public class GUIGraphics extends Graphics implements ActionListener {
 		sendMessage("TURN: " + ++turn);
 		sendMessage("It's your turn");
 		timerPanel.startTimer();
+		timerPanel.repaint();
 	}
 
 	@Override
 	public void endTurn() {
+		timerPanel.stopTimer();
 		sendMessage("------------------------------");
-		timerPanel.setVisible(false);
 	}
 
 	@Override
@@ -123,20 +131,24 @@ public class GUIGraphics extends Graphics implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() instanceof SectorButton) {
 			if (declareSector) {
-				getNetworkInterface().sendToServer(Move.SECTOR, e.getActionCommand());
+				getNetworkInterface().sendToServer(Move.SECTOR,
+						e.getActionCommand());
 				mapGrid.deleteListenersToButton(moveListener);
 				declareSector = false;
 			} else {
-				getNetworkInterface().sendToServer(Move.MOVEMENT, e.getActionCommand());
+				getNetworkInterface().sendToServer(Move.MOVEMENT,
+						e.getActionCommand());
 				deleteListeners(moveListener);
 			}
 		} else if (e.getSource() instanceof CardButton) {
 			if (declareCard) {
-				getNetworkInterface().sendToServer(Move.DELETECARD, e.getActionCommand());
+				getNetworkInterface().sendToServer(Move.DELETECARD,
+						e.getActionCommand());
 				cards.deleteListenersToButton(moveListener);
 				declareCard = false;
 			} else {
-				getNetworkInterface().sendToServer(Move.USEITEMCARD, e.getActionCommand());
+				getNetworkInterface().sendToServer(Move.USEITEMCARD,
+						e.getActionCommand());
 				deleteListeners(moveListener);
 			}
 		} else if (e.getSource().equals(buttonPanel.getComponent(0))) {
@@ -146,7 +158,8 @@ public class GUIGraphics extends Graphics implements ActionListener {
 				getNetworkInterface().sendToServer(Move.FINISH, null);
 			}
 			deleteListeners(moveListener);
-		} else if (ALIEN.equals(playerRace) && e.getSource().equals(buttonPanel.getComponent(1))) {
+		} else if (ALIEN.equals(playerRace)
+				&& e.getSource().equals(buttonPanel.getComponent(1))) {
 			getNetworkInterface().sendToServer(Move.FINISH, null);
 			deleteListeners(moveListener);
 		}
@@ -173,12 +186,13 @@ public class GUIGraphics extends Graphics implements ActionListener {
 	@Override
 	public void deletePlayerCard(Player player, Card card) {
 		cards.remove(card.toString());
+		cards.repaint();
 	}
 
 	@Override
 	public void addPlayerCard(Player player, Card card) {
 		cards.add(new CardButton(card.toString(), playerRace));
-
+		cards.repaint();
 	}
 
 }

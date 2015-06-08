@@ -1,10 +1,7 @@
 package it.polimi.ingsw.cerridifebbo.view.gui;
 
-import it.polimi.ingsw.cerridifebbo.model.Player;
-
 import java.awt.Container;
 import java.awt.Font;
-
 import javax.swing.BoxLayout;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -47,7 +44,6 @@ public class ServerScrollPane extends JScrollPane {
 		verticalScrollBar.setForeground(GUIGraphics.getColorRace(playerRace));
 		verticalScrollBar.setAutoscrolls(true);
 		setBorder(thickBorder);
-
 	}
 
 	public void addText(String message) {
@@ -57,5 +53,8 @@ public class ServerScrollPane extends JScrollPane {
 		text.setBackground(GUIGraphics.BACKGROUND_COLOR);
 		text.setForeground(GUIGraphics.getColorRace(playerRace));
 		textContainer.add(text);
+		verticalScrollBar.setValue(textContainer.getHeight()+100000);
+		verticalScrollBar.repaint();
+	
 	}
 }
