@@ -61,7 +61,8 @@ public class GUIGraphics extends Graphics implements ActionListener {
 		contentPane.add(buttonPanel);
 		contentPane.setLayout(new MainWindowLayout());
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setMinimumSize(frame.getMinimumSize());
+		//frame.setMinimumSize(frame.getMinimumSize());
+		frame.pack();
 		frame.setVisible(true);
 		moveListener = this;
 		initialized = true;

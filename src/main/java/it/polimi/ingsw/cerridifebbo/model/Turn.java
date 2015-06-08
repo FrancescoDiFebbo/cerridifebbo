@@ -37,8 +37,9 @@ public class Turn extends GameState {
 					perform(user, move, state);
 				} catch (IllegalMoveException e) {
 					Application.exception(e);
+					String error = e.getError();
 					if (game.serverIsOn()) {
-						user.getConnection().sendMessage(user, "Move not valid");
+						user.getConnection().sendMessage(user, error);
 					}					
 				}
 			}
@@ -102,7 +103,7 @@ public class Turn extends GameState {
 		if (state.noMoreMovement) {
 			endPlayerTurn(state);
 		} else {
-			throw new IllegalMoveException();
+			throw new IllegalMoveException("Before finish you must make a movement");
 		}
 	}
 
@@ -126,21 +127,22 @@ public class Turn extends GameState {
 				endPlayerTurn(state);
 			}
 		} else {
-			throw new IllegalMoveException();
+			throw new IllegalMoveException("You can't move");
 		}
 	}
 
 	private void attack(User user, PlayerTurnState state) throws IllegalMoveException {
 		if (state.noMoreMovement && !state.noMoreAttack) {
 			user.getPlayer().attack(game);
+			state.noMoreAttack = true;
 		} else {
-			throw new IllegalMoveException();
+			throw new IllegalMoveException("You can't attack");
 		}
 	}
 
 	private void useCard(User user, String target) throws IllegalMoveException {
 		if (user.getPlayer() instanceof AlienPlayer) {
-			throw new IllegalMoveException();
+			throw new IllegalMoveException("Alien can't use item. Aliens are stupid!");
 		}
 		Card selectedCard = null;
 		for (Card own : user.getPlayer().getOwnCards()) {
@@ -152,7 +154,7 @@ public class Turn extends GameState {
 		if (selectedCard != null && !(selectedCard instanceof DefenseItemCard)) {
 			selectedCard.performAction(user.getPlayer(), null, game);
 		} else {
-			throw new IllegalMoveException();
+			throw new IllegalMoveException("You are using a wrong item card");
 		}
 	}
 
