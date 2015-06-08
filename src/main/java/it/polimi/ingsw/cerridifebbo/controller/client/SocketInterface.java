@@ -3,6 +3,7 @@ package it.polimi.ingsw.cerridifebbo.controller.client;
 import it.polimi.ingsw.cerridifebbo.controller.common.Application;
 import it.polimi.ingsw.cerridifebbo.controller.common.Command;
 import it.polimi.ingsw.cerridifebbo.controller.common.Connection;
+import it.polimi.ingsw.cerridifebbo.model.Card;
 import it.polimi.ingsw.cerridifebbo.model.Map;
 import it.polimi.ingsw.cerridifebbo.model.Player;
 
@@ -23,6 +24,7 @@ public class SocketInterface implements NetworkInterface {
 	private Socket socket;
 	private PrintWriter out;
 	private BufferedReader in;
+	ObjectInputStream ois;
 	private UUID id = UUID.randomUUID();
 	private Graphics graphics;
 
@@ -48,6 +50,7 @@ public class SocketInterface implements NetworkInterface {
 		}
 		try {
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			ois = new ObjectInputStream(socket.getInputStream());
 		} catch (IOException e) {
 			LOG.log(Level.SEVERE, e.getMessage(), e);
 			out.close();
@@ -68,6 +71,7 @@ public class SocketInterface implements NetworkInterface {
 	public void close() {
 		try {
 			in.close();
+			ois.close();
 			out.close();
 			socket.close();
 		} catch (IOException e) {
@@ -90,30 +94,19 @@ public class SocketInterface implements NetworkInterface {
 	}
 
 	private void listen() {
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				int readError = 0;
-				while (true) {
-					try {
-						String line = in.readLine();
-						CommandHandler.handleCommand(SocketInterface.this, line);
-					} catch (IOException e) {
-						LOG.log(Level.SEVERE, e.getMessage(), e);
-						readError++;
-						if (readError > 2) {
-							Application.exitError();
-						}
-					}
+		int readError = 0;
+		while (true) {
+			try {
+				String line = in.readLine();
+				CommandHandler.handleCommand(SocketInterface.this, line);
+			} catch (IOException e) {
+				LOG.log(Level.SEVERE, e.getMessage(), e);
+				readError++;
+				if (readError > 2) {
+					Application.exitError();
 				}
 			}
-		}).start();
-
-	}
-
-	@Override
-	public void setGameInformation(Map map, Player player) {
-		graphics.initialize(map, player);
+		}
 	}
 
 	@Override
@@ -129,6 +122,10 @@ public class SocketInterface implements NetworkInterface {
 		return socket;
 	}
 
+	public ObjectInputStream getOis() {
+		return ois;
+	}
+
 	private static class CommandHandler extends Command {
 
 		public static void handleCommand(SocketInterface si, String line) {
@@ -136,13 +133,25 @@ public class SocketInterface implements NetworkInterface {
 			String action = params.get(ACTION);
 			switch (action) {
 			case MESSAGE:
-				Application.println("SERVER) " + params.get(DATA));
-				break;
-			case PLAYERS:
-				Application.println("SERVER) " + params.get(DATA) + " players in this match");
+				si.showMessage(params.get(DATA));
 				break;
 			case SEND:
 				receiveObject(si, params.get(DATA));
+				break;
+			case MOVE:
+				si.askForMove();
+				break;
+			case SECTOR:
+				si.askForSector();
+				break;
+			case CARD:
+				si.askForCard();
+				break;
+			case START_TURN:
+				si.startTurn();
+				break;
+			case END_TURN:
+				si.endTurn();
 				break;
 			default:
 				break;
@@ -154,7 +163,9 @@ public class SocketInterface implements NetworkInterface {
 			case GAME_INFORMATION:
 				receiveGameInformation(si);
 				break;
-
+			case UPDATE:
+				receiveUpdate(si);
+				break;
 			default:
 				break;
 			}
@@ -162,14 +173,29 @@ public class SocketInterface implements NetworkInterface {
 		}
 
 		@SuppressWarnings("unchecked")
-		private static void receiveGameInformation(SocketInterface si) {
+		private static void receiveUpdate(SocketInterface si) {
+			ObjectInputStream ois = si.getOis();
 			try {
-				ObjectInputStream ois = new ObjectInputStream(si.getSocket().getInputStream());
 				List<Object> info = (List<Object>) ois.readObject();
-				ois.close();
+				Player player = (Player) info.get(0);
+				Card card = (Card) info.get(1);
+				boolean added = (Boolean) info.get(2);
+				si.updatePlayer(player, card, added);
+			} catch (IOException | ClassNotFoundException e) {
+				LOG.log(Level.WARNING, e.getMessage(), e);
+			}
+
+		}
+
+		@SuppressWarnings("unchecked")
+		private static void receiveGameInformation(SocketInterface si) {
+			ObjectInputStream ois = si.getOis();
+			try {
+				List<Object> info = (List<Object>) ois.readObject();
 				Map map = (Map) info.get(0);
 				Player player = (Player) info.get(1);
-				si.setGameInformation(map, player);
+				int numberOfPlayers = (Integer) info.get(2);
+				si.setGameInformation(map, player, numberOfPlayers);
 			} catch (IOException | ClassNotFoundException e) {
 				LOG.log(Level.WARNING, e.getMessage(), e);
 			}
@@ -178,7 +204,63 @@ public class SocketInterface implements NetworkInterface {
 
 	@Override
 	public void sendToServer(String action, String target) {
-		// TODO Auto-generated method stub
+		String command = CommandHandler.build(Command.MOVE, action, target);
+		out.println(command);
+	}
 
+	public void endTurn() {
+		if (graphics.isInitialized()) {
+			graphics.endTurn();
+		}		
+	}
+
+	public void startTurn() {
+		if (graphics.isInitialized()) {
+			graphics.startTurn();
+		}
+		
+	}
+
+	public void askForCard() {
+		if (graphics.isInitialized()) {
+			graphics.declareCard();
+		}
+	}
+
+	public void askForSector() {
+		if (graphics.isInitialized()) {
+			graphics.declareSector();
+		}
+	}
+
+	public void askForMove() {
+		if (graphics.isInitialized()) {
+			graphics.declareMove();
+		}
+	}
+
+	public void showMessage(String message) {
+		if (graphics.isInitialized()) {
+			graphics.sendMessage(message);
+		} else {
+			Application.println("SERVER) " + message);
+		}
+
+	}
+
+	public void updatePlayer(Player player, Card card, boolean added) {
+		if (graphics.isInitialized()) {
+			graphics.updatePlayerPosition(player);
+			if (added) {
+				graphics.addPlayerCard(player, card);
+			} else {
+				graphics.deletePlayerCard(player, card);
+			}
+		}
+	}
+
+	@Override
+	public void setGameInformation(Map map, Player player, int size) {
+		graphics.initialize(map, player, size);
 	}
 }

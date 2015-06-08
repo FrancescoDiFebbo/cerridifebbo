@@ -11,6 +11,7 @@ public class User {
 	private final ServerConnection connection;
 	private Player player;
 	private Queue<Move> queue = new LinkedList<Move>();
+	private boolean online = true;
 
 	public User(UUID id, ServerConnection connection) {
 		this.id = id;
@@ -33,17 +34,19 @@ public class User {
 		this.player = player;
 	}	
 
-	public Move getMove() {
-		if (queue == null) {
-			return null;
-		}
+	public synchronized Move getMove() {
 		return queue.poll();
 	}
 
-	public void putMove(Move move) {
-		if (queue == null) {
-			queue = new LinkedList<Move>();
-		}
+	public synchronized void putMove(Move move) {
 		queue.offer(move);
+	}
+
+	public boolean isOnline() {
+		return online;
+	}
+
+	public void setOnline(boolean online) {
+		this.online = online;
 	}
 }

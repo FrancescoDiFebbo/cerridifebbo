@@ -1,5 +1,6 @@
 package it.polimi.ingsw.cerridifebbo.controller.common;
 
+import it.polimi.ingsw.cerridifebbo.model.Card;
 import it.polimi.ingsw.cerridifebbo.model.Map;
 import it.polimi.ingsw.cerridifebbo.model.Player;
 
@@ -15,5 +16,17 @@ public interface RemoteClient extends Remote {
 	public void sendGameInformation(int size, Map map, Player player) throws RemoteException;
 
 	public void askForMove() throws RemoteException;
+
+	public void updatePlayer(Player player, Card card, boolean added) throws RemoteException;
+
+	public void startTurn() throws RemoteException;
+
+	public void endTurn() throws RemoteException;
+
+	public void disconnect() throws RemoteException;
+
+	public boolean poke() throws RemoteException;
+
+	public void askForSector() throws RemoteException;
 
 }

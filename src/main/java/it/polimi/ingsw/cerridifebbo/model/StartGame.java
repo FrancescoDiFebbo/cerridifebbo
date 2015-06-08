@@ -9,26 +9,31 @@ public class StartGame extends GameState {
 
 	@Override
 	public void handle() {
+		game.broadcastToPlayers("Game is starting...");
 		Map map = Map.getInstance();
 		game.setMap(map);
 		List<User> users = game.getUsers();
 		Deck deck = new ConcreteDeckFactory().createDeck(users.size());
 		game.setDeck(deck);
 		initializePlayers();
-		game.broadcastToPlayers("Game is starting...");
 		game.nextTurn();
 	}
 
 	private void initializePlayers() {
 		for (User user : game.getUsers()) {
 			Card card = game.getDeck().drawCharacterCard();
-			Object player = card.performAction(null, null, game);
-			if (player instanceof Player && player != null) {
-				user.setPlayer((Player) player);
+			Player player = (Player) card.performAction(null, null, game);
+			if (player != null) {
+				user.setPlayer(player);
+				if (game.getUsers().size() == 2) {
+					player.setRevealed();
+				}
 			} else {
 				throw new NullPointerException("Player not returned");
 			}
 			game.sendGameInformation(game.getUsers().size(), game.getMap(), user);
 		}
+
 	}
+
 }

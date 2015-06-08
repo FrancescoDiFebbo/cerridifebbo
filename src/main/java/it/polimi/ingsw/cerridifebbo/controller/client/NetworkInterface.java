@@ -13,8 +13,8 @@ public interface NetworkInterface {
 
 	public void sendToServer(String action, String target);
 
-	public void setGameInformation(Map map, Player player);
-
 	public void setGraphicInterface(Graphics graphics);
+
+	public void setGameInformation(Map map, Player player, int size);
 
 }

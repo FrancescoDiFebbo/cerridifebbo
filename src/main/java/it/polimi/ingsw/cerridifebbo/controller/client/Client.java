@@ -18,57 +18,56 @@ public class Client {
 	private static String CHOICE_TWO = "2";
 
 	public static void main(String[] args) throws IOException, NotBoundException {
-		new Client().run();
+		new Client().start();
 	}
 
-	public void run() {
-		NetworkInterface network = null;
-		boolean chosen = false;
-		while (!chosen) {
-			String line = null;
-			try {
-				line = readLine(NETWORK_INTERFACE_SELECTION);
-			} catch (IOException e) {
-				LOG.log(Level.SEVERE, e.getMessage(), e);
-				return;
-			}
-			if (CHOICE_ONE.equals(line)) {
-				network = NetworkInterfaceFactory.getInterface(NetworkInterfaceFactory.RMI_INTERFACE);
-				chosen = true;
-			} else if (CHOICE_TWO.equals(line)) {
-				network = NetworkInterfaceFactory.getInterface(NetworkInterfaceFactory.SOCKET_INTERFACE);
-				chosen = true;
-			}
-		}
-
-		Graphics graphic = null;
-		chosen = false;
-		while (!chosen) {
-			String line = null;
-			try {
-				line = readLine(GRAPHICS_SELECTION);
-			} catch (IOException e) {
-				LOG.log(Level.SEVERE, e.getMessage(), e);
-				return;
-			}
-			if (CHOICE_ONE.equals(line)) {
-				graphic = GraphicsFactory.getInterface(GraphicsFactory.GUI_INTERFACE);
-				chosen = true;
-
-			} else if (CHOICE_TWO.equals(line)) {
-				graphic = GraphicsFactory.getInterface(GraphicsFactory.CLI_INTERFACE);
-
-			}
-
-			chosen = true;
-		}
+	public void start() {
+		NetworkInterface network = chooseNetwork();
 		if (network == null) {
+			return;
+		}
+		Graphics graphic = chooseGraphic();
+		if (graphic == null) {
 			return;
 		}
 		graphic.setNetworkInterface(network);
 		network.setGraphicInterface(graphic);
 		network.connect();
 
+	}
+
+	private NetworkInterface chooseNetwork() {
+		while (true) {
+			String line = null;
+			try {
+				line = readLine(NETWORK_INTERFACE_SELECTION);
+			} catch (IOException e) {
+				LOG.log(Level.SEVERE, e.getMessage(), e);
+				continue;
+			}
+			if (CHOICE_ONE.equals(line)) {
+				return NetworkInterfaceFactory.getInterface(NetworkInterfaceFactory.RMI_INTERFACE);
+			} else if (CHOICE_TWO.equals(line)) {
+				return NetworkInterfaceFactory.getInterface(NetworkInterfaceFactory.SOCKET_INTERFACE);
+			}
+		}
+	}
+
+	private Graphics chooseGraphic() {
+		while (true) {
+			String line = null;
+			try {
+				line = readLine(GRAPHICS_SELECTION);
+			} catch (IOException e) {
+				LOG.log(Level.SEVERE, e.getMessage(), e);
+				continue;
+			}
+			if (CHOICE_ONE.equals(line)) {
+				return GraphicsFactory.getInterface(GraphicsFactory.GUI_INTERFACE);
+			} else if (CHOICE_TWO.equals(line)) {
+				return GraphicsFactory.getInterface(GraphicsFactory.CLI_INTERFACE);
+			}
+		}
 	}
 
 	private static String readLine(String format, Object... args) throws IOException {

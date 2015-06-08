@@ -1,5 +1,7 @@
 package it.polimi.ingsw.cerridifebbo.model;
 
+import it.polimi.ingsw.cerridifebbo.model.Game.Sentence;
+
 /**
  * This class describes a sedatives card.
  * 
@@ -34,6 +36,9 @@ public class SedativesItemCard extends ItemCard {
 			HumanPlayer p = (HumanPlayer) player;
 			p.setSedatives(true);
 			p.deleteCard(this);
+			p.setRevealed();
+			game.inform(player, Sentence.SEDATIVES_CARD, null);
+			game.updatePlayer(player, this, false);
 		} else {
 			throw new IllegalArgumentException();
 		}

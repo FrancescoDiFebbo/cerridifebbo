@@ -1,5 +1,7 @@
 package it.polimi.ingsw.cerridifebbo.model;
 
+import it.polimi.ingsw.cerridifebbo.model.Game.Sentence;
+
 /**
  * This class describes a greenEscapeHatch card.
  * 
@@ -32,6 +34,9 @@ public class GreenEscapeHatchCard extends EscapeHatchCard {
 			HumanPlayer p = (HumanPlayer) player;
 			p.setEscaped(true);
 			p.getPosition().setPassable(false);
+			p.setRevealed();
+			game.inform(player, Sentence.ESCAPED, player.getPosition());
+			game.updatePlayer(player, null, false);
 		} else {
 			throw new IllegalArgumentException();
 		}

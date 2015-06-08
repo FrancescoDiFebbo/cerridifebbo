@@ -1,5 +1,7 @@
 package it.polimi.ingsw.cerridifebbo.model;
 
+import it.polimi.ingsw.cerridifebbo.model.Game.Sentence;
+
 /**
  * This class describes a teleport card.
  * 
@@ -33,6 +35,9 @@ public class TeleportItemCard extends ItemCard {
 			HumanPlayer p = (HumanPlayer) player;
 			p.setPosition(game.getMap().getHumanSector());
 			p.deleteCard(this);
+			p.setRevealed();
+			game.inform(player, Sentence.TELEPORT_CARD, null);
+			game.updatePlayer(player, this, false);
 		} else {
 			throw new IllegalArgumentException();
 		}

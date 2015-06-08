@@ -1,5 +1,7 @@
 package it.polimi.ingsw.cerridifebbo.model;
 
+import it.polimi.ingsw.cerridifebbo.model.Game.Sentence;
+
 /**
  * This class describes an adrenaline card.
  * 
@@ -33,8 +35,11 @@ public class AttackItemCard extends ItemCard {
 	public Object performAction(Player player, Object target, Game game) {
 		if (player != null && player instanceof HumanPlayer) {
 			HumanPlayer p = (HumanPlayer) player;
+			p.setRevealed();
+			game.inform(player, Sentence.ATTACK_CARD, null);
+			game.updatePlayer(player, this, false);
 			p.attack(game);
-			p.deleteCard(this);
+			p.deleteCard(this);		
 		} else {
 			throw new IllegalArgumentException();
 		}

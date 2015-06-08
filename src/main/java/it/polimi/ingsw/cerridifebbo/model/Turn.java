@@ -17,6 +17,9 @@ public class Turn extends GameState {
 		for (User user : userList) {
 			turn(user);
 			game.checkGame();
+			if (game.getState() instanceof EndGame) {
+				break;
+			}
 		}
 		game.nextTurn();
 	}
@@ -25,16 +28,25 @@ public class Turn extends GameState {
 		PlayerTurnState state = new PlayerTurnState();
 		Player player = user.getPlayer();
 		if (canPlay(player)) {
+			if (user.getConnection() != null) {
+				user.getConnection().startTurn(user);
+			}
 			while (!state.finish) {
 				Move move = checkForServer(user);
 				try {
-					perform(player, move, state);
+					perform(user, move, state);
 				} catch (IllegalMoveException e) {
-					state.finish = true;
+					Application.exception(e);
+					if (game.serverIsOn()) {
+						user.getConnection().sendMessage(user, "Move not valid");
+					}					
 				}
 			}
 			if (player instanceof HumanPlayer) {
 				((HumanPlayer) player).clear();
+			}
+			if (user.getConnection() != null) {
+				user.getConnection().endTurn(user);
 			}
 		}
 	}
@@ -42,12 +54,12 @@ public class Turn extends GameState {
 	private Move checkForServer(User user) {
 		Move move = null;
 		if (game.serverIsOn()) {
-			user.getConnection().askMoveFromUser(user);
+			user.getConnection().askForMove(user);
 			do {
 				move = user.getMove();
 			} while (move == null);
 		} else {
-			move = new Move(Move.TIMEFINISHED, null, null);
+			move = new Move(Move.TIMEFINISHED, null);
 		}
 		return move;
 	}
@@ -62,30 +74,42 @@ public class Turn extends GameState {
 		return true;
 	}
 
-	private void perform(Player player, Move move, PlayerTurnState state) throws IllegalMoveException {
+	private void perform(User user, Move move, PlayerTurnState state) throws IllegalMoveException {		
 		String action = move.getAction();
-		Sector target = move.getTarget();
+		String target = move.getTarget();
 		switch (action) {
 		case Move.MOVEMENT:
-			Sector sector = randomReachableSector(player);
-			movement(player, sector, state);
-
+			movement(user, target, state);
 			break;
 		case Move.ATTACK:
-			attack(player, state);
+			attack(user, state);
 			break;
 		case Move.USEITEMCARD:
-			useCard(player, target, move.getSelectedCard());
+			useCard(user, target);
 			break;
 		case Move.FINISH:
-			endPlayerTurn(state);
+			finish(state);
 			break;
 		case Move.TIMEFINISHED:
-			endPlayerTurn(state);
+			timeFinished(user, state);
 			break;
 		default:
 			break;
 		}
+	}
+
+	private void finish(PlayerTurnState state) {
+		if (state.noMoreMovement) {
+			endPlayerTurn(state);
+		} else {
+			throw new IllegalMoveException();
+		}
+	}
+
+	private void timeFinished(User user, PlayerTurnState state) {
+		movement(user, randomReachableSector(user.getPlayer()).toString(), state);
+		endPlayerTurn(state);
+		
 	}
 
 	private Sector randomReachableSector(Player player) {
@@ -94,26 +118,36 @@ public class Turn extends GameState {
 				.get(random.nextInt(player.getPosition().getReachableSectors(player.getMaxMovement()).size()));
 	}
 
-	private void movement(Player player, Object target, PlayerTurnState state) throws IllegalMoveException {
-		if (player.movement((Sector) target, game) && !state.noMoreMovement) {
+	private void movement(User user, String target, PlayerTurnState state) throws IllegalMoveException {
+		Sector destination = game.getMap().getCell(target);
+		if (destination != null && !state.noMoreMovement && user.getPlayer().movement(destination, game)) {
 			state.noMoreMovement = true;
+			if (user.getPlayer() instanceof HumanPlayer && ((HumanPlayer) user.getPlayer()).isEscaped()) {
+				endPlayerTurn(state);
+			}
 		} else {
 			throw new IllegalMoveException();
 		}
 	}
 
-	private void attack(Player player, PlayerTurnState state) throws IllegalMoveException {
+	private void attack(User user, PlayerTurnState state) throws IllegalMoveException {
 		if (state.noMoreMovement) {
-			player.attack(game);
+			user.getPlayer().attack(game);
 		} else {
 			throw new IllegalMoveException();
 		}
 	}
 
-	private void useCard(Player player, Sector target, Card card) throws IllegalMoveException {
-		if (target != null && !(card instanceof DefenseItemCard)) {
-			Card itemCard = card;
-			itemCard.performAction(player, target, game);
+	private void useCard(User user, String target) throws IllegalMoveException {
+		Card selectedCard = null;
+		for (Card own : user.getPlayer().getOwnCards()) {
+			if (own.toString().equalsIgnoreCase(target)) {
+				selectedCard = own;
+				break;
+			}
+		}
+		if (selectedCard != null && !(selectedCard instanceof DefenseItemCard)) {
+			selectedCard.performAction(user.getPlayer(), null, game);
 		} else {
 			throw new IllegalMoveException();
 		}

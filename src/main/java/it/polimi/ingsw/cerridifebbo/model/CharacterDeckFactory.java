@@ -11,8 +11,8 @@ public class CharacterDeckFactory implements SingleTypeDeckFactory {
 	public static final int MAX_PLAYERS = MAX_HUMAN_CARDS + MAX_ALIEN_CARDS;
 	public static final int MIN_PLAYERS = 2;
 
-	private static final String[] HUMAN_NAMES = { "Capitano: Ennio Maria Dominoni", "Pilota: Julia Niguloti a.k.a \"Cabal\"",
-			"Psicologo: Silvano Porpora", "Soldato: Tuccio Brandon a.k.a \"Piri\"" };
+	private static final String[] HUMAN_NAMES = { "Capitano Ennio Maria Dominoni", "Pilota Julia Niguloti a.k.a \"Cabal\"",
+			"Psicologo Silvano Porpora", "Soldato Tuccio Brandon a.k.a \"Piri\"" };
 	private static final String[] ALIEN_NAMES = { "Piero Ceccarella", "Vittorio Martana", "Maria Galbani", "Paolo Landon" };
 
 	@Override

@@ -78,7 +78,6 @@ public abstract class Sector implements Serializable{
 		return list;
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<Sector> getReachableSectors(int radius) {
 		List<Sector> list = new ArrayList<Sector>();
 		for (Sector sector : getAdjacentSectors()) {
@@ -87,7 +86,7 @@ public abstract class Sector implements Serializable{
 			}
 		}
 		for (int i = 0; i < radius - 1; i++) {
-			List<Sector> temp = (ArrayList<Sector>) ((ArrayList<Sector>) list).clone();
+			List<Sector> temp = new ArrayList<Sector>(list);
 			for (Sector sector : temp) {
 				for (Sector adjacentSector : sector.getAdjacentSectors()) {
 					checkAdjacentSector(list, adjacentSector);

@@ -12,7 +12,7 @@ public class Deck {
 	private int currentCharacter = 0;
 	private int currentSector = 0;
 	private int currentItem = 0;
-	private int currentEscapeHatchCards = 0;
+	private int currentEscapeHatch = 0;
 
 	Deck(List<Card> characters, List<Card> sectors, List<Card> items, List<Card> escapeHatches) {
 		this.characterCards = characters;
@@ -50,10 +50,25 @@ public class Deck {
 	}
 
 	public Card drawEscapeHatchCard() {
-		if (currentEscapeHatchCards == escapeHatchCards.size()) {
+		if (currentEscapeHatch == escapeHatchCards.size()) {
 			Collections.shuffle(escapeHatchCards);
-			currentEscapeHatchCards = 0;
+			currentEscapeHatch = 0;
 		}
-		return escapeHatchCards.get(currentEscapeHatchCards++);
+		return escapeHatchCards.get(currentEscapeHatch++);
+	}
+	
+	public void reset(){
+		currentCharacter = 0;
+		currentEscapeHatch = 0;
+		currentItem = 0;
+		currentSector = 0;
+		Collections.shuffle(characterCards);
+		Collections.shuffle(escapeHatchCards);
+		Collections.shuffle(itemCards);
+		Collections.shuffle(sectorCards);
+		for (Card card : itemCards) {
+			((ItemCard) card).setTaken(false);
+		}
+		
 	}
 }

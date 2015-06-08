@@ -9,8 +9,8 @@ import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Map implements Serializable{
-	
+public class Map implements Serializable {
+
 	/**
 	 * 
 	 */
@@ -108,6 +108,17 @@ public class Map implements Serializable{
 		return grid[i][j];
 	}
 
+	public Sector getCell(String sector) {
+		for (int i = 0; i < ROWMAP; i++) {
+			for (int j = 0; j < COLUMNMAP; j++) {
+				if (grid[i][j] != null && grid[i][j].toString().equalsIgnoreCase(sector)) {
+					return grid[i][j];
+				}
+			}
+		}
+		return null;
+	}
+
 	public Sector getHumanSector() {
 		for (int i = 0; i < ROWMAP; i++) {
 			for (int j = 0; j < COLUMNMAP; j++) {
@@ -130,7 +141,7 @@ public class Map implements Serializable{
 		return null;
 	}
 
-	public List<Sector> getEscapeHatchSectors(){
+	public List<Sector> getEscapeHatchSectors() {
 		List<Sector> hatches = new ArrayList<Sector>();
 		for (int i = 0; i < ROWMAP; i++) {
 			for (int j = 0; j < COLUMNMAP; j++) {

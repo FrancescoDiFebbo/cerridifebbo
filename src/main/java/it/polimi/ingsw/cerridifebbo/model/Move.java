@@ -1,6 +1,5 @@
 package it.polimi.ingsw.cerridifebbo.model;
 
-
 public class Move {
 	public static final String MOVEMENT = "MOVEMENT";
 	public static final String ATTACK = "ATTACK";
@@ -11,25 +10,18 @@ public class Move {
 	public static final String DELETECARD = "DELETECARD";
 
 	private final String action;
-	private final Sector target;
-	private final Card selectedCard;
+	private final String target;
 
-	public Move(String action, Sector target, Card selectedCard) {
+	public Move(String action, String target) {
 		this.action = action;
-		this.target = target;
-		this.selectedCard = selectedCard;
+		this.target = target == null ? null : target.trim();
 	}
-	
 
 	public String getAction() {
 		return action;
 	}
 
-	public Sector getTarget() {
+	public String getTarget() {
 		return target;
-	}
-
-	public Card getSelectedCard() {
-		return selectedCard;
 	}
 }

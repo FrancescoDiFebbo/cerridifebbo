@@ -3,7 +3,7 @@ package it.polimi.ingsw.cerridifebbo.controller.common;
 public class Application {
 
 	private Application() {
-		// TODO Auto-generated constructor stub
+		
 	}
 
 	public static void exitError() {
@@ -24,5 +24,9 @@ public class Application {
 	
 	public static void print(String message){
 		System.out.print(message);
+	}
+	
+	public static void exception(Throwable e){
+		//cattura le eccezzioni ma se ne sbarazza
 	}
 }

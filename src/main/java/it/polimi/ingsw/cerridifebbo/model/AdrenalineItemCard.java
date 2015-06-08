@@ -1,5 +1,7 @@
 package it.polimi.ingsw.cerridifebbo.model;
 
+import it.polimi.ingsw.cerridifebbo.model.Game.Sentence;
+
 /**
  * This class describes an adrenaline card.
  * 
@@ -34,6 +36,9 @@ public class AdrenalineItemCard extends ItemCard {
 			HumanPlayer p = (HumanPlayer) player;
 			p.setMaxMovement(ADRENALINEMOVEMENT);
 			p.deleteCard(this);
+			p.setRevealed();
+			game.inform(player, Sentence.ADRENALINE, null);
+			game.updatePlayer(player, this, false);
 		} else {
 			throw new IllegalArgumentException();
 		}

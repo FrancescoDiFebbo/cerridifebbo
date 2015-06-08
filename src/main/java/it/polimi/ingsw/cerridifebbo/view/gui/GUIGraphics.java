@@ -35,9 +35,10 @@ public class GUIGraphics extends Graphics implements ActionListener {
 	private String playerRace;
 	public static final String HUMAN = "HUMAN";
 	public static final String ALIEN = "ALIEN";
+	private int turn = 0;
 
 	@Override
-	public void initialize(Map map, Player player) {
+	public void initialize(Map map, Player player, int numberOfPlayers) {
 		if (player instanceof HumanPlayer) {
 			playerRace = HUMAN;
 		} else {
@@ -70,8 +71,7 @@ public class GUIGraphics extends Graphics implements ActionListener {
 		} else {
 			message = PLAYER_RACE_ALIEN;
 		}
-		serverMessage.addText(message
-				+ player.getPlayerCard().getCharacterName());
+		serverMessage.addText(message + player.getPlayerCard().getCharacterName());
 
 	}
 
@@ -90,16 +90,20 @@ public class GUIGraphics extends Graphics implements ActionListener {
 
 	@Override
 	public void startTurn() {
+		sendMessage("TURN: " + ++turn);
+		sendMessage("It's your turn");
 		timerPanel.startTimer();
 	}
 
 	@Override
 	public void endTurn() {
+		sendMessage("------------------------------");
 		timerPanel.setVisible(false);
 	}
 
 	@Override
 	public void declareMove() {
+		sendMessage("Make your move");
 		addListeners(moveListener);
 	}
 
@@ -119,24 +123,20 @@ public class GUIGraphics extends Graphics implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() instanceof SectorButton) {
 			if (declareSector) {
-				getNetworkInterface().sendToServer(Move.SECTOR,
-						e.getActionCommand());
+				getNetworkInterface().sendToServer(Move.SECTOR, e.getActionCommand());
 				mapGrid.deleteListenersToButton(moveListener);
 				declareSector = false;
 			} else {
-				getNetworkInterface().sendToServer(Move.MOVEMENT,
-						e.getActionCommand());
+				getNetworkInterface().sendToServer(Move.MOVEMENT, e.getActionCommand());
 				deleteListeners(moveListener);
 			}
 		} else if (e.getSource() instanceof CardButton) {
 			if (declareCard) {
-				getNetworkInterface().sendToServer(Move.DELETECARD,
-						e.getActionCommand());
+				getNetworkInterface().sendToServer(Move.DELETECARD, e.getActionCommand());
 				cards.deleteListenersToButton(moveListener);
 				declareCard = false;
 			} else {
-				getNetworkInterface().sendToServer(Move.USEITEMCARD,
-						e.getActionCommand());
+				getNetworkInterface().sendToServer(Move.USEITEMCARD, e.getActionCommand());
 				deleteListeners(moveListener);
 			}
 		} else if (e.getSource().equals(buttonPanel.getComponent(0))) {
@@ -146,8 +146,7 @@ public class GUIGraphics extends Graphics implements ActionListener {
 				getNetworkInterface().sendToServer(Move.FINISH, null);
 			}
 			deleteListeners(moveListener);
-		} else if (ALIEN.equals(playerRace)
-				&& e.getSource().equals(buttonPanel.getComponent(1))) {
+		} else if (ALIEN.equals(playerRace) && e.getSource().equals(buttonPanel.getComponent(1))) {
 			getNetworkInterface().sendToServer(Move.FINISH, null);
 			deleteListeners(moveListener);
 		}
@@ -155,6 +154,7 @@ public class GUIGraphics extends Graphics implements ActionListener {
 
 	@Override
 	public void declareSector() {
+		sendMessage("Choose a sector");
 		declareSector = true;
 		mapGrid.addListenersToButton(moveListener);
 	}

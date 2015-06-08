@@ -4,6 +4,7 @@ import it.polimi.ingsw.cerridifebbo.controller.common.Application;
 import it.polimi.ingsw.cerridifebbo.controller.common.Connection;
 import it.polimi.ingsw.cerridifebbo.controller.common.RemoteClient;
 import it.polimi.ingsw.cerridifebbo.controller.common.RemoteServer;
+import it.polimi.ingsw.cerridifebbo.model.Card;
 import it.polimi.ingsw.cerridifebbo.model.Move;
 import it.polimi.ingsw.cerridifebbo.model.User;
 
@@ -91,28 +92,36 @@ public class RMIServer extends UnicastRemoteObject implements ServerConnection, 
 	}
 
 	@Override
-	public void askMoveFromUser(User user) {
+	public void askForMove(User user) {
 		int attempts = 0;
 		while (attempts < MAX_ATTEMPTS) {
 			try {
 				clients.get(user).askForMove();
 				break;
 			} catch (RemoteException e) {
+				Application.exception(e);
 				attempts++;
-				LOG.log(Level.INFO, e.getMessage(), e);
+				server.disconnectUser(user);
 			}
 		}
 	}
 
 	@Override
 	public void askForSector(User user) {
-		// TODO Auto-generated method stub
-
+		try {
+			clients.get(user).askForSector();
+		} catch (RemoteException e) {
+			Application.exception(e);
+		}
 	}
 
 	@Override
-	public void sendMessage(User user, String message) throws RemoteException {
-		clients.get(user).sendMessage(message);
+	public void sendMessage(User user, String message) {
+		try {
+			clients.get(user).sendMessage(message);
+		} catch (RemoteException e) {
+			Application.exception(e);
+		}
 	}
 
 	@Override
@@ -125,23 +134,13 @@ public class RMIServer extends UnicastRemoteObject implements ServerConnection, 
 	}
 
 	@Override
-	public void sendMove(User user, String action, String target) {
-		switch (action) {
-		case Move.ATTACK:
-			user.putMove(new Move(action, null, null));
-			break;
-		case Move.MOVEMENT:
-			user.putMove(new Move(action, null, null));
-			break;
-		case Move.FINISH:
-			user.putMove(new Move(action, null, null));
-			break;
-		case Move.USEITEMCARD:
-			user.putMove(new Move(action, null, null));
-			break;
-		default:
-			break;
+	public void updatePlayer(User user, Card card, boolean added) {
+		try {
+			clients.get(user).updatePlayer(user.getPlayer(), card, added);
+		} catch (RemoteException e) {
+			LOG.log(Level.WARNING, e.getMessage(), e);
 		}
+
 	}
 
 	@Override
@@ -158,7 +157,7 @@ public class RMIServer extends UnicastRemoteObject implements ServerConnection, 
 	public void sendMove(UUID id, String action, String target) throws RemoteException {
 		for (User user : clients.keySet()) {
 			if (user.getId().equals(id)) {
-				sendMove(user, action, target);
+				user.putMove(new Move(action, target));
 				return;
 			}
 		}
@@ -174,6 +173,46 @@ public class RMIServer extends UnicastRemoteObject implements ServerConnection, 
 	public int hashCode() {
 		// TODO Auto-generated method stub
 		return super.hashCode();
+	}
+
+	@Override
+	public void startTurn(User user) {
+		try {
+			clients.get(user).startTurn();
+		} catch (RemoteException e) {
+			Application.exception(e);
+		}
+
+	}
+
+	@Override
+	public void endTurn(User user) {
+		try {
+			clients.get(user).endTurn();
+		} catch (RemoteException e) {
+			Application.exception(e);
+		}
+	}
+
+	@Override
+	public void disconnectUser(User user) {
+		try {
+			clients.get(user).disconnect();
+		} catch (RemoteException e) {
+			Application.exception(e);
+		}
+		clients.remove(user);
+
+	}
+
+	@Override
+	public boolean poke(User user) {
+		try {
+			return clients.get(user).poke();
+		} catch (RemoteException e) {
+			Application.exception(e);
+			return false;
+		}
 	}
 
 }

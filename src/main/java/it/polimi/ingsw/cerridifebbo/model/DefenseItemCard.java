@@ -1,5 +1,7 @@
 package it.polimi.ingsw.cerridifebbo.model;
 
+import it.polimi.ingsw.cerridifebbo.model.Game.Sentence;
+
 /**
  * This class describes a defense card.
  * 
@@ -32,6 +34,9 @@ public class DefenseItemCard extends ItemCard {
 		if (player != null && player instanceof HumanPlayer) {
 			HumanPlayer p = (HumanPlayer) player;
 			p.deleteCard(this);
+			p.setRevealed();
+			game.inform(player, Sentence.DEFENSE_CARD, null);
+			game.updatePlayer(player, this, false);
 		} else {
 			throw new IllegalArgumentException();
 		}

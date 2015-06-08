@@ -13,7 +13,7 @@ public abstract class Graphics {
 		return initialized;
 	}
 
-	public abstract void initialize(Map map, Player player);
+	public abstract void initialize(Map map, Player player, int numberOfPlayers);
 
 	public abstract void sendMessage(String message);
 

@@ -1,5 +1,7 @@
 package it.polimi.ingsw.cerridifebbo.model;
 
+import it.polimi.ingsw.cerridifebbo.model.Game.Sentence;
+
 /**
  * This class describes a noise in sector card.
  * 
@@ -43,12 +45,9 @@ public class NoiseInSectorCard extends SectorCard {
 		if (player == null) {
 			throw new IllegalArgumentException("Player is null");
 		}
-		game.declareSector(player, (Sector) player.getPosition(), false);
+		game.inform(player, Sentence.NOISE_IN, player.getPosition());
 		if (this.containsItem()) {
 			ItemCard itemCard = (ItemCard) game.getDeck().drawItemCard();
-			if (itemCard != null) {
-				itemCard.setTaken(true);
-			}
 			return itemCard;
 		} else {
 			return null;

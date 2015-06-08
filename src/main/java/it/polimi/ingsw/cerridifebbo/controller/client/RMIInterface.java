@@ -1,6 +1,7 @@
 package it.polimi.ingsw.cerridifebbo.controller.client;
 
 import it.polimi.ingsw.cerridifebbo.controller.common.*;
+import it.polimi.ingsw.cerridifebbo.model.Card;
 import it.polimi.ingsw.cerridifebbo.model.Map;
 import it.polimi.ingsw.cerridifebbo.model.Player;
 
@@ -15,7 +16,7 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class RMIInterface extends UnicastRemoteObject implements NetworkInterface, RemoteClient{
+public class RMIInterface extends UnicastRemoteObject implements NetworkInterface, RemoteClient {
 	/**
 	 * 
 	 */
@@ -25,12 +26,11 @@ public class RMIInterface extends UnicastRemoteObject implements NetworkInterfac
 
 	private transient RemoteServer server;
 	private UUID id = UUID.randomUUID();
-	private int port;	
+	private int port;
 	private transient Graphics graphics;
-	
+
 	protected RMIInterface() throws RemoteException {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -38,14 +38,14 @@ public class RMIInterface extends UnicastRemoteObject implements NetworkInterfac
 		Registry registry;
 		Random random = new Random();
 		while (true) {
-			try {				
+			try {
 				port = random.nextInt(65535);
 				registry = LocateRegistry.createRegistry(port);
 				break;
 			} catch (RemoteException e) {
 				LOG.log(Level.INFO, port + " not available", e);
 			}
-		}		
+		}
 		try {
 			registry.bind(RemoteClient.RMI_ID, this);
 		} catch (RemoteException | AlreadyBoundException e) {
@@ -70,13 +70,13 @@ public class RMIInterface extends UnicastRemoteObject implements NetworkInterfac
 	}
 
 	@Override
-	public void close() {		
+	public void close() {
 		try {
 			Registry registry = LocateRegistry.getRegistry(port);
 			registry.unbind(RemoteClient.RMI_ID);
 		} catch (RemoteException | NotBoundException e) {
 			LOG.log(Level.WARNING, e.getMessage(), e);
-		}		
+		}
 	}
 
 	@Override
@@ -88,13 +88,13 @@ public class RMIInterface extends UnicastRemoteObject implements NetworkInterfac
 			return false;
 		}
 	}
-	
+
 	@Override
 	public void sendMessage(String message) throws RemoteException {
-		showMessage(message);		
+		showMessage(message);
 	}
-	
-	public void showMessage(String message){
+
+	public void showMessage(String message) {
 		if (graphics.isInitialized()) {
 			graphics.sendMessage(message);
 			return;
@@ -110,13 +110,25 @@ public class RMIInterface extends UnicastRemoteObject implements NetworkInterfac
 
 	@Override
 	public void sendGameInformation(int size, Map map, Player player) throws RemoteException {
-		Application.println("SERVER) Number of players is " + size);
-		setGameInformation(map, player);		
+		setGameInformation(map, player, size);
 	}
-	
+
 	@Override
-	public void setGameInformation(Map map, Player player) {
-		graphics.initialize(map, player);
+	public void setGameInformation(Map map, Player player, int size) {
+		graphics.initialize(map, player, size);
+	}
+
+	@Override
+	public void updatePlayer(Player player, Card card, boolean added) {
+		graphics.updatePlayerPosition(player);
+		if (card == null) {
+			return;
+		}
+		if (added) {
+			graphics.addPlayerCard(player, card);
+		} else {
+			graphics.deletePlayerCard(player, card);
+		}
 	}
 
 	@Override
@@ -133,24 +145,56 @@ public class RMIInterface extends UnicastRemoteObject implements NetworkInterfac
 		while (attempts < MAX_ATTEMPTS) {
 			try {
 				server.sendMove(id, action, target);
-				Application.println(action + " " + target) ;
 				break;
 			} catch (RemoteException e) {
 				attempts++;
 				LOG.log(Level.INFO, e.getMessage(), e);
-			}	
-		}		
+			}
+		}
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
-		// TODO Auto-generated method stub
 		return super.equals(obj);
 	}
-	
+
 	@Override
 	public int hashCode() {
-		// TODO Auto-generated method stub
 		return super.hashCode();
 	}
+
+	@Override
+	public void startTurn() throws RemoteException {
+		if (graphics.isInitialized()) {
+			graphics.startTurn();
+		}
+
+	}
+
+	@Override
+	public void endTurn() throws RemoteException {
+		if (graphics.isInitialized()) {
+			graphics.endTurn();
+		}
+	}
+
+	@Override
+	public void disconnect() throws RemoteException {
+		Application.println("You are disconnected from the server! Hope you like it! :)");
+		close();
+		Application.exitSuccess();
+	}
+
+	@Override
+	public boolean poke() throws RemoteException {
+		return true;
+	}
+
+	@Override
+	public void askForSector() throws RemoteException {
+		if (graphics.initialized) {
+			graphics.declareSector();
+		}		
+	}
+
 }

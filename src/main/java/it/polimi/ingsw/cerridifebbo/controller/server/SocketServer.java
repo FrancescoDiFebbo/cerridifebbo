@@ -1,15 +1,14 @@
 package it.polimi.ingsw.cerridifebbo.controller.server;
 
 import it.polimi.ingsw.cerridifebbo.controller.common.Connection;
+import it.polimi.ingsw.cerridifebbo.model.Card;
+import it.polimi.ingsw.cerridifebbo.model.Move;
 import it.polimi.ingsw.cerridifebbo.model.User;
 
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -26,8 +25,7 @@ public class SocketServer implements ServerConnection {
 	private Thread thread;
 	private boolean listening;
 	private String status;
-	private List<SocketHandler> handlers;
-	private Map<UUID, SocketHandler> clients = new HashMap<UUID, SocketHandler>();
+	private Map<User, SocketHandler> clients = new HashMap<User, SocketHandler>();
 
 	public SocketServer(Server server) {
 		this(server, PORT, Connection.SERVER_SOCKET_ADDRESS);
@@ -39,7 +37,6 @@ public class SocketServer implements ServerConnection {
 		this.address = address;
 		this.listening = false;
 		this.status = "created";
-		handlers = new LinkedList<SocketHandler>();
 	}
 
 	@Override
@@ -76,7 +73,6 @@ public class SocketServer implements ServerConnection {
 				try {
 					Socket s = serverSocket.accept();
 					SocketHandler sh = new SocketHandler(s, this);
-					handlers.add(sh);
 					sh.start();
 				} catch (IOException e) {
 					LOG.log(Level.SEVERE, e.getMessage(), e);
@@ -88,7 +84,7 @@ public class SocketServer implements ServerConnection {
 	private void endListening() {
 		if (listening) {
 			listening = false;
-			for (SocketHandler sh : handlers) {
+			for (SocketHandler sh : clients.values()) {
 				try {
 					sh.close();
 				} catch (IOException e) {
@@ -106,11 +102,13 @@ public class SocketServer implements ServerConnection {
 
 	@Override
 	public boolean registerClientOnServer(UUID id, Object clientInterface) {
+		User newUser = server.registerClientOnServer(id, this);
 		SocketHandler handler = (SocketHandler) clientInterface;
-		clients.put(id, handler);
-		LOG.info("Client " + id + " connected on socket");
-		server.registerClientOnServer(id, this);
-		clients.get(id).sendMessage("You are connected to the server");
+		handler.setLinkedUser(newUser);
+		handler.setName("HANDLER-" + id.toString().split("-")[0]);
+		clients.put(newUser, handler);
+		LOG.info("Client " + id + " connected on socket");		
+		clients.get(newUser).sendMessage("You are connected to the server");
 		return true;
 	}
 
@@ -135,10 +133,10 @@ public class SocketServer implements ServerConnection {
 	}
 
 	@Override
-	public void sendMessage(User user, String string) throws IOException {
+	public void sendMessage(User user, String string) {
 		if (user == null) {
-			for (UUID id : clients.keySet()) {
-				clients.get(id).sendMessage(string);
+			for (User u : clients.keySet()) {
+				clients.get(u).sendMessage(string);
 			}
 		} else {
 			clients.get(user).sendMessage(string);
@@ -148,26 +146,48 @@ public class SocketServer implements ServerConnection {
 
 	@Override
 	public void sendGameInformation(User user, int size, it.polimi.ingsw.cerridifebbo.model.Map map) {
-		clients.get(user.getId()).sendGameInformation(size, map, user);
+		clients.get(user).sendGameInformation(size, map, user.getPlayer());
 
 	}
 
 	@Override
-	public void askMoveFromUser(User user) {
-		// TODO Auto-generated method stub
+	public void askForMove(User user) {
+		clients.get(user).askForMove();
 
 	}
 
 	@Override
 	public void askForSector(User user) {
-		// TODO Auto-generated method stub
+		clients.get(user).askForSector();
 
 	}
 
 	@Override
-	public void sendMove(User user, String action, String target) {
-		// TODO Auto-generated method stub
+	public void updatePlayer(User user, Card card, boolean added) {
+		clients.get(user).updatePlayer(user.getPlayer(), card, added);		
+	}
 
+	@Override
+	public void startTurn(User user) {
+		clients.get(user).starTurn();		
+	}
+
+	@Override
+	public void endTurn(User user) {
+		clients.get(user).endTurn();
+		
+	}
+
+	@Override
+	public void disconnectUser(User user) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean poke(User user) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

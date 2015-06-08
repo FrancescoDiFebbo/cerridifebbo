@@ -1,5 +1,7 @@
 package it.polimi.ingsw.cerridifebbo.model;
 
+import it.polimi.ingsw.cerridifebbo.model.Game.Sentence;
+
 /**
  * This class describes a red escape hatch card.
  * 
@@ -32,6 +34,9 @@ public class RedEscapeHatchCard extends EscapeHatchCard {
 		if (player != null && player instanceof HumanPlayer) {
 			HumanPlayer p = (HumanPlayer) player;
 			p.getPosition().setPassable(false);
+			p.setRevealed();
+			game.inform(player, Sentence.NOT_ESCAPED, player.getPosition());
+			game.updatePlayer(player, null, false);
 		} else {
 			throw new IllegalArgumentException();
 		}

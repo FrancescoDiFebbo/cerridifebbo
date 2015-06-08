@@ -1,6 +1,9 @@
 package it.polimi.ingsw.cerridifebbo.controller.server;
 
 import it.polimi.ingsw.cerridifebbo.controller.common.Command;
+import it.polimi.ingsw.cerridifebbo.model.Card;
+import it.polimi.ingsw.cerridifebbo.model.Move;
+import it.polimi.ingsw.cerridifebbo.model.Player;
 import it.polimi.ingsw.cerridifebbo.model.User;
 
 import java.io.BufferedReader;
@@ -23,7 +26,9 @@ public class SocketHandler extends Thread {
 	private ServerConnection server;
 	private boolean stop;
 	private PrintWriter out;
+	private ObjectOutputStream oos;
 	private BufferedReader in;
+	private User linkedUser;
 
 	public SocketHandler(Socket socket, ServerConnection server) {
 		super();
@@ -36,6 +41,7 @@ public class SocketHandler extends Thread {
 	public void run() {
 		try {
 			out = new PrintWriter(socket.getOutputStream(), true);
+			oos = new ObjectOutputStream(socket.getOutputStream());
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
 			String input;
@@ -51,6 +57,7 @@ public class SocketHandler extends Thread {
 		stop = true;
 		in.close();
 		out.close();
+		oos.close();
 		socket.close();
 	}
 
@@ -66,28 +73,72 @@ public class SocketHandler extends Thread {
 		out.println(Command.build(Command.MESSAGE, string));
 	}
 
-	public void sendGameInformation(int size, it.polimi.ingsw.cerridifebbo.model.Map map, User user) {
-		String command = Command.build(Command.PLAYERS, String.valueOf(size));
+	public void sendGameInformation(int size, it.polimi.ingsw.cerridifebbo.model.Map map, Player player) {
+		String command = Command.build(Command.SEND, Command.GAME_INFORMATION);
 		out.println(command);
-		command = Command.build(Command.SEND, Command.GAME_INFORMATION);
-		out.println(command);
-		ObjectOutputStream oos = null;
+		List<Object> info = new ArrayList<Object>();
+		info.add(map);
+		info.add(player);
+		info.add(size);
 		try {
-			oos = new ObjectOutputStream(socket.getOutputStream());
-			List<Object> info = new ArrayList<Object>();
-			info.add(map);
-			info.add(user.getPlayer());
-			oos.writeObject((ArrayList<Object>)info);
+			oos.writeObject((ArrayList<Object>) info);
 			oos.flush();
-			oos.close();
-			out = new PrintWriter(socket.getOutputStream(), true);
 		} catch (IOException e) {
 			LOG.log(Level.SEVERE, e.getMessage(), e);
-		}	
+		}
+	}
+
+	public void askForMove() {
+		String command = CommandHandler.build(Command.MOVE, null);
+		out.println(command);
+	}
+
+	public void askForSector() {
+		String command = CommandHandler.build(Command.SECTOR, null);
+		out.println(command);
+	}
+
+	public void updatePlayer(Player player, Card card, boolean added) {
+		String command = CommandHandler.build(Command.SEND, Command.UPDATE);
+		out.println(command);
+		List<Object> update = new ArrayList<Object>();
+		update.add(player);
+		update.add(card);
+		update.add(added);
+		try {
+			oos.writeObject((ArrayList<Object>) update);
+			oos.flush();
+		} catch (IOException e) {
+			LOG.log(Level.SEVERE, e.getMessage(), e);
+		}
+
+	}
+
+	public void starTurn() {
+		String command = CommandHandler.build(Command.START_TURN, null);
+		out.println(command);
+
+	}
+
+	public void endTurn() {
+		String command = CommandHandler.build(Command.END_TURN, null);
+		out.println(command);
+	}
+
+	public User getLinkedUser() {
+		return linkedUser;
+	}
+
+	public void setLinkedUser(User linkedUser) {
+		this.linkedUser = linkedUser;
+	}
+	
+	public void putMove(String action, String target){
+		linkedUser.putMove(new Move(action, target));
 	}
 
 	public static class CommandHandler extends Command {
-	
+
 		public static void handleCommand(SocketHandler sh, String line) {
 			Map<String, String> params = translateCommand(line);
 			String action = params.get(ACTION);
@@ -96,10 +147,13 @@ public class SocketHandler extends Thread {
 				UUID id = UUID.fromString(params.get(DATA));
 				sh.getServer().registerClientOnServer(id, sh);
 				break;
+			case MOVE:
+				sh.putMove(params.get(DATA), params.get(DATA + "0"));
+				break;
 			default:
 				break;
 			}
 		}
-	
+
 	}
 }

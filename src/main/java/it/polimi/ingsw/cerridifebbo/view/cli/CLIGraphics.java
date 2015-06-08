@@ -24,14 +24,11 @@ public class CLIGraphics extends Graphics {
 	private static final String ALIEN_SECTOR = "\u001B[32m";
 	private static final String HUMAN_SECTOR = "\u001B[34m";
 	private static final String ESCAPE_HATCH_SECTOR = "\u001B[33m";
-	private static final String START_TURN_MESSAGE = "Start Turn";
-	private static final String END_TURN_MESSAGE = "End Turn";
+	private static final String START_TURN_MESSAGE = "It's your turn";
+	private static final String END_TURN_MESSAGE = "----------------------------------------";
 
-	private static final String MOVE_OPTIONS_HUMAN = "What do you want to do?"
-			+ "\n" + Move.MOVEMENT + "\n" + Move.USEITEMCARD + "\n"
-			+ Move.FINISH;
-	private static final String MOVE_OPTIONS_ALIEN = "What do you want to do?"
-			+ "\n" + Move.ATTACK + "\n" + Move.MOVEMENT + "\n" + Move.FINISH;
+	private static final String MOVE_OPTIONS_HUMAN = "What do you want to do?" + "\n" + Move.MOVEMENT + "\n" + Move.USEITEMCARD + "\n" + Move.FINISH;
+	private static final String MOVE_OPTIONS_ALIEN = "What do you want to do?" + "\n" + Move.ATTACK + "\n" + Move.MOVEMENT + "\n" + Move.FINISH;
 
 	private static final String SECTOR_SELECTION = "Which sector?";
 	private static final String CARD_SELECTION = "Which card?";
@@ -44,13 +41,20 @@ public class CLIGraphics extends Graphics {
 	private Scanner in = new Scanner(System.in);
 	private Player player;
 	private Map map;
+	private int turn = 0;
 
 	@Override
-	public void initialize(Map map, Player player) {
+	public void initialize(Map map, Player player, int numberOfPlayers) {
 		this.player = player;
 		this.map = map;
 		printMap();
 		printPlayer();
+		if (numberOfPlayers == 2) {
+			Application.println("You are not alone. There is a creature on the ship");
+		} else {
+			Application.println("You are not alone. There are " + numberOfPlayers + " creatures on the ship");
+		}
+		Application.println(END_TURN_MESSAGE);
 		initialized = true;
 	}
 
@@ -64,8 +68,7 @@ public class CLIGraphics extends Graphics {
 				Sector currentCell = map.getCell(i, j);
 				Application.print("/");
 				if (currentCell != null) {
-					Application.print(printTypeOfSector(currentCell)
-							+ currentCell.toString() + RESET_COLOR);
+					Application.print(printTypeOfSector(currentCell) + currentCell.toString() + RESET_COLOR);
 				} else {
 					Application.print("   ");
 
@@ -78,8 +81,7 @@ public class CLIGraphics extends Graphics {
 				Application.print("\\___/");
 				Sector currentCell = map.getCell(i, j);
 				if (currentCell != null) {
-					Application.print(printTypeOfSector(currentCell)
-							+ currentCell.toString() + RESET_COLOR);
+					Application.print(printTypeOfSector(currentCell) + currentCell.toString() + RESET_COLOR);
 				} else {
 					Application.print("   ");
 				}
@@ -147,6 +149,8 @@ public class CLIGraphics extends Graphics {
 	@Override
 	public void startTurn() {
 		printMap();
+		printPlayer();
+		Application.println("TURN: " + ++turn);
 		Application.println(START_TURN_MESSAGE);
 
 	}
@@ -168,8 +172,8 @@ public class CLIGraphics extends Graphics {
 	@Override
 	public void declareMove() {
 		boolean chosen = false;
-		printMap();
-		printPlayer();
+		// printMap();
+		// printPlayer();
 		do {
 			printOptions();
 			String line = in.nextLine();
@@ -203,7 +207,7 @@ public class CLIGraphics extends Graphics {
 
 	@Override
 	public void declareSector() {
-		printMap();
+		//printMap();
 		Application.println(SECTOR_SELECTION);
 		String move = null;
 
@@ -216,7 +220,7 @@ public class CLIGraphics extends Graphics {
 	@Override
 	public void updatePlayerPosition(Player player) {
 		this.player = player;
-		printPlayerPosition();
+		// printPlayerPosition();
 
 	}
 
@@ -233,13 +237,13 @@ public class CLIGraphics extends Graphics {
 	@Override
 	public void deletePlayerCard(Player player, Card card) {
 		this.player = player;
-		printCardPlayer();
+		// printCardPlayer();
 	}
 
 	@Override
 	public void addPlayerCard(Player player, Card card) {
 		this.player = player;
-		printCardPlayer();
+		// printCardPlayer();
 
 	}
 }

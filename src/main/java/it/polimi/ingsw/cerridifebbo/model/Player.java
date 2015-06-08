@@ -1,5 +1,7 @@
 package it.polimi.ingsw.cerridifebbo.model;
 
+import it.polimi.ingsw.cerridifebbo.model.Game.Sentence;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,11 +9,13 @@ import java.util.List;
 public abstract class Player implements Serializable {
 
 	private static final long serialVersionUID = 7274673996298525756L;
+	private static final int MAX_CARDS = 3;
 	private CharacterCard playerCard;
 	private List<Card> ownCards;
 	private Sector pos;
 	private int maxMovement;
 	private boolean alive;
+	private boolean revealed;
 
 	Player(CharacterCard playerCard, Sector pos, int maxMovement) {
 		this.setPlayerCard(playerCard);
@@ -19,6 +23,7 @@ public abstract class Player implements Serializable {
 		this.maxMovement = maxMovement;
 		this.ownCards = new ArrayList<Card>();
 		this.alive = true;
+		this.revealed = false;
 
 	}
 
@@ -34,8 +39,10 @@ public abstract class Player implements Serializable {
 		return alive;
 	}
 
-	public void kill() {
+	public void kill(Game game) {
 		this.alive = false;
+		setRevealed();
+		game.inform(this, Sentence.KILLED, null);
 	}
 
 	public Sector getPosition() {
@@ -60,18 +67,22 @@ public abstract class Player implements Serializable {
 
 	public void addCard(Card card) {
 		ownCards.add(card);
+		((ItemCard) card).setTaken(true);
 	}
 
 	public void deleteCard(Card card) {
 		ownCards.remove(card);
+		((ItemCard) card).setTaken(false);
 	}
 
 	public boolean attack(Game game) {
+		this.setRevealed();
+		game.inform(this, Sentence.ATTACK, getPosition());		
 		boolean humanEaten = false;
 		for (User user : game.getUsers()) {
 			Player player = user.getPlayer();
 			if (player.getPosition() == this.getPosition() && player != this && !hasDefenseCard(game, player)) {
-				player.kill();
+				player.kill(game);
 				humanEaten = isHumanEaten(humanEaten, player);
 			}
 		}
@@ -99,16 +110,28 @@ public abstract class Player implements Serializable {
 	public boolean movement(Sector destination, Game game) {
 		if (getPosition().getReachableSectors(getMaxMovement()).contains(destination)) {
 			setPosition(destination);
+			game.sendToPlayer(this, "You moved to " + getPosition());
 			Card sectorCard = destination.playerEnters(this, game.getDeck());
+			Card itemCard = null;
 			if (sectorCard != null) {
-				Card itemCard = (Card) sectorCard.performAction(this, null, game);
+				itemCard = (Card) sectorCard.performAction(this, null, game);
 				if (itemCard != null) {
+					game.sendToPlayer(this, "You received " + itemCard + " card");
 					this.addCard(itemCard);
 				}
 			}
+			game.updatePlayer(this, itemCard, true);
 			return true;
 		}
 		return false;
+	}
+
+	public boolean isRevealed() {
+		return revealed;
+	}
+
+	public void setRevealed() {
+		this.revealed = true;
 	}
 
 }

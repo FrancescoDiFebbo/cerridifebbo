@@ -1,5 +1,7 @@
 package it.polimi.ingsw.cerridifebbo.model;
 
+import it.polimi.ingsw.cerridifebbo.model.Game.Sentence;
+
 public class SpotlightItemCard extends ItemCard {
 
 	private static final long serialVersionUID = -7609400676872636169L;
@@ -15,25 +17,26 @@ public class SpotlightItemCard extends ItemCard {
 	 * @param player
 	 *            the player who uses the card
 	 * @param target
-	 *            the sector
+	 *            null
 	 * @param game
 	 *            the reference to the current game
 	 * @return null.
 	 * @exception IllegalArgumentException
 	 *                if player is null or if player is not an instance of
-	 *                HumanPlayer and if target is null or target is not an
-	 *                instance of Sector
+	 *                HumanPlayer
 	 */
 	@Override
 	public Object performAction(Player player, Object target, Game game) {
 		if (player == null || !(player instanceof HumanPlayer)) {
 			throw new IllegalArgumentException("Player not valid");
-		} else if (target == null || !(target instanceof Sector)) {
-			throw new IllegalArgumentException("Target not valid");
 		}
 		HumanPlayer p = (HumanPlayer) player;
-		game.declareSector(player, (Sector) target, true);
 		p.deleteCard(this);
+		p.setRevealed();
+		game.askForSector(player);
+		Sector sector = game.getSector(player);
+		game.inform(player, Sentence.SPOTLIGHT_CARD, sector);
+		game.updatePlayer(player, this, false);
 		return null;
 	}
 

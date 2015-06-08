@@ -42,7 +42,7 @@ public class GameTest {
 		for (User u : users) {
 			if (u.getPlayer() instanceof AlienPlayer) {
 				AlienPlayer alien = (AlienPlayer) u.getPlayer();
-				alien.kill();
+				alien.kill(game);
 			}
 		}
 		game.checkGame();
@@ -52,7 +52,7 @@ public class GameTest {
 		for (User u : users) {
 			if (u.getPlayer() instanceof HumanPlayer) {
 				HumanPlayer human = (HumanPlayer) u.getPlayer();
-				human.kill();
+				human.kill(game);
 			}
 		}
 		assertTrue(game.getState() instanceof EndGame);
@@ -67,6 +67,7 @@ public class GameTest {
 		Game game = new Game(null, users);
 		game.run();
 		Deck deck = game.getDeck();
+		deck.reset();
 		Player player = null;
 		for (User user : users) {
 			if (user.getPlayer() instanceof HumanPlayer) {
@@ -76,8 +77,6 @@ public class GameTest {
 		}
 		for (int i = 0; i < ItemDeckFactory.MAX_ITEM_CARDS; i++) {
 			Card card = deck.drawItemCard();
-			card.toString();
-			player.addCard(deck.drawItemCard());
 			card.performAction(player, game.getMap().getCell(5, 5), game);
 		}
 	}
