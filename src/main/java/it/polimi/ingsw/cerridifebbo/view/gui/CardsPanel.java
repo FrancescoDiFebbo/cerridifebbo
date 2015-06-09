@@ -16,7 +16,8 @@ public class CardsPanel extends JPanel {
 
 		if (player.getOwnCards() != null) {
 			for (int i = 0; i < player.getOwnCards().size(); i++) {
-				add(new CardButton(player.getOwnCards().get(i).toString(), playerRace));
+				add(new CardButton(player.getOwnCards().get(i).toString(),
+						playerRace));
 			}
 		}
 		setSize(WIDTH, HEIGHT);
@@ -51,6 +52,7 @@ public class CardsPanel extends JPanel {
 			if (getComponent(i).getName().equals(cardName))
 				remove(getComponent(i));
 		}
+		repaint();
 	}
 
 }
