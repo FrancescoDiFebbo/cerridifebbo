@@ -9,6 +9,7 @@ import it.polimi.ingsw.cerridifebbo.model.Player;
 
 import java.awt.Color;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -36,6 +37,8 @@ public class GUIGraphics extends Graphics implements ActionListener {
 	public static final String HUMAN = "HUMAN";
 	public static final String ALIEN = "ALIEN";
 	private int turn = 0;
+	public static int WIDTH = 1425;
+	public static int HEIGHT = 810; 
 
 	@Override
 	public void initialize(Map map, Player player, int numberOfPlayers) {
@@ -61,8 +64,7 @@ public class GUIGraphics extends Graphics implements ActionListener {
 		contentPane.add(buttonPanel);
 		contentPane.setLayout(new MainWindowLayout());
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		//frame.setMinimumSize(frame.getMinimumSize());
-		frame.pack();
+		frame.setMinimumSize(new Dimension(WIDTH, HEIGHT));
 		frame.setVisible(true);
 		moveListener = this;
 		initialized = true;

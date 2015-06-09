@@ -45,10 +45,9 @@ public class NoiseInSectorCard extends SectorCard {
 		if (player == null) {
 			throw new IllegalArgumentException("Player is null");
 		}
-		game.inform(player, Sentence.NOISE_IN, player.getPosition());
+		game.informPlayers(player, Sentence.NOISE_IN, player.getPosition());
 		if (this.containsItem()) {
-			ItemCard itemCard = (ItemCard) game.getDeck().drawItemCard();
-			return itemCard;
+			return (ItemCard) game.getDeck().drawItemCard();
 		} else {
 			return null;
 		}

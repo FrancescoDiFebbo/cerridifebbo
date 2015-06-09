@@ -35,7 +35,7 @@ public class DefenseItemCard extends ItemCard {
 			HumanPlayer p = (HumanPlayer) player;
 			p.deleteCard(this);
 			p.setRevealed();
-			game.inform(player, Sentence.DEFENSE_CARD, null);
+			game.informPlayers(player, Sentence.DEFENSE_CARD, null);
 			game.updatePlayer(player, this, false);
 		} else {
 			throw new IllegalArgumentException();

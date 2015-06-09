@@ -36,7 +36,7 @@ public class AttackItemCard extends ItemCard {
 		if (player != null && player instanceof HumanPlayer) {
 			HumanPlayer p = (HumanPlayer) player;
 			p.setRevealed();
-			game.inform(player, Sentence.ATTACK_CARD, null);
+			game.informPlayers(player, Sentence.ATTACK_CARD, null);
 			game.updatePlayer(player, this, false);
 			p.attack(game);
 			p.deleteCard(this);		

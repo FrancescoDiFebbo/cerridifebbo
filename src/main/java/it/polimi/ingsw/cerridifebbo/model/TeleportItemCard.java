@@ -36,7 +36,7 @@ public class TeleportItemCard extends ItemCard {
 			p.setPosition(game.getMap().getHumanSector());
 			p.deleteCard(this);
 			p.setRevealed();
-			game.inform(player, Sentence.TELEPORT_CARD, null);
+			game.informPlayers(player, Sentence.TELEPORT_CARD, null);
 			game.updatePlayer(player, this, false);
 		} else {
 			throw new IllegalArgumentException();

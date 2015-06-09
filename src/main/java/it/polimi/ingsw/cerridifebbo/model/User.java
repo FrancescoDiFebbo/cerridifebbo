@@ -12,6 +12,7 @@ public class User {
 	private Player player;
 	private Queue<Move> queue = new LinkedList<Move>();
 	private boolean online = true;
+	private boolean timeFinished = false;
 
 	public User(UUID id, ServerConnection connection) {
 		this.id = id;
@@ -48,5 +49,21 @@ public class User {
 
 	public void setOnline(boolean online) {
 		this.online = online;
+	}
+	
+	public synchronized void clear(){
+		queue.clear();
+		timeFinished = false;
+		if (player instanceof HumanPlayer) {
+			((HumanPlayer) player).clear();
+		}
+	}
+
+	public boolean isTimeFinished() {
+		return timeFinished;
+	}
+
+	public void setTimeFinished(boolean timeFinished) {
+		this.timeFinished = timeFinished;
 	}
 }

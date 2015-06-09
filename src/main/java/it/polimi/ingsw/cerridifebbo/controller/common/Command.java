@@ -20,12 +20,13 @@ public abstract class Command {
 	public static final String UPDATE = "update";	
 
 	protected static java.util.Map<String, String> translateCommand(String line) {
+		
 		java.util.Map<String, String> params = new HashMap<String, String>();
 		String[] splitted = line.split("&");
 		for (int i = 0; i < splitted.length; i++) {
 			String first = splitted[i].split("=")[0].replace("_", "\n");
 			String second = splitted[i].split("=")[1];
-			params.put(first, second == null ? second : second.replace("_", "\n"));
+			params.put(first, second == null ? second : second.replace("*", "\n"));
 		}
 		return params;
 	}
@@ -41,6 +42,6 @@ public abstract class Command {
 			sb.append("=");
 			sb.append(args[i]);
 		}
-		return sb.toString().replace("\n", "_");
+		return sb.toString().replace("\n", "*");
 	}
 }

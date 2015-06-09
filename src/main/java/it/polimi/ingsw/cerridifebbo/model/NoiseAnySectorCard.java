@@ -31,11 +31,12 @@ public class NoiseAnySectorCard extends SectorCard {
 	 * @param player
 	 *            the player who uses this card
 	 * @param target
-	 *            null.
+	 *            sector
 	 * @param game
 	 *            the reference to the current game
 	 * @exception IllegalArgumentException
-	 *                if player is null
+	 *                if player is null and if target is null or target is not
+	 *                an instance of Sector
 	 * @return if the card contains an item return an ItemCard, otherwise return
 	 *         null
 	 */
@@ -43,10 +44,10 @@ public class NoiseAnySectorCard extends SectorCard {
 	public Object performAction(Player player, Object target, Game game) {
 		if (player == null) {
 			throw new IllegalArgumentException("Player is null");
-		}		
-		game.askForSector(player);
-		Sector sector = game.getSector(player);
-		game.inform(player, Sentence.NOISE_ANY, sector);
+		} else if (target == null || !(target instanceof Sector)) {
+			throw new IllegalMoveException("Sector not valid");
+		}
+		game.informPlayers(player, Sentence.NOISE_ANY, (Sector) target);
 		if (this.containsItem()) {
 			return (ItemCard) game.getDeck().drawItemCard();
 		} else {

@@ -37,7 +37,7 @@ public class AdrenalineItemCard extends ItemCard {
 			p.setMaxMovement(ADRENALINEMOVEMENT);
 			p.deleteCard(this);
 			p.setRevealed();
-			game.inform(player, Sentence.ADRENALINE, null);
+			game.informPlayers(player, Sentence.ADRENALINE, null);
 			game.updatePlayer(player, this, false);
 		} else {
 			throw new IllegalArgumentException();

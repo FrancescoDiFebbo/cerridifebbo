@@ -1,9 +1,12 @@
 package it.polimi.ingsw.cerridifebbo.model;
 
 import it.polimi.ingsw.cerridifebbo.controller.common.Application;
+import it.polimi.ingsw.cerridifebbo.model.Game.Sentence;
 
 import java.util.List;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Turn extends GameState {
 
@@ -28,11 +31,14 @@ public class Turn extends GameState {
 		PlayerTurnState state = new PlayerTurnState();
 		Player player = user.getPlayer();
 		if (canPlay(player)) {
-			if (user.getConnection() != null) {
+			if (game.serverIsOn()) {
 				user.getConnection().startTurn(user);
+				// state.timeoutMove = new Timer();
+				// state.timeoutMove.schedule(new MoveTimer(user),
+				// Game.MAX_TIMEOUT);
 			}
 			while (!state.finish) {
-				Move move = checkForServer(user);
+				Move move = getMove(user);
 				try {
 					perform(user, move, state);
 				} catch (IllegalMoveException e) {
@@ -40,19 +46,17 @@ public class Turn extends GameState {
 					String error = e.getError();
 					if (game.serverIsOn()) {
 						user.getConnection().sendMessage(user, error);
-					}					
+					}
 				}
-			}
-			if (player instanceof HumanPlayer) {
-				((HumanPlayer) player).clear();
 			}
 			if (user.getConnection() != null) {
 				user.getConnection().endTurn(user);
 			}
+			user.clear();
 		}
 	}
 
-	private Move checkForServer(User user) {
+	private Move getMove(User user) {
 		Move move = null;
 		if (game.serverIsOn()) {
 			user.getConnection().askForMove(user);
@@ -75,7 +79,7 @@ public class Turn extends GameState {
 		return true;
 	}
 
-	private void perform(User user, Move move, PlayerTurnState state) throws IllegalMoveException {		
+	private void perform(User user, Move move, PlayerTurnState state) {
 		String action = move.getAction();
 		String target = move.getTarget();
 		switch (action) {
@@ -108,9 +112,13 @@ public class Turn extends GameState {
 	}
 
 	private void timeFinished(User user, PlayerTurnState state) {
-		movement(user, randomReachableSector(user.getPlayer()).toString(), state);
+		user.setTimeFinished(true);
+		if (!state.noMoreMovement) {
+			movement(user, randomReachableSector(user.getPlayer()).toString(), state);
+		}
+		game.informPlayers(user.getPlayer(), Sentence.TIMEFINISHED, null);
 		endPlayerTurn(state);
-		
+
 	}
 
 	private Sector randomReachableSector(Player player) {
@@ -152,6 +160,10 @@ public class Turn extends GameState {
 			}
 		}
 		if (selectedCard != null && !(selectedCard instanceof DefenseItemCard)) {
+			if (selectedCard instanceof SpotlightItemCard) {
+				Sector sector = game.retrieveSector(user.getPlayer());
+				selectedCard.performAction(user.getPlayer(), sector, game);
+			}
 			selectedCard.performAction(user.getPlayer(), null, game);
 		} else {
 			throw new IllegalMoveException("You are using a wrong item card");
@@ -159,6 +171,7 @@ public class Turn extends GameState {
 	}
 
 	private void endPlayerTurn(PlayerTurnState state) {
+		//state.timeoutMove.cancel();
 		state.finish = true;
 	}
 
@@ -166,6 +179,22 @@ public class Turn extends GameState {
 		private boolean finish = false;
 		private boolean noMoreMovement = false;
 		private boolean noMoreAttack = false;
+		private Timer timeoutMove;
+	}
+
+	private class MoveTimer extends TimerTask {
+
+		private final User user;
+
+		MoveTimer(User user) {
+			this.user = user;
+		}
+
+		@Override
+		public void run() {
+			user.putMove(new Move(Move.TIMEFINISHED, null));
+		}
+
 	}
 
 }

@@ -35,7 +35,7 @@ public class GreenEscapeHatchCard extends EscapeHatchCard {
 			p.setEscaped(true);
 			p.getPosition().setPassable(false);
 			p.setRevealed();
-			game.inform(player, Sentence.ESCAPED, player.getPosition());
+			game.informPlayers(player, Sentence.ESCAPED, player.getPosition());
 			game.updatePlayer(player, null, false);
 		} else {
 			throw new IllegalArgumentException();

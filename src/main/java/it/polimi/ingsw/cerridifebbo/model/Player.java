@@ -42,7 +42,7 @@ public abstract class Player implements Serializable {
 	public void kill(Game game) {
 		this.alive = false;
 		setRevealed();
-		game.inform(this, Sentence.KILLED, null);
+		game.informPlayers(this, Sentence.KILLED, null);
 	}
 
 	public Sector getPosition() {
@@ -77,7 +77,7 @@ public abstract class Player implements Serializable {
 
 	public boolean attack(Game game) {
 		this.setRevealed();
-		game.inform(this, Sentence.ATTACK, getPosition());		
+		game.informPlayers(this, Sentence.ATTACK, getPosition());		
 		boolean humanEaten = false;
 		for (User user : game.getUsers()) {
 			Player player = user.getPlayer();
@@ -110,13 +110,17 @@ public abstract class Player implements Serializable {
 	public boolean movement(Sector destination, Game game) {
 		if (getPosition().getReachableSectors(getMaxMovement()).contains(destination)) {
 			setPosition(destination);
-			game.sendToPlayer(this, "You moved to " + getPosition());
+			game.sendMessage(this, "You moved to " + getPosition());
 			Card sectorCard = destination.playerEnters(this, game.getDeck());
+			Sector target = null;
+			if (sectorCard instanceof NoiseAnySectorCard) {
+				target = game.retrieveSector(this);
+			}
 			Card itemCard = null;
 			if (sectorCard != null) {
-				itemCard = (Card) sectorCard.performAction(this, null, game);
+				itemCard = (Card) sectorCard.performAction(this, target, game);
 				if (itemCard != null) {
-					game.sendToPlayer(this, "You received " + itemCard + " card");
+					game.sendMessage(this, "You received " + itemCard + " card");
 					this.addCard(itemCard);
 				}
 			}
@@ -133,5 +137,5 @@ public abstract class Player implements Serializable {
 	public void setRevealed() {
 		this.revealed = true;
 	}
-
+	
 }

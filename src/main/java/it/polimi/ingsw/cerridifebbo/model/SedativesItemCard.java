@@ -37,7 +37,7 @@ public class SedativesItemCard extends ItemCard {
 			p.setSedatives(true);
 			p.deleteCard(this);
 			p.setRevealed();
-			game.inform(player, Sentence.SEDATIVES_CARD, null);
+			game.informPlayers(player, Sentence.SEDATIVES_CARD, null);
 			game.updatePlayer(player, this, false);
 		} else {
 			throw new IllegalArgumentException();

@@ -1,5 +1,7 @@
 package it.polimi.ingsw.cerridifebbo.view.gui;
 
+import it.polimi.ingsw.cerridifebbo.model.Game;
+
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,7 +16,7 @@ public class TimerPanel extends JPanel {
 	public static final int WIDTH = 300;
 	public static final int HEIGHT = 50;
 	private static final String TIME_FINISHED = "Time out!";
-	private static final int DELAY = 90000;
+	private static final int DELAY = Game.MAX_TIMEOUT;
 	private static final int PERIOD = 1000;
 	private int numberOfUpdate;
 	private JTextArea timeLeft;

@@ -13,6 +13,7 @@ import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -158,8 +159,8 @@ public class SocketInterface implements NetworkInterface {
 			}
 		}
 
-		private static void receiveObject(SocketInterface si, String string) {
-			switch (string) {
+		private static void receiveObject(SocketInterface si, String data) {
+			switch (data) {
 			case GAME_INFORMATION:
 				receiveGameInformation(si);
 				break;
@@ -176,8 +177,9 @@ public class SocketInterface implements NetworkInterface {
 		private static void receiveUpdate(SocketInterface si) {
 			ObjectInputStream ois = si.getOis();
 			try {
-				List<Object> update = (List<Object>) ois.readObject();
-				Application.println(update.toString());
+				Object obj = ois.readUnshared();
+				Application.println(obj.toString());
+				List<Object> update = (ArrayList<Object>) obj;
 				Player player = (Player) update.get(0);
 				Card card = (Card) update.get(1);
 				boolean added = (Boolean) update.get(2);
@@ -192,7 +194,7 @@ public class SocketInterface implements NetworkInterface {
 		private static void receiveGameInformation(SocketInterface si) {
 			ObjectInputStream ois = si.getOis();
 			try {
-				List<Object> info = (List<Object>) ois.readObject();
+				List<Object> info = (List<Object>) ois.readUnshared();
 				Map map = (Map) info.get(0);
 				Player player = (Player) info.get(1);
 				int numberOfPlayers = (Integer) info.get(2);

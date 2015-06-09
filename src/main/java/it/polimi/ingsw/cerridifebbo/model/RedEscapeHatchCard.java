@@ -35,7 +35,7 @@ public class RedEscapeHatchCard extends EscapeHatchCard {
 			HumanPlayer p = (HumanPlayer) player;
 			p.getPosition().setPassable(false);
 			p.setRevealed();
-			game.inform(player, Sentence.NOT_ESCAPED, player.getPosition());
+			game.informPlayers(player, Sentence.NOT_ESCAPED, player.getPosition());
 			game.updatePlayer(player, null, false);
 		} else {
 			throw new IllegalArgumentException();

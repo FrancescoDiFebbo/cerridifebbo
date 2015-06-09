@@ -82,11 +82,27 @@ public class SocketHandler extends Thread {
 		info.add(player);
 		info.add(size);
 		try {
-			oos.writeObject((ArrayList<Object>) info);
+			oos.writeUnshared((ArrayList<Object>) info);
 			oos.flush();
 		} catch (IOException e) {
 			LOG.log(Level.SEVERE, e.getMessage(), e);
 		}
+	}
+	
+	public void updatePlayer(Player player, Card card, boolean added) {
+		String command = CommandHandler.build(Command.SEND, Command.UPDATE);
+		out.println(command);
+		List<Object> update = new ArrayList<Object>();
+		update.add(player);
+		update.add(card);
+		update.add(added);
+		try {
+			oos.writeUnshared((ArrayList<Object>) update);
+			oos.flush();
+		} catch (IOException e) {
+			LOG.log(Level.SEVERE, e.getMessage(), e);
+		}
+
 	}
 
 	public void askForMove() {
@@ -97,23 +113,7 @@ public class SocketHandler extends Thread {
 	public void askForSector() {
 		String command = CommandHandler.build(Command.SECTOR, null);
 		out.println(command);
-	}
-
-	public void updatePlayer(Player player, Card card, boolean added) {
-		String command = CommandHandler.build(Command.SEND, Command.UPDATE);
-		out.println(command);
-		List<Object> update = new ArrayList<Object>();
-		update.add(player);
-		update.add(card);
-		update.add(added);
-		try {
-			oos.writeObject((ArrayList<Object>) update);
-			oos.flush();
-		} catch (IOException e) {
-			LOG.log(Level.SEVERE, e.getMessage(), e);
-		}
-
-	}
+	}	
 
 	public void starTurn() {
 		String command = CommandHandler.build(Command.START_TURN, null);

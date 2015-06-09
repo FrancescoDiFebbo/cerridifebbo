@@ -27,7 +27,6 @@ public class Server {
 	private Map<Game, Thread> games = new HashMap<Game, Thread>();
 	private List<User> room = new ArrayList<User>();
 	private Timer timeout = new Timer();
-	private Map<User, Timer> timers = new HashMap<User, Timer>();
 
 	public static void main(String[] args) {
 		new Server().start();
@@ -100,7 +99,7 @@ public class Server {
 		List<User> gamers = new ArrayList<User>(room);
 		room.clear();
 		Game game = new Game(this, gamers);
-		Thread t = new Thread(game, "GAME" + String.valueOf(games.size()));
+		Thread t = new Thread(game, "GAME" + games.size());
 		games.put(game, t);
 		t.start();
 	}
@@ -120,32 +119,8 @@ public class Server {
 		}
 	}
 
-	public void sendGameInformation(int size, it.polimi.ingsw.cerridifebbo.model.Map map, User user) {
-		user.getConnection().sendGameInformation(user, size, map);
-	}
-
-	public void askMoveFromUser(User user) {
-		user.getConnection().askForMove(user);
-	}
-
 	public List<User> getUsers() {
 		return users;
-	}
-
-	private class UserTimer extends TimerTask {
-
-		User user;
-
-		UserTimer(User user) {
-			super();
-			this.user = user;
-		}
-
-		@Override
-		public void run() {
-			user.putMove(new Move(Move.TIMEFINISHED, null));
-		}
-
 	}
 
 	private String readLine(String format, Object... args) {

@@ -9,7 +9,7 @@ public class StartGame extends GameState {
 
 	@Override
 	public void handle() {
-		game.broadcastToPlayers("Game is starting...");
+		game.sendMessage(null, "Game is starting...");
 		Map map = Map.getInstance();
 		game.setMap(map);
 		List<User> users = game.getUsers();
