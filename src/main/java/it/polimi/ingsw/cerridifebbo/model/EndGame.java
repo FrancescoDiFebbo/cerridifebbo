@@ -1,5 +1,7 @@
 package it.polimi.ingsw.cerridifebbo.model;
 
+import it.polimi.ingsw.cerridifebbo.controller.server.User;
+
 public class EndGame extends GameState {
 
 	public EndGame(Game game) {
@@ -8,10 +10,8 @@ public class EndGame extends GameState {
 
 	@Override
 	public void handle() {
-		if (game.serverIsOn()) {
-			for (User user : game.getUsers()) {
-				user.getConnection().sendMessage(user, "GAME OVER");
-			}
-		}		
+		for (User user : game.getUsers()) {
+			user.sendMessage("GAME OVER");
+		}
 	}
 }

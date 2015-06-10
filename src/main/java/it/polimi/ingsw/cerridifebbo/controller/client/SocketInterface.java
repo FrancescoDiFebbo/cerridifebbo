@@ -15,18 +15,13 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class SocketInterface implements NetworkInterface {
-	private static final Logger LOG = Logger.getLogger(SocketInterface.class.getName());
 
 	private Socket socket;
 	private PrintWriter out;
-	private BufferedReader in;
-	ObjectInputStream ois;
-	private UUID id = UUID.randomUUID();
+	private ObjectInputStream ois;
+	private String username;
 	private Graphics graphics;
 
 	@Override
@@ -34,78 +29,76 @@ public class SocketInterface implements NetworkInterface {
 		try {
 			socket = new Socket(Connection.SERVER_SOCKET_ADDRESS, Connection.SERVER_SOCKET_PORT);
 		} catch (IOException e) {
-			LOG.log(Level.SEVERE, e.getMessage(), e);
+			Application.exception(e);
 			return;
 		}
 
 		try {
 			out = new PrintWriter(socket.getOutputStream(), true);
 		} catch (IOException e) {
-			LOG.log(Level.SEVERE, e.getMessage(), e);
+			Application.exception(e);
 			try {
 				socket.close();
 			} catch (IOException e1) {
-				LOG.log(Level.WARNING, e1.getMessage(), e1);
+				Application.exception(e1);
 			}
 			return;
 		}
 		try {
-			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			ois = new ObjectInputStream(socket.getInputStream());
 		} catch (IOException e) {
-			LOG.log(Level.SEVERE, e.getMessage(), e);
+			Application.exception(e);
 			out.close();
 			try {
 				socket.close();
 			} catch (IOException e1) {
-				LOG.log(Level.WARNING, e1.getMessage(), e1);
+				Application.exception(e1);
 			}
 			return;
 		}
-		if (!registerClientOnServer()) {
-			close();
-		}
+		do {
+			username = chooseUsername();
+		} while (!registerClientOnServer());
 		listen();
+	}
+
+	@Override
+	public String chooseUsername() {
+		return Client.chooseUsername();
 	}
 
 	@Override
 	public void close() {
 		try {
-			in.close();
 			ois.close();
 			out.close();
 			socket.close();
 		} catch (IOException e) {
-			LOG.log(Level.WARNING, e.getMessage(), e);
+			Application.exception(e);
 			Application.exitError();
 		}
 	}
 
 	@Override
 	public boolean registerClientOnServer() {
-		out.println(Command.build(Command.REGISTER, id.toString()));
+		out.println(Command.build(Command.REGISTER, username));
 		try {
-			String line = in.readLine();
-			CommandHandler.handleCommand(SocketInterface.this, line);
-			return true;
+			return ois.readBoolean();
 		} catch (IOException e) {
-			LOG.log(Level.SEVERE, e.getMessage(), e);
+			Application.exception(e, "Unable to contact server");
 			return false;
 		}
 	}
 
 	private void listen() {
 		int readError = 0;
-		while (true) {
+		while (readError < 2) {
 			try {
-				String line = in.readLine();
+				String line = (String) ois.readUnshared();
 				CommandHandler.handleCommand(SocketInterface.this, line);
-			} catch (IOException e) {
-				LOG.log(Level.SEVERE, e.getMessage(), e);
+			} catch (IOException | ClassNotFoundException e) {
+				Application.exception(e);
 				readError++;
-				if (readError > 2) {
-					Application.exitError();
-				}
 			}
 		}
 	}
@@ -115,16 +108,94 @@ public class SocketInterface implements NetworkInterface {
 		this.graphics = graphics;
 	}
 
-	public Graphics getGraphics() {
-		return graphics;
+	@Override
+	public void sendToServer(String action, String target) {
+		String command = CommandHandler.build(Command.MOVE, action, target);
+		out.println(command);
 	}
 
-	public Socket getSocket() {
-		return socket;
+	public void startTurn() {
+		if (graphics.isInitialized()) {
+			graphics.startTurn();
+		}
+
 	}
 
-	public ObjectInputStream getOis() {
-		return ois;
+	public void endTurn() {
+		if (graphics.isInitialized()) {
+			graphics.endTurn();
+		}
+	}
+
+	public void askForMove() {
+		if (graphics.isInitialized()) {
+			graphics.declareMove();
+		}
+	}
+
+	public void askForSector() {
+		if (graphics.isInitialized()) {
+			graphics.declareSector();
+		}
+	}
+
+	public void askForCard() {
+		if (graphics.isInitialized()) {
+			graphics.declareCard();
+		}
+	}
+
+	public void showMessage(String message) {
+		if (graphics.isInitialized()) {
+			graphics.sendMessage(message);
+		} else {
+			Application.println("SERVER) " + message);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private void receiveGameInformation() {
+		try {
+			List<Object> info = (List<Object>) ois.readUnshared();
+			Map map = (Map) info.get(0);
+			Player player = (Player) info.get(1);
+			int numberOfPlayers = (Integer) info.get(2);
+			setGameInformation(map, player, numberOfPlayers);
+		} catch (IOException | ClassNotFoundException e) {
+			Application.exception(e);
+		}
+	}
+
+	@Override
+	public void setGameInformation(Map map, Player player, int size) {
+		graphics.initialize(map, player, size);
+	}
+
+	@SuppressWarnings("unchecked")
+	private void receiveUpdate() {
+		try {
+			Object obj = ois.readUnshared();
+			List<Object> update = (ArrayList<Object>) obj;
+			Player player = (Player) update.get(0);
+			Card card = (Card) update.get(1);
+			boolean added = (Boolean) update.get(2);
+			updatePlayer(player, card, added);
+		} catch (IOException | ClassNotFoundException e) {
+			Application.exception(e);
+		}
+	}
+
+	@Override
+	public void updatePlayer(Player player, Card card, boolean added) {
+		graphics.updatePlayerPosition(player);
+		if (card == null) {
+			return;
+		}
+		if (added) {
+			graphics.addPlayerCard(player, card);
+		} else {
+			graphics.deletePlayerCard(player, card);
+		}
 	}
 
 	private static class CommandHandler extends Command {
@@ -162,108 +233,14 @@ public class SocketInterface implements NetworkInterface {
 		private static void receiveObject(SocketInterface si, String data) {
 			switch (data) {
 			case GAME_INFORMATION:
-				receiveGameInformation(si);
+				si.receiveGameInformation();
 				break;
 			case UPDATE:
-				receiveUpdate(si);
+				si.receiveUpdate();
 				break;
 			default:
 				break;
 			}
-
 		}
-
-		@SuppressWarnings("unchecked")
-		private static void receiveUpdate(SocketInterface si) {
-			ObjectInputStream ois = si.getOis();
-			try {
-				Object obj = ois.readUnshared();
-				Application.println(obj.toString());
-				List<Object> update = (ArrayList<Object>) obj;
-				Player player = (Player) update.get(0);
-				Card card = (Card) update.get(1);
-				boolean added = (Boolean) update.get(2);
-				si.updatePlayer(player, card, added);
-			} catch (IOException | ClassNotFoundException e) {
-				LOG.log(Level.WARNING, e.getMessage(), e);
-			}
-
-		}
-
-		@SuppressWarnings("unchecked")
-		private static void receiveGameInformation(SocketInterface si) {
-			ObjectInputStream ois = si.getOis();
-			try {
-				List<Object> info = (List<Object>) ois.readUnshared();
-				Map map = (Map) info.get(0);
-				Player player = (Player) info.get(1);
-				int numberOfPlayers = (Integer) info.get(2);
-				si.setGameInformation(map, player, numberOfPlayers);
-			} catch (IOException | ClassNotFoundException e) {
-				LOG.log(Level.WARNING, e.getMessage(), e);
-			}
-		}
-	}
-
-	@Override
-	public void sendToServer(String action, String target) {
-		String command = CommandHandler.build(Command.MOVE, action, target);
-		out.println(command);
-	}
-
-	public void endTurn() {
-		if (graphics.isInitialized()) {
-			graphics.endTurn();
-		}		
-	}
-
-	public void startTurn() {
-		if (graphics.isInitialized()) {
-			graphics.startTurn();
-		}
-		
-	}
-
-	public void askForCard() {
-		if (graphics.isInitialized()) {
-			graphics.declareCard();
-		}
-	}
-
-	public void askForSector() {
-		if (graphics.isInitialized()) {
-			graphics.declareSector();
-		}
-	}
-
-	public void askForMove() {
-		if (graphics.isInitialized()) {
-			graphics.declareMove();
-		}
-	}
-
-	public void showMessage(String message) {
-		if (graphics.isInitialized()) {
-			graphics.sendMessage(message);
-		} else {
-			Application.println("SERVER) " + message);
-		}
-
-	}
-
-	public void updatePlayer(Player player, Card card, boolean added) {
-		if (graphics.isInitialized()) {
-			graphics.updatePlayerPosition(player);
-			if (added) {
-				graphics.addPlayerCard(player, card);
-			} else {
-				graphics.deletePlayerCard(player, card);
-			}
-		}
-	}
-
-	@Override
-	public void setGameInformation(Map map, Player player, int size) {
-		graphics.initialize(map, player, size);
 	}
 }

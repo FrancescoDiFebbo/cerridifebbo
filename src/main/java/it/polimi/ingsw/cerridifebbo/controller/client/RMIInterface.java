@@ -5,6 +5,9 @@ import it.polimi.ingsw.cerridifebbo.model.Card;
 import it.polimi.ingsw.cerridifebbo.model.Map;
 import it.polimi.ingsw.cerridifebbo.model.Player;
 
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.rmi.AlreadyBoundException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -12,22 +15,18 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Random;
-import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class RMIInterface extends UnicastRemoteObject implements NetworkInterface, RemoteClient {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private static final Logger LOG = Logger.getLogger(RMIInterface.class.getName());
-	private static final int MAX_ATTEMPTS = 5;
-
 	private transient RemoteServer server;
-	private UUID id = UUID.randomUUID();
-	private int port;
 	private transient Graphics graphics;
+	private transient String username;
+	private transient String ip;
+	private transient int port;
+	private transient RemoteUser user;
 
 	protected RMIInterface() throws RemoteException {
 		super();
@@ -35,38 +34,48 @@ public class RMIInterface extends UnicastRemoteObject implements NetworkInterfac
 
 	@Override
 	public void connect() {
-		Registry registry;
 		Random random = new Random();
+		Registry registry = null;
+		try {
+			ip = InetAddress.getLocalHost().getHostAddress();
+		} catch (UnknownHostException e) {
+			Application.exception(e);
+		}
 		while (true) {
 			try {
 				port = random.nextInt(65535);
 				registry = LocateRegistry.createRegistry(port);
 				break;
 			} catch (RemoteException e) {
-				LOG.log(Level.INFO, port + " not available", e);
+				Application.exception(e, port + " not available");
 			}
 		}
 		try {
 			registry.bind(RemoteClient.RMI_ID, this);
 		} catch (RemoteException | AlreadyBoundException e) {
-			LOG.log(Level.SEVERE, "Client not bound.\nClosing client...", e);
+			Application.exception(e, "Client not bound.\nClosing client...");
 			Application.exitError();
 		}
 		try {
 			registry = LocateRegistry.getRegistry(Connection.SERVER_REGISTRY_PORT);
 		} catch (RemoteException e) {
-			LOG.log(Level.SEVERE, e.getMessage(), e);
-			return;
+			Application.exception(e, "Server registry not found");
+			Application.exitError();
 		}
 		try {
 			server = (RemoteServer) registry.lookup(RemoteServer.RMI_ID);
 		} catch (RemoteException | NotBoundException e) {
-			LOG.log(Level.SEVERE, e.getMessage(), e);
-			return;
+			Application.exception(e, "Remote server not found");
+			Application.exitError();
 		}
-		if (!registerClientOnServer()) {
-			close();
-		}
+		do {
+			username = chooseUsername();
+		} while (!registerClientOnServer());
+	}
+
+	@Override
+	public String chooseUsername() {
+		return Client.chooseUsername();
 	}
 
 	@Override
@@ -75,26 +84,28 @@ public class RMIInterface extends UnicastRemoteObject implements NetworkInterfac
 			Registry registry = LocateRegistry.getRegistry(port);
 			registry.unbind(RemoteClient.RMI_ID);
 		} catch (RemoteException | NotBoundException e) {
-			LOG.log(Level.WARNING, e.getMessage(), e);
+			Application.exception(e);
 		}
 	}
 
 	@Override
 	public boolean registerClientOnServer() {
 		try {
-			return server.registerOnServer(id, port);
-		} catch (RemoteException e) {
-			LOG.log(Level.SEVERE, e.getMessage(), e);
+			if (server.registerOnServer(username, ip, port)) {
+				user = (RemoteUser) LocateRegistry.getRegistry(Connection.SERVER_REGISTRY_PORT).lookup(username);
+				return true;
+			} else {
+				Application.println("Name already used");
+				return false;
+			}
+		} catch (RemoteException | NotBoundException e) {
+			Application.exception(e, "Unable to contact server");
 			return false;
 		}
 	}
 
 	@Override
 	public void sendMessage(String message) throws RemoteException {
-		showMessage(message);
-	}
-
-	public void showMessage(String message) {
 		if (graphics.isInitialized()) {
 			graphics.sendMessage(message);
 			return;
@@ -105,17 +116,32 @@ public class RMIInterface extends UnicastRemoteObject implements NetworkInterfac
 	@Override
 	public void setGraphicInterface(Graphics graphics) {
 		this.graphics = graphics;
-
 	}
 
 	@Override
-	public void sendGameInformation(int size, Map map, Player player) throws RemoteException {
+	public void sendGameInformation(Map map, Player player, int size) throws RemoteException {
 		setGameInformation(map, player, size);
+
 	}
 
 	@Override
 	public void setGameInformation(Map map, Player player, int size) {
 		graphics.initialize(map, player, size);
+	}
+
+	@Override
+	public void startTurn() throws RemoteException {
+		if (graphics.isInitialized()) {
+			graphics.startTurn();
+		}
+
+	}
+
+	@Override
+	public void endTurn() throws RemoteException {
+		if (graphics.isInitialized()) {
+			graphics.endTurn();
+		}
 	}
 
 	@Override
@@ -135,46 +161,30 @@ public class RMIInterface extends UnicastRemoteObject implements NetworkInterfac
 	public void askForMove() throws RemoteException {
 		if (graphics.isInitialized()) {
 			graphics.declareMove();
-			return;
 		}
+	}
+
+	@Override
+	public void askForSector() throws RemoteException {
+		if (graphics.initialized) {
+			graphics.declareSector();
+		}
+	}
+
+	@Override
+	public void askForCard() throws RemoteException {
+		if (graphics.initialized) {
+			graphics.declareCard();
+		}
+
 	}
 
 	@Override
 	public void sendToServer(String action, String target) {
-		int attempts = 0;
-		while (attempts < MAX_ATTEMPTS) {
-			try {
-				server.sendMove(id, action, target);
-				break;
-			} catch (RemoteException e) {
-				attempts++;
-				LOG.log(Level.INFO, e.getMessage(), e);
-			}
-		}
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		return super.equals(obj);
-	}
-
-	@Override
-	public int hashCode() {
-		return super.hashCode();
-	}
-
-	@Override
-	public void startTurn() throws RemoteException {
-		if (graphics.isInitialized()) {
-			graphics.startTurn();
-		}
-
-	}
-
-	@Override
-	public void endTurn() throws RemoteException {
-		if (graphics.isInitialized()) {
-			graphics.endTurn();
+		try {
+			user.sendMove(action, target);
+		} catch (RemoteException e) {
+			Application.exception(e);
 		}
 	}
 
@@ -191,10 +201,12 @@ public class RMIInterface extends UnicastRemoteObject implements NetworkInterfac
 	}
 
 	@Override
-	public void askForSector() throws RemoteException {
-		if (graphics.initialized) {
-			graphics.declareSector();
-		}		
+	public boolean equals(Object obj) {
+		return super.equals(obj);
 	}
 
+	@Override
+	public int hashCode() {
+		return super.hashCode();
+	}
 }

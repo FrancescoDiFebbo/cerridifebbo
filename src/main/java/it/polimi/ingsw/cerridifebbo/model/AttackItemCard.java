@@ -39,7 +39,7 @@ public class AttackItemCard extends ItemCard {
 			game.informPlayers(player, Sentence.ATTACK_CARD, null);
 			game.updatePlayer(player, this, false);
 			p.attack(game);
-			p.deleteCard(this);		
+			p.deleteCard(this);
 		} else {
 			throw new IllegalArgumentException();
 		}

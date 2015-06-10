@@ -56,8 +56,8 @@ public class Deck {
 		}
 		return escapeHatchCards.get(currentEscapeHatch++);
 	}
-	
-	public void reset(){
+
+	public void reset() {
 		currentCharacter = 0;
 		currentEscapeHatch = 0;
 		currentItem = 0;
@@ -69,6 +69,6 @@ public class Deck {
 		for (Card card : itemCards) {
 			((ItemCard) card).setTaken(false);
 		}
-		
+
 	}
 }

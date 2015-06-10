@@ -6,11 +6,10 @@ import it.polimi.ingsw.cerridifebbo.view.gui.GUIGraphics;
 public class GraphicsFactory {
 	public static final String GUI_INTERFACE = "gui_interface";
 	public static final String CLI_INTERFACE = "cli_interface";
-	
-	private GraphicsFactory(){
-		
+
+	private GraphicsFactory() {
+
 	}
-	
 
 	public static Graphics getInterface(String param) {
 		switch (param) {

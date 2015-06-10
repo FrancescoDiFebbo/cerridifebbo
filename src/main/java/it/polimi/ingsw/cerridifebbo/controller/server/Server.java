@@ -1,56 +1,61 @@
 package it.polimi.ingsw.cerridifebbo.controller.server;
 
 import it.polimi.ingsw.cerridifebbo.controller.common.Application;
-import it.polimi.ingsw.cerridifebbo.model.CharacterDeckFactory;
+import it.polimi.ingsw.cerridifebbo.controller.common.ClientConnection;
 import it.polimi.ingsw.cerridifebbo.model.Game;
-import it.polimi.ingsw.cerridifebbo.model.Move;
-import it.polimi.ingsw.cerridifebbo.model.User;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class Server {
-	private static final Logger LOG = Logger.getLogger(Server.class.getName());
+	private static final int TIMEOUT_NEWGAME = 10000;
+	private static Server instance = new Server();
 
 	private ServerConnection rmi, socket;
 	private List<User> users = new ArrayList<User>();
-	private Map<Game, Thread> games = new HashMap<Game, Thread>();
 	private List<User> room = new ArrayList<User>();
+	private Map<Game, Thread> games = new HashMap<Game, Thread>();
 	private Timer timeout = new Timer();
 
-	public static void main(String[] args) {
-		new Server().start();
+	private Server() {
+
 	}
 
-	public void start() {
-		// Starting RMI server
-		rmi = ServerConnectionFactory.getConnection(this, ServerConnectionFactory.RMI);
+	public static void main(String[] args) {
+		Server.getInstance().start();
+	}
+
+	public static Server getInstance() {
+		return instance;
+	}
+
+	private void start() {
+		rmi = ServerConnectionFactory.getConnection(ServerConnectionFactory.RMI);
 		if (rmi == null) {
-			return;
+			stop();
 		}
 		rmi.start();
-
-		// Starting socket server
-		socket = ServerConnectionFactory.getConnection(this, ServerConnectionFactory.SOCKET);
+		socket = ServerConnectionFactory.getConnection(ServerConnectionFactory.SOCKET);
 		if (socket == null) {
-			return;
+			stop();
 		}
 		socket.start();
 
-		// Server ready
-		Application.println("Server ready :)");
+		Application.println("Server ready...");
 		while (true) {
-			String line = readLine("Press 'q' to exit, 'b' to broadcast, 'h' to heartbeat");
+			String line = null;
+			try {
+				line = Application.readLine("Press 'q' to exit, 'b' to broadcast, 'h' to heartbeat");
+			} catch (IOException e) {
+				Application.exception(e, "Command not read");
+				line = null;
+			}
 			if ("q".equals(line)) {
 				stop();
 			}
@@ -64,42 +69,61 @@ public class Server {
 	}
 
 	public void stop() {
-		rmi.close();
-		socket.close();
+		if (rmi != null) {
+			rmi.close();
+		}
+		if (socket != null) {
+			socket.close();
+		}
 		Application.exitSuccess();
 	}
 
-	public User registerClientOnServer(UUID idClient, ServerConnection connection) {
-		User newUser = new User(idClient, connection);
+	public User registerClientOnServer(String username, ClientConnection client) {
+		for (User user : users) {
+			if (user.getName().equalsIgnoreCase(username)) {
+				return null;
+			}
+		}
+		User newUser;
+		try {
+			newUser = new User(username, client);
+		} catch (RemoteException e) {
+			Application.exception(e);
+			return null;
+		}
 		users.add(newUser);
 		room.add(newUser);
-		timeout.cancel();
-		timeout = new Timer();
-		timeout.schedule(new TimerTask() {
-
-			@Override
-			public void run() {
-				if (room.size() == 1) {
-					broadcastToRoom("Waiting for another player...", null);
-					return;
-				}
-				createNewGame();
-
-			}
-		}, 10000);
-		broadcastToRoom("New player connected", newUser);
-		if (room.size() == CharacterDeckFactory.MAX_PLAYERS) {
+		if (room.size() == Game.MAX_PLAYERS) {
 			timeout.cancel();
 			createNewGame();
+		} else {
+			timeout.cancel();
+			timeout = new Timer();
+			timeout.schedule(new TimerTask() {
+
+				@Override
+				public void run() {
+					if (room.size() < Game.MIN_PLAYERS) {
+						broadcastToRoom("Waiting for another player...", null);
+						return;
+					}
+					createNewGame();
+
+				}
+			}, TIMEOUT_NEWGAME);
 		}
+		broadcastToRoom(username + " connected", newUser);
 		return newUser;
 	}
 
 	private void createNewGame() {
-		List<User> gamers = new ArrayList<User>(room);
-		room.clear();
+		List<User> gamers = null;
+		synchronized (room) {
+			gamers = new ArrayList<User>(room);
+			room.clear();
+		}
 		Game game = new Game(this, gamers);
-		Thread t = new Thread(game, "GAME" + games.size());
+		Thread t = new Thread(game, "GAME-" + games.size());
 		games.put(game, t);
 		t.start();
 	}
@@ -109,39 +133,14 @@ public class Server {
 			if (user == excluded) {
 				continue;
 			}
-			user.getConnection().sendMessage(user, message);
+			user.sendMessage(message);
 		}
 	}
 
 	private void broadcastEverybody(String message) {
 		for (User user : users) {
-			user.getConnection().sendMessage(user, message);
+			user.sendMessage(message);
 		}
-	}
-
-	public List<User> getUsers() {
-		return users;
-	}
-
-	private String readLine(String format, Object... args) {
-		if (System.console() != null) {
-			return System.console().readLine(format, args);
-		}
-		Application.println(String.format(format, args));
-
-		BufferedReader br = null;
-		InputStreamReader isr = null;
-		String read = null;
-
-		isr = new InputStreamReader(System.in);
-		br = new BufferedReader(isr);
-		try {
-			read = br.readLine();
-		} catch (IOException e) {
-			LOG.log(Level.WARNING, e.getMessage(), e);
-			read = null;
-		}
-		return read;
 	}
 
 	public void gameOver(Game game) {
@@ -149,25 +148,27 @@ public class Server {
 		games.get(game).interrupt();
 		games.remove(game);
 		for (User user : gone) {
-			user.getConnection().disconnectUser(user);
-			users.remove(user);
-			LOG.info(user.getId().toString().split("-")[0] + " disconnected from server");
+			disconnectUser(user);
 		}
 	}
 
 	private void heartBeat() {
 		List<User> temp = new ArrayList<User>(users);
 		for (User user : temp) {
-			if (!user.getConnection().poke(user)) {
-				user.setOnline(false);
-				user.getConnection().disconnectUser(user);
-				users.remove(user);
-				Application.println(user.getId().toString().split("-")[0] + " disconnected");
+			if (!user.poke()) {
+				suspendUser(user);
 			}
 		}
 	}
 
-	public void disconnectUser(User user) {
-		user.getConnection().disconnectUser(user);
+	private void disconnectUser(User user) {
+		user.disconnect();
+		users.remove(user);
+		Application.println(user.getName() + " disconnected from server");
+	}
+
+	public void suspendUser(User user) {
+		user.setConnection(null);
+		Application.println(user.getName() + " suspended");
 	}
 }

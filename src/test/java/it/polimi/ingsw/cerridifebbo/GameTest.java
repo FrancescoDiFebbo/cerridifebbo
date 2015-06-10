@@ -3,6 +3,7 @@ package it.polimi.ingsw.cerridifebbo;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import it.polimi.ingsw.cerridifebbo.controller.server.User;
 import it.polimi.ingsw.cerridifebbo.model.AlienPlayer;
 import it.polimi.ingsw.cerridifebbo.model.Card;
 import it.polimi.ingsw.cerridifebbo.model.CharacterDeckFactory;
@@ -13,12 +14,11 @@ import it.polimi.ingsw.cerridifebbo.model.HumanPlayer;
 import it.polimi.ingsw.cerridifebbo.model.ItemDeckFactory;
 import it.polimi.ingsw.cerridifebbo.model.Player;
 import it.polimi.ingsw.cerridifebbo.model.Sector;
-import it.polimi.ingsw.cerridifebbo.model.User;
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.UUID;
 
 import org.junit.Test;
 
@@ -27,9 +27,12 @@ public class GameTest {
 	@Test
 	public void test() {
 		ArrayList<User> users = new ArrayList<User>();
-		users.add(new User(null, null));
-		users.add(new User(null, null));
-		users.add(new User(null, null));
+		for (int i = 0; i < 3; i++) {
+			try {
+				users.add(new User(String.valueOf(i), null));
+			} catch (RemoteException e) {
+			}
+		}
 		Game game = new Game(null, users);
 		game.run();
 		assertNotNull(game.getDeck());
@@ -62,7 +65,10 @@ public class GameTest {
 	public void testCards() {
 		ArrayList<User> users = new ArrayList<User>();
 		for (int i = 0; i < CharacterDeckFactory.MAX_PLAYERS; i++) {
-			users.add(new User(null, null));
+			try {
+				users.add(new User(String.valueOf(i), null));
+			} catch (RemoteException e) {
+			}
 		}
 		Game game = new Game(null, users);
 		game.run();
@@ -84,13 +90,16 @@ public class GameTest {
 	@Test
 	public void testMovementAndAttack() {
 		ArrayList<User> users = new ArrayList<User>();
-		for (int i = 0; i < CharacterDeckFactory.MAX_PLAYERS; i++) {
-			users.add(new User(null, null));
+		for (int i = 0; i < Game.MAX_PLAYERS; i++) {
+			try {
+				users.add(new User(String.valueOf(i), null));
+			} catch (RemoteException e) {
+			}
 		}
 		Game game = new Game(null, users);
 		game.run();
 		for (int i = 0; i < 39; i++) {
-			for (int k = 0; k < CharacterDeckFactory.MAX_PLAYERS; k++) {
+			for (int k = 0; k < Game.MAX_PLAYERS; k++) {
 				Player player = game.getUsers().get(k).getPlayer();
 				List<Sector> sectors = player.getPosition().getReachableSectors(player.getMaxMovement());
 				int index = new Random().nextInt(sectors.size());
@@ -103,8 +112,11 @@ public class GameTest {
 	@Test
 	public void testEscapeHatches() {
 		ArrayList<User> users = new ArrayList<User>();
-		for (int i = 0; i < CharacterDeckFactory.MAX_PLAYERS; i++) {
-			users.add(new User(null, null));
+		for (int i = 0; i < Game.MAX_PLAYERS; i++) {
+			try {
+				users.add(new User(String.valueOf(i), null));
+			} catch (RemoteException e) {
+			}
 		}
 		Game game = new Game(null, users);
 		game.run();

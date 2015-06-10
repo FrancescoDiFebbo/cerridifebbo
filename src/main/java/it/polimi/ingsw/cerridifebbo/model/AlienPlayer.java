@@ -1,9 +1,7 @@
 package it.polimi.ingsw.cerridifebbo.model;
 
-
 public class AlienPlayer extends Player {
 
-	
 	/**
 	 * 
 	 */

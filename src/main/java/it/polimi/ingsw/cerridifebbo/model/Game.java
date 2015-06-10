@@ -1,14 +1,16 @@
 package it.polimi.ingsw.cerridifebbo.model;
 
 import it.polimi.ingsw.cerridifebbo.controller.server.Server;
+import it.polimi.ingsw.cerridifebbo.controller.server.User;
 
 import java.util.List;
-import java.util.Random;
 
 public class Game implements Runnable {
 
 	private static final int MAX_TURNS = 39;
-	public static final int MAX_TIMEOUT = 20000;
+	public static final int MAX_TIMEOUT = 90;
+	public static final int MAX_PLAYERS = CharacterDeckFactory.MAX_PLAYERS;
+	public static final int MIN_PLAYERS = CharacterDeckFactory.MIN_PLAYERS;
 
 	private final Server server;
 	private final List<User> users;
@@ -24,38 +26,12 @@ public class Game implements Runnable {
 		this.users = users;
 	}
 
-	public boolean serverIsOn() {
-		return server != null;
-	}
-
 	public List<User> getUsers() {
 		return users;
 	}
 
 	public GameState getState() {
 		return state;
-	}
-
-	public void nextTurn() {
-		if (turn++ == MAX_TURNS) {
-			state = new EndGame(this);
-		} else {
-			state = new Turn(this);
-		}
-		state.handle();
-	}
-
-	public void checkGame() {
-		state = new CheckGame(this);
-		state.handle();
-	}
-
-	public void endGame() {
-		state = new EndGame(this);
-		state.handle();
-		if (serverIsOn() ) {
-			server.gameOver(this);
-		}		
 	}
 
 	public Map getMap() {
@@ -79,84 +55,67 @@ public class Game implements Runnable {
 		state.handle();
 	}
 
-	public Sector retrieveSector(Player player) {
-		User user = findUser(player);
-		Sector sector = null;
-		do {
-			askForSector(user);
-			sector = getSector(user);
-		} while (sector==null);		
-		return sector;
-	}
-
-	private void askForSector(User user) {	
-		if (!user.isTimeFinished() && serverIsOn()) {
-			user.getConnection().askForSector(user);
+	public void nextTurn() {
+		if (turn++ == MAX_TURNS) {
+			state = new EndGame(this);
 		} else {
-			user.putMove(new Move(Move.SECTOR, randomSector().toString()));
+			state = new Turn(this);
 		}
+		state.handle();
 	}
-	
-	private Sector getSector(User user) {
-		Move move = null;
-		do {
-			move = user.getMove();
-		} while (move == null);
-		if (Move.SECTOR.equals(move.getAction())) {
-			return map.getCell(move.getTarget());
-		}
-		return null;
 
+	public void checkGame() {
+		state = new CheckGame(this);
+		state.handle();
 	}
-	
-	private Sector randomSector() {
-		Random random = new Random();
-		Sector sector = null;
-		do {
-			sector = getMap().getCell(random.nextInt(Map.ROWMAP), random.nextInt(Map.COLUMNMAP));
-		} while (sector == null);
-		return sector;
-	}
-	
-	public void sendGameInformation(int size, Map map, User user) {
-		if (serverIsOn()) {
-			user.getConnection().sendGameInformation(user, size, map);
-		}		
-	}
-	
-	public void updatePlayer(Player player, Card card, boolean added) {
-		if (serverIsOn()) {
-			User me = findUser(player);
-			me.getConnection().updatePlayer(me, card, added);
+
+	public void endGame() {
+		state = new EndGame(this);
+		state.handle();
+		if (server != null) {
+			server.gameOver(this);
 		}
 	}
-	
+
+	public Sector getSector(Player player) {
+		User me = findUser(player);
+		return me.getSector(map);
+	}
+
+	public Move getCard(Player player) {
+		User me = findUser(player);
+		return me.getCard();
+	}
+
+	public void updatePlayer(Player player, Card card, boolean added) {
+		User me = findUser(player);
+		me.updatePlayer(me.getPlayer(), card, added);
+	}
+
 	public void sendMessage(Player player, String message) {
-		if (serverIsOn()) {
-			if (player == null) {
-				for (User user : users) {
-					user.getConnection().sendMessage(user, message);
-				}
-			} else {
-				User user = findUser(player);
-				user.getConnection().sendMessage(user, message);
-			}			
+		if (player == null) {
+			for (User user : users) {
+				user.sendMessage(message);
+			}
+		} else {
+			User user = findUser(player);
+			user.sendMessage(message);
 		}
 	}
 
 	public void informPlayers(Player player, String sentence, Sector sector) {
-		if (serverIsOn()) {
-			User me = findUser(player);
-			for (User user : users) {
-				if (user == me) {
-					me.getConnection().sendMessage(me, Sentence.toMe(sentence, this, sector));
-					continue;
-				}
-				user.getConnection().sendMessage(user, "GAME) " + Sentence.toOthers(sentence, me, this, sector));
+		User me = findUser(player);
+		for (User user : users) {
+			if (user == me) {
+				me.sendMessage(Sentence.toMe(sentence, this, sector));
+
+				continue;
 			}
+			user.sendMessage("GAME) " + Sentence.toOthers(sentence, me, this, sector));
+
 		}
 	}
-	
+
 	private User findUser(Player player) {
 		for (User user : users) {
 			if (user.getPlayer() == player) {
@@ -180,6 +139,7 @@ public class Game implements Runnable {
 		public static final String NOISE_ANY = "noise_any";
 		public static final String ATTACK = "attack";
 		public static final String TIMEFINISHED = "time_finished";
+		public static final String DISCARD_CARD = "discard_card";
 
 		private Sentence() {
 
@@ -213,6 +173,8 @@ public class Game implements Runnable {
 				return "You are attacking";
 			case TIMEFINISHED:
 				return "Time is over.";
+			case DISCARD_CARD:
+				return "You have discarded a card";
 			default:
 				return null;
 			}
@@ -221,9 +183,9 @@ public class Game implements Runnable {
 		public static String toOthers(String sentence, User user, Game game, Sector sector) {
 			String name = null;
 			if (user.getPlayer().isRevealed()) {
-				name = user.getPlayer().getPlayerCard().getCharacterName();
+				name = user.getName() + " (" + user.getPlayer().getPlayerCard().getCharacterName() + ")";
 			} else {
-				name = user.getId().toString().split("-")[0];
+				name = user.getName();
 			}
 			switch (sentence) {
 			case NOISE_IN:
@@ -252,6 +214,8 @@ public class Game implements Runnable {
 				return name + " is attacking " + sector;
 			case TIMEFINISHED:
 				return name + " has finished his turn time";
+			case DISCARD_CARD:
+				return name + " has discarded a card";
 			default:
 				return null;
 			}
@@ -260,6 +224,7 @@ public class Game implements Runnable {
 		private static String spotlight(Game game, Sector sector) {
 			StringBuilder build = new StringBuilder();
 			List<Sector> sectors = sector.getAdjacentSectors();
+			sectors.add(sector);
 			for (User user : game.getUsers()) {
 				Player p = user.getPlayer();
 				if (sectors.contains(p.getPosition())) {
@@ -267,7 +232,7 @@ public class Game implements Runnable {
 					if (user.getPlayer().isRevealed()) {
 						name = user.getPlayer().getPlayerCard().getCharacterName();
 					} else {
-						name = user.getId().toString().split("-")[0];
+						name = user.getName().toString().split("-")[0];
 					}
 					build.append("\n" + name + " is in " + p.getPosition() + "\n");
 				}

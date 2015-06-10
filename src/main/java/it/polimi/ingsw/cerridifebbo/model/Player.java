@@ -1,5 +1,6 @@
 package it.polimi.ingsw.cerridifebbo.model;
 
+import it.polimi.ingsw.cerridifebbo.controller.server.User;
 import it.polimi.ingsw.cerridifebbo.model.Game.Sentence;
 
 import java.io.Serializable;
@@ -9,7 +10,6 @@ import java.util.List;
 public abstract class Player implements Serializable {
 
 	private static final long serialVersionUID = 7274673996298525756L;
-	private static final int MAX_CARDS = 3;
 	private CharacterCard playerCard;
 	private List<Card> ownCards;
 	private Sector pos;
@@ -77,7 +77,7 @@ public abstract class Player implements Serializable {
 
 	public boolean attack(Game game) {
 		this.setRevealed();
-		game.informPlayers(this, Sentence.ATTACK, getPosition());		
+		game.informPlayers(this, Sentence.ATTACK, getPosition());
 		boolean humanEaten = false;
 		for (User user : game.getUsers()) {
 			Player player = user.getPlayer();
@@ -114,7 +114,7 @@ public abstract class Player implements Serializable {
 			Card sectorCard = destination.playerEnters(this, game.getDeck());
 			Sector target = null;
 			if (sectorCard instanceof NoiseAnySectorCard) {
-				target = game.retrieveSector(this);
+				target = game.getSector(this);
 			}
 			Card itemCard = null;
 			if (sectorCard != null) {
@@ -137,5 +137,5 @@ public abstract class Player implements Serializable {
 	public void setRevealed() {
 		this.revealed = true;
 	}
-	
+
 }

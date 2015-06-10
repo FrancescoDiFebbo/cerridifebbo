@@ -1,82 +1,105 @@
 package it.polimi.ingsw.cerridifebbo.controller.server;
 
 import it.polimi.ingsw.cerridifebbo.controller.common.Application;
+import it.polimi.ingsw.cerridifebbo.controller.common.ClientConnection;
 import it.polimi.ingsw.cerridifebbo.controller.common.Command;
 import it.polimi.ingsw.cerridifebbo.model.Card;
-import it.polimi.ingsw.cerridifebbo.model.Move;
+import it.polimi.ingsw.cerridifebbo.model.Map;
 import it.polimi.ingsw.cerridifebbo.model.Player;
-import it.polimi.ingsw.cerridifebbo.model.User;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-public class SocketHandler extends Thread {
-	private static final Logger LOG = Logger.getLogger(SocketHandler.class.getName());
+public class SocketHandler extends Thread implements ClientConnection {
 
 	private Socket socket;
-	private ServerConnection server;
-	private boolean stop;
-	private PrintWriter out;
 	private ObjectOutputStream oos;
 	private BufferedReader in;
-	private User linkedUser;
+	private User user;
 
-	public SocketHandler(Socket socket, ServerConnection server) {
+	public SocketHandler(Socket socket) {
 		super();
 		this.socket = socket;
-		this.server = server;
-		this.stop = false;
 	}
 
 	@Override
 	public void run() {
 		try {
-			out = new PrintWriter(socket.getOutputStream(), true);
 			oos = new ObjectOutputStream(socket.getOutputStream());
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-
-			String input;
-			while ((input = in.readLine()) != null && !stop) {
-				CommandHandler.handleCommand(this, input);
-			}
 		} catch (IOException e) {
-			LOG.log(Level.WARNING, e.getMessage(), e);
+			Application.exception(e);
+		}
+		listen();
+	}
+
+	private void listen() {
+		String input = null;
+		while (true) {
+			try {
+				input = in.readLine();
+			} catch (IOException e) {
+				user.suspend(e);
+				break;
+			}
+			if (input == null) {
+				continue;
+			}
+			CommandHandler.handleCommand(this, input);
 		}
 	}
 
 	public void close() throws IOException {
-		stop = true;
 		in.close();
-		out.close();
 		oos.close();
 		socket.close();
 	}
 
-	public ServerConnection getServer() {
-		return server;
+	public void registerClientOnServer(String username, SocketHandler client) {
+		User newUser = Server.getInstance().registerClientOnServer(username, client);
+		if (newUser == null) {
+			try {
+				oos.writeBoolean(false);
+				oos.flush();
+			} catch (IOException e) {
+				Application.exception(e);
+			}
+			return;
+		}
+		this.user = newUser;
+		Application.println("Client \"" + username + "\" connected");
+		try {
+			oos.writeBoolean(true);
+			oos.flush();
+		} catch (IOException e) {
+			Application.exception(e);
+		}
+		newUser.sendMessage("You are connected with \"" + newUser.getName() + "\" name");
 	}
 
-	public Socket getSocket() {
-		return socket;
-	}
-
+	@Override
 	public void sendMessage(String string) {
-		out.println(Command.build(Command.MESSAGE, string));
+		try {
+			oos.writeUnshared(Command.build(Command.MESSAGE, string));
+			oos.flush();
+		} catch (IOException e) {
+			Application.exception(e);
+		}
 	}
 
-	public void sendGameInformation(int size, it.polimi.ingsw.cerridifebbo.model.Map map, Player player) {
-		String command = Command.build(Command.SEND, Command.GAME_INFORMATION);
-		out.println(command);
+	@Override
+	public void sendGameInformation(Map map, Player player, int size) {
+		try {
+			oos.writeUnshared(Command.build(Command.SEND, Command.GAME_INFORMATION));
+			oos.flush();
+		} catch (IOException e1) {
+			Application.exception(e1);
+		}
 		List<Object> info = new ArrayList<Object>();
 		info.add(map);
 		info.add(player);
@@ -85,13 +108,18 @@ public class SocketHandler extends Thread {
 			oos.writeUnshared((ArrayList<Object>) info);
 			oos.flush();
 		} catch (IOException e) {
-			LOG.log(Level.SEVERE, e.getMessage(), e);
+			Application.exception(e);
 		}
 	}
-	
+
+	@Override
 	public void updatePlayer(Player player, Card card, boolean added) {
-		String command = CommandHandler.build(Command.SEND, Command.UPDATE);
-		out.println(command);
+		try {
+			oos.writeUnshared(CommandHandler.build(Command.SEND, Command.UPDATE));
+			oos.flush();
+		} catch (IOException e1) {
+			Application.exception(e1);
+		}
 		List<Object> update = new ArrayList<Object>();
 		update.add(player);
 		update.add(card);
@@ -100,53 +128,105 @@ public class SocketHandler extends Thread {
 			oos.writeUnshared((ArrayList<Object>) update);
 			oos.flush();
 		} catch (IOException e) {
-			LOG.log(Level.SEVERE, e.getMessage(), e);
+			Application.exception(e);
+		}
+	}
+
+	@Override
+	public void askForMove() {
+		try {
+			oos.writeUnshared(CommandHandler.build(Command.MOVE, null));
+			oos.flush();
+		} catch (IOException e) {
+			Application.exception(e);
+		}
+	}
+
+	@Override
+	public void askForSector() {
+		try {
+			oos.writeUnshared(CommandHandler.build(Command.SECTOR, null));
+			oos.flush();
+		} catch (IOException e) {
+			Application.exception(e);
 		}
 
 	}
 
-	public void askForMove() {
-		String command = CommandHandler.build(Command.MOVE, null);
-		out.println(command);
-	}
-
-	public void askForSector() {
-		String command = CommandHandler.build(Command.SECTOR, null);
-		out.println(command);
-	}	
-
-	public void starTurn() {
-		String command = CommandHandler.build(Command.START_TURN, null);
-		out.println(command);
+	@Override
+	public void askForCard() {
+		try {
+			oos.writeUnshared(CommandHandler.build(Command.CARD, null));
+			oos.flush();
+		} catch (IOException e) {
+			Application.exception(e);
+		}
 
 	}
 
+	@Override
+	public void startTurn() {
+		try {
+			oos.writeUnshared(CommandHandler.build(Command.START_TURN, null));
+			oos.flush();
+		} catch (IOException e) {
+			Application.exception(e);
+		}
+
+	}
+
+	@Override
 	public void endTurn() {
-		String command = CommandHandler.build(Command.END_TURN, null);
-		out.println(command);
+		try {
+			oos.writeUnshared(CommandHandler.build(Command.END_TURN, null));
+			oos.flush();
+		} catch (IOException e) {
+			Application.exception(e);
+		}
 	}
 
-	public User getLinkedUser() {
-		return linkedUser;
+	@Override
+	public void disconnect() {
+		try {
+			oos.writeUnshared(CommandHandler.build(Command.DISCONNECT, null));
+			oos.flush();
+		} catch (IOException e) {
+			Application.exception(e);
+		}
+
 	}
 
-	public void setLinkedUser(User linkedUser) {
-		this.linkedUser = linkedUser;
+	@Override
+	public boolean poke() {
+		try {
+			oos.writeUnshared(CommandHandler.build(Command.POKE, null));
+			oos.flush();
+		} catch (IOException e) {
+			Application.exception(e);
+		}
+
+		try {
+			String input = in.readLine();
+			return Boolean.parseBoolean(input);
+		} catch (IOException e) {
+			Application.exception(e);
+			return false;
+		}
 	}
-	
-	public void putMove(String action, String target){
-		linkedUser.putMove(new Move(action, target));
+
+	public void putMove(String action, String target) {
+		user.putMove(action, target);
 	}
 
 	public static class CommandHandler extends Command {
 
 		public static void handleCommand(SocketHandler sh, String line) {
-			Map<String, String> params = translateCommand(line);
+			java.util.Map<String, String> params = translateCommand(line);
 			String action = params.get(ACTION);
 			switch (action) {
 			case REGISTER:
-				UUID id = UUID.fromString(params.get(DATA));
-				sh.getServer().registerClientOnServer(id, sh);
+				String username = params.get(DATA);
+				sh.registerClientOnServer(username, sh);
 				break;
 			case MOVE:
 				sh.putMove(params.get(DATA), params.get(DATA + "0"));
@@ -155,6 +235,5 @@ public class SocketHandler extends Thread {
 				break;
 			}
 		}
-
 	}
 }

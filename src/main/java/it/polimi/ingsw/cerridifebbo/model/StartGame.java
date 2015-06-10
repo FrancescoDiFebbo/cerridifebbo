@@ -1,5 +1,7 @@
 package it.polimi.ingsw.cerridifebbo.model;
 
+import it.polimi.ingsw.cerridifebbo.controller.server.User;
+
 import java.util.List;
 
 public class StartGame extends GameState {
@@ -31,9 +33,7 @@ public class StartGame extends GameState {
 			} else {
 				throw new NullPointerException("Player not returned");
 			}
-			game.sendGameInformation(game.getUsers().size(), game.getMap(), user);
+			user.sendGameInformation(game.getMap(), player, game.getUsers().size());
 		}
-
 	}
-
 }

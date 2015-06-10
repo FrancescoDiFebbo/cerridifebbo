@@ -2,18 +2,13 @@ package it.polimi.ingsw.cerridifebbo.controller.client;
 
 import it.polimi.ingsw.cerridifebbo.controller.common.Application;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.rmi.NotBoundException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-public class Client {
-	private static final Logger LOG = Logger.getLogger(Client.class.getName());
-
-	private static String NETWORK_INTERFACE_SELECTION = "Select '1' for RMI interface, '2' for socket interface";
-	private static String GRAPHICS_SELECTION = "Select '1' for GUI graphics, '2' for cli graphics";
+public class Client implements Runnable {
+	private static final String NETWORK_INTERFACE_SELECTION = "Select '1' for RMI interface, '2' for socket interface";
+	private static final String GRAPHICS_SELECTION = "Select '1' for GUI graphics, '2' for cli graphics";
+	public static final String USERNAME_SELECTION = "Select a username";
 	private static String CHOICE_ONE = "1";
 	private static String CHOICE_TWO = "2";
 
@@ -22,6 +17,11 @@ public class Client {
 	}
 
 	public void start() {
+		new Thread(this).start();
+	}
+
+	@Override
+	public void run() {
 		NetworkInterface network = chooseNetwork();
 		if (network == null) {
 			return;
@@ -33,16 +33,15 @@ public class Client {
 		graphic.setNetworkInterface(network);
 		network.setGraphicInterface(graphic);
 		network.connect();
-
 	}
 
 	private NetworkInterface chooseNetwork() {
 		while (true) {
 			String line = null;
 			try {
-				line = readLine(NETWORK_INTERFACE_SELECTION);
+				line = Application.readLine(NETWORK_INTERFACE_SELECTION);
 			} catch (IOException e) {
-				LOG.log(Level.SEVERE, e.getMessage(), e);
+				Application.log(e);
 				continue;
 			}
 			if (CHOICE_ONE.equals(line)) {
@@ -57,9 +56,9 @@ public class Client {
 		while (true) {
 			String line = null;
 			try {
-				line = readLine(GRAPHICS_SELECTION);
+				line = Application.readLine(GRAPHICS_SELECTION);
 			} catch (IOException e) {
-				LOG.log(Level.SEVERE, e.getMessage(), e);
+				Application.log(e);
 				continue;
 			}
 			if (CHOICE_ONE.equals(line)) {
@@ -70,14 +69,16 @@ public class Client {
 		}
 	}
 
-	private static String readLine(String format, Object... args) throws IOException {
-		if (System.console() != null) {
-			return System.console().readLine(format, args);
-		}
-		Application.println(String.format(format, args));
-
-		InputStreamReader isr = new InputStreamReader(System.in);
-		BufferedReader br = new BufferedReader(isr);
-		return br.readLine();
+	public static String chooseUsername() {
+		String name = null;
+		do {
+			try {
+				name = Application.readLine(USERNAME_SELECTION);
+			} catch (IOException e) {
+				Application.exception(e);
+				name = null;
+			}
+		} while (name == null);
+		return name.trim();
 	}
 }

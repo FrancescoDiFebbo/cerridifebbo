@@ -6,8 +6,6 @@ import it.polimi.ingsw.cerridifebbo.model.Deck;
 import it.polimi.ingsw.cerridifebbo.model.DeckFactory;
 import it.polimi.ingsw.cerridifebbo.model.HumanCard;
 
-import java.util.Scanner;
-
 import org.junit.Test;
 
 public class DeckTest {
@@ -26,8 +24,8 @@ public class DeckTest {
 				a++;
 			}
 		}
-		assertTrue(h == numberOfPlayers / 2 && (a == numberOfPlayers /2 || a == (numberOfPlayers / 2) + 1));
-			
+		assertTrue(h == numberOfPlayers / 2 && (a == numberOfPlayers / 2 || a == (numberOfPlayers / 2) + 1));
+
 	}
 
 }
