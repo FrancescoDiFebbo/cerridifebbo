@@ -13,6 +13,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 
 public class GUIGraphics extends Graphics implements ActionListener {
@@ -32,13 +33,14 @@ public class GUIGraphics extends Graphics implements ActionListener {
 	private Container contentPane;
 	private ActionListener moveListener;
 	private boolean declareSector;
-	private boolean declareCard;
 	private String playerRace;
 	public static final String HUMAN = "HUMAN";
 	public static final String ALIEN = "ALIEN";
 	private int turn = 0;
-	public static int WIDTH = 1425;
-	public static int HEIGHT = 810; 
+	public static final int WIDTH = 1425;
+	public static final int HEIGHT = 810;
+	private static final int SPACE_BETWEEN_COMP_Y2 = 20;
+	private static final int SPACE_BETWEEN_COMP_Y1 = 80;
 
 	@Override
 	public void initialize(Map map, Player player, int numberOfPlayers) {
@@ -62,7 +64,8 @@ public class GUIGraphics extends Graphics implements ActionListener {
 		contentPane.add(serverMessage);
 		contentPane.add(cards);
 		contentPane.add(buttonPanel);
-		contentPane.setLayout(new MainWindowLayout());
+		contentPane.setLayout(new CustomLayout(SPACE_BETWEEN_COMP_Y1,
+				SPACE_BETWEEN_COMP_Y2));
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setMinimumSize(new Dimension(WIDTH, HEIGHT));
 		frame.setVisible(true);
@@ -115,18 +118,18 @@ public class GUIGraphics extends Graphics implements ActionListener {
 	@Override
 	public void declareMove() {
 		sendMessage("Make your move");
-		addListeners(moveListener);
+		addListeners(moveListener, false);
 	}
 
-	private void addListeners(ActionListener moveListener) {
+	private void addListeners(ActionListener moveListener, boolean discard) {
 		mapGrid.addListenersToButton(moveListener);
-		cards.addListenersToButton(moveListener);
+		cards.addListenersToButton(moveListener, discard);
 		buttonPanel.addListenersToButton(moveListener);
 	}
 
-	private void deleteListeners(ActionListener moveListener) {
+	private void deleteListeners(ActionListener moveListener, boolean discard) {
 		mapGrid.deleteListenersToButton(moveListener);
-		cards.deleteListenersToButton(moveListener);
+		cards.deleteListenersToButton(moveListener, discard);
 		buttonPanel.deleteListenersToButton(moveListener);
 	}
 
@@ -141,30 +144,23 @@ public class GUIGraphics extends Graphics implements ActionListener {
 			} else {
 				getNetworkInterface().sendToServer(Move.MOVEMENT,
 						e.getActionCommand());
-				deleteListeners(moveListener);
+				deleteListeners(moveListener, false);
 			}
-		} else if (e.getSource() instanceof CardButton) {
-			if (declareCard) {
-				getNetworkInterface().sendToServer(Move.DELETECARD,
-						e.getActionCommand());
-				cards.deleteListenersToButton(moveListener);
-				declareCard = false;
-			} else {
-				getNetworkInterface().sendToServer(Move.USEITEMCARD,
-						e.getActionCommand());
-				deleteListeners(moveListener);
-			}
-		} else if (e.getSource().equals(buttonPanel.getComponent(0))) {
-			if (ALIEN.equals(playerRace)) {
-				getNetworkInterface().sendToServer(Move.ATTACK, null);
-			} else {
-				getNetworkInterface().sendToServer(Move.FINISH, null);
-			}
-			deleteListeners(moveListener);
-		} else if (ALIEN.equals(playerRace)
-				&& e.getSource().equals(buttonPanel.getComponent(1))) {
+		} else if (e.getActionCommand().equals(CardPanel.USE_TEXT)) {
+			String cardName = ((JButton) e.getSource()).getName();
+			getNetworkInterface().sendToServer(Move.USEITEMCARD, cardName);
+			deleteListeners(moveListener, false);
+		} else if (e.getActionCommand().equals(CardPanel.DISCARD_TEXT)) {
+			String cardName = ((JButton) e.getSource()).getName();
+			getNetworkInterface().sendToServer(Move.DELETECARD, cardName);
+			cards.deleteListenersToButton(moveListener, true);
+		} else if (e.getActionCommand().equals(ButtonPanel.ATTACK)) {
+
+			getNetworkInterface().sendToServer(Move.ATTACK, null);
+			deleteListeners(moveListener, false);
+		} else if (e.getActionCommand().equals(ButtonPanel.FINISH_TURN)) {
 			getNetworkInterface().sendToServer(Move.FINISH, null);
-			deleteListeners(moveListener);
+			deleteListeners(moveListener, false);
 		}
 	}
 
@@ -182,8 +178,7 @@ public class GUIGraphics extends Graphics implements ActionListener {
 
 	@Override
 	public void declareCard() {
-		declareCard = true;
-		cards.addListenersToButton(moveListener);
+		cards.addListenersToButton(moveListener, true);
 	}
 
 	@Override
@@ -194,8 +189,7 @@ public class GUIGraphics extends Graphics implements ActionListener {
 
 	@Override
 	public void addPlayerCard(Player player, Card card) {
-		cards.add(new CardButton(card.toString(), playerRace));
-		cards.repaint();
+		cards.add(new CardPanel(card.toString(), playerRace));
 	}
 
 }

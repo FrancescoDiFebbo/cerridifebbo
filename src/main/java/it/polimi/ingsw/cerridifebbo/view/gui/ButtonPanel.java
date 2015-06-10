@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 
@@ -31,6 +32,7 @@ public class ButtonPanel extends JPanel {
 	}
 
 	private void setButton() {
+		UIManager.getDefaults().put("Button.disabledText",GUIGraphics.getColorRace(playerRace));
 		Border thickBorder = new LineBorder(
 				GUIGraphics.getColorRace(playerRace), 2);
 		finishTurn = new JButton(FINISH_TURN);
@@ -41,24 +43,30 @@ public class ButtonPanel extends JPanel {
 			attack.setBackground(GUIGraphics.BACKGROUND_COLOR);
 			attack.setForeground(GUIGraphics.getColorRace(playerRace));
 			add(attack);
+			attack.setEnabled(false);
 			attack.setBorder(thickBorder);
 		}
 		add(finishTurn);
+		finishTurn.setEnabled(false);
 		finishTurn.setBorder(thickBorder);
 
 	}
 
 	public void addListenersToButton(ActionListener moveListener) {
 		if (GUIGraphics.ALIEN.equals(playerRace)) {
+			attack.setEnabled(true);
 			attack.addActionListener(moveListener);
 		}
+		finishTurn.setEnabled(true);
 		finishTurn.addActionListener(moveListener);
 	}
 
 	public void deleteListenersToButton(ActionListener moveListener) {
 		if (GUIGraphics.ALIEN.equals(playerRace)) {
+			attack.setEnabled(false);
 			attack.removeActionListener(moveListener);
 		}
+		finishTurn.setEnabled(false);
 		finishTurn.removeActionListener(moveListener);
 	}
 

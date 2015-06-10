@@ -35,6 +35,9 @@ public class CLIGraphics extends Graphics {
 
 	private static final String SECTOR_SELECTION = "Which sector?";
 	private static final String CARD_SELECTION = "Which card?";
+	private static final String USE_DISCARD = "Chose if you want use or discard a card";
+	private static final String USE_CARD = "use";
+	private static final String DELETE_CARD = "delete";
 	private static final String CARD_PLAYER = "Player cards: ";
 	private static final String NO_CARD_PLAYER = "No card!";
 	private static final String NO_CARD_PLAYER_SELECTION = "You have no card to use!";
@@ -159,13 +162,11 @@ public class CLIGraphics extends Graphics {
 		printPlayer();
 		Application.println("TURN: " + ++turn);
 		Application.println(START_TURN_MESSAGE);
-
 	}
 
 	@Override
 	public void endTurn() {
 		Application.println(END_TURN_MESSAGE);
-
 	}
 
 	private void printOptions() {
@@ -179,22 +180,20 @@ public class CLIGraphics extends Graphics {
 	@Override
 	public void declareMove() {
 		boolean chosen = false;
-		// printMap();
-		// printPlayer();
 		do {
 			printOptions();
 			String line = in.nextLine();
 			line = line.replace(" ", "");
-			if (line.toUpperCase().equals(Move.ATTACK)) {
+			if (line.equalsIgnoreCase(Move.ATTACK)) {
 				getNetworkInterface().sendToServer(Move.ATTACK, null);
 				chosen = true;
-			} else if (line.toUpperCase().equals(Move.MOVEMENT)) {
+			} else if (line.equalsIgnoreCase(Move.MOVEMENT)) {
 				Application.println(SECTOR_SELECTION);
 				line = in.nextLine();
 				line = line.replace(" ", "");
 				getNetworkInterface().sendToServer(Move.MOVEMENT, line);
 				chosen = true;
-			} else if (line.toUpperCase().equals(Move.USEITEMCARD)) {
+			} else if (line.equalsIgnoreCase(Move.USEITEMCARD)) {
 				if (!player.getOwnCards().isEmpty()) {
 					printCardPlayer();
 					Application.println(CARD_SELECTION);
@@ -205,7 +204,7 @@ public class CLIGraphics extends Graphics {
 				} else {
 					Application.println(NO_CARD_PLAYER_SELECTION);
 				}
-			} else if (line.toUpperCase().equals(Move.FINISH)) {
+			} else if (line.equalsIgnoreCase(Move.FINISH)) {
 				getNetworkInterface().sendToServer(Move.FINISH, null);
 				chosen = true;
 			}
@@ -214,43 +213,50 @@ public class CLIGraphics extends Graphics {
 
 	@Override
 	public void declareSector() {
-		// printMap();
 		Application.println(SECTOR_SELECTION);
 		String move = null;
-
 		move = in.nextLine();
 		move = move.replace(" ", "");
-
 		getNetworkInterface().sendToServer(Move.SECTOR, move);
 	}
 
 	@Override
 	public void updatePlayerPosition(Player player) {
 		this.player = player;
-		// printPlayerPosition();
-
 	}
 
 	@Override
 	public void declareCard() {
 		printCardPlayer();
-		Application.println(CARD_SELECTION);
-		String move = null;
-		move = in.nextLine();
-		move = move.replace(" ", "");
-		getNetworkInterface().sendToServer(Move.DELETECARD, move);
+		Application.print(USE_DISCARD);
+		boolean chosen = false;
+		do {
+			Application.print(USE_DISCARD);
+			String line = in.nextLine();
+			line = line.replace(" ", "");
+			if (line.equalsIgnoreCase(USE_CARD)) {
+				chosen = true;
+				Application.println(CARD_SELECTION);
+				String move = in.nextLine();
+				move = move.replace(" ", "");
+				getNetworkInterface().sendToServer(Move.USEITEMCARD, move);
+			} else if (line.equalsIgnoreCase(DELETE_CARD)) {
+				chosen = true;
+				Application.println(CARD_SELECTION);
+				String move = in.nextLine();
+				move = move.replace(" ", "");
+				getNetworkInterface().sendToServer(Move.DELETECARD, move);
+			}
+		} while (!chosen);
 	}
 
 	@Override
 	public void deletePlayerCard(Player player, Card card) {
 		this.player = player;
-		// printCardPlayer();
 	}
 
 	@Override
 	public void addPlayerCard(Player player, Card card) {
 		this.player = player;
-		// printCardPlayer();
-
 	}
 }

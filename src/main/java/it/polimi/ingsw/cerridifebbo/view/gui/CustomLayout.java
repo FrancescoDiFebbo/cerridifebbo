@@ -6,28 +6,33 @@ import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.LayoutManager;
 
-public class MainWindowLayout implements LayoutManager {
+public class CustomLayout implements LayoutManager {
 
-	private static final int BORDER = 5;
-	private static final int SPACE_BETWEEN_COMPONENTS = 20;
-	private static final int SPACE_BEFORE_TIMER = 80;
+	private static final int BORDER = 1;
+	private int spaceY2;
+	private int spaceY1;
+
+	public CustomLayout(int spaceY1, int spaceY2) {
+		this.spaceY1 = spaceY1;
+		this.spaceY2 = spaceY2;
+	}
 
 	@Override
 	public void addLayoutComponent(String name, Component comp) {
-		//No need to add layout components
+		// No need to add layout components
 	}
 
 	@Override
 	public void removeLayoutComponent(Component comp) {
-		//No need to remove layout components
+		// No need to remove layout components
 	}
 
 	@Override
 	public Dimension preferredLayoutSize(Container parent) {
 		Dimension dim = new Dimension();
 		Insets insets = parent.getInsets();
-		dim.width = insets.left + insets.right + 1920;
-		dim.height = insets.top + insets.bottom + 1080;
+		dim.width = insets.left + insets.right + parent.getWidth();
+		dim.height = insets.top + insets.bottom + parent.getHeight();
 		return dim;
 	}
 
@@ -48,14 +53,14 @@ public class MainWindowLayout implements LayoutManager {
 		width = temp.getWidth();
 		height = temp.getHeight();
 		temp.setBounds(x, y, width, height);
-		y = y + SPACE_BEFORE_TIMER;
-		x = x + width + SPACE_BETWEEN_COMPONENTS;
+		y = y + spaceY1;
+		x = x + width + spaceY2;
 		for (int i = 1; i < parent.getComponentCount(); i++) {
 			temp = parent.getComponent(i);
 			width = temp.getWidth();
 			height = temp.getHeight();
 			temp.setBounds(x, y, temp.getWidth(), temp.getHeight());
-			y = y + height + SPACE_BETWEEN_COMPONENTS;
+			y = y + height + spaceY2;
 		}
 
 	}
