@@ -5,7 +5,6 @@ import it.polimi.ingsw.cerridifebbo.model.Card;
 import it.polimi.ingsw.cerridifebbo.model.Map;
 import it.polimi.ingsw.cerridifebbo.model.Player;
 
-import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.rmi.AlreadyBoundException;
@@ -190,9 +189,8 @@ public class RMIInterface extends UnicastRemoteObject implements NetworkInterfac
 
 	@Override
 	public void disconnect() throws RemoteException {
-		Application.println("You are disconnected from the server! Hope you like it! :)");
+		sendMessage("You are disconnected from the server! Hope you like the game! :)");
 		close();
-		Application.exitSuccess();
 	}
 
 	@Override
@@ -208,5 +206,15 @@ public class RMIInterface extends UnicastRemoteObject implements NetworkInterfac
 	@Override
 	public int hashCode() {
 		return super.hashCode();
+	}
+
+	@Override
+	public void suspendClient() throws RemoteException {
+		try {
+			LocateRegistry.getRegistry(port).unbind(RemoteClient.RMI_ID);
+		} catch (NotBoundException e) {
+			Application.exception(e);
+		}
+		sendMessage("You are suspended");		
 	}
 }

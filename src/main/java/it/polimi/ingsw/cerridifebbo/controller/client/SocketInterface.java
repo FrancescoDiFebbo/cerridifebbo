@@ -7,9 +7,7 @@ import it.polimi.ingsw.cerridifebbo.model.Card;
 import it.polimi.ingsw.cerridifebbo.model.Map;
 import it.polimi.ingsw.cerridifebbo.model.Player;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
@@ -197,6 +195,11 @@ public class SocketInterface implements NetworkInterface {
 			graphics.deletePlayerCard(player, card);
 		}
 	}
+	
+	public void disconnect() {
+		showMessage("You are disconnected from the server! Hope you like the game! :)");
+		close();		
+	}
 
 	private static class CommandHandler extends Command {
 
@@ -224,6 +227,9 @@ public class SocketInterface implements NetworkInterface {
 				break;
 			case END_TURN:
 				si.endTurn();
+				break;
+			case DISCONNECT:
+				si.disconnect();
 				break;
 			default:
 				break;

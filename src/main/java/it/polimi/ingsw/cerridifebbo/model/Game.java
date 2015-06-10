@@ -8,30 +8,31 @@ import java.util.List;
 public class Game implements Runnable {
 
 	private static final int MAX_TURNS = 39;
-	public static final int MAX_TIMEOUT = 90000;
+	public static final int MAX_TIMEOUT = 30000;
 	public static final int MAX_PLAYERS = CharacterDeckFactory.MAX_PLAYERS;
 	public static final int MIN_PLAYERS = CharacterDeckFactory.MIN_PLAYERS;
 
-	private final Server server;
 	private final List<User> users;
 
 	private GameState state;
 	private Map map;
 	private Deck deck;
-	private int turn = 0;
+	private Boolean end = false;
 
-	public Game(Server server, List<User> users) {
-		this.server = server;
-		this.state = new StartGame(this);
+	public Boolean getEnd() {
+		return end;
+	}
+
+	public void setEnd(Boolean end) {
+		this.end = end;
+	}
+
+	public Game(List<User> users) {
 		this.users = users;
 	}
 
 	public List<User> getUsers() {
 		return users;
-	}
-
-	public GameState getState() {
-		return state;
 	}
 
 	public Map getMap() {
@@ -52,29 +53,34 @@ public class Game implements Runnable {
 
 	@Override
 	public void run() {
+		state = new StartGame(this);
 		state.handle();
-	}
-
-	public void nextTurn() {
-		if (turn++ == MAX_TURNS) {
-			state = new EndGame(this);
-		} else {
-			state = new Turn(this);
-		}
-		state.handle();
-	}
-
-	public void checkGame() {
-		state = new CheckGame(this);
-		state.handle();
-	}
-
-	public void endGame() {
+		turnManage();
+		end = true;
 		state = new EndGame(this);
-		state.handle();
-		if (server != null) {
-			server.gameOver(this);
+		state.handle();	
+		close();
+	}
+
+	private void turnManage() {
+		for (int i = 0; i < MAX_TURNS; i++) {
+			for (User user : users) {
+				state = new SingleTurn(this, user);
+				state.handle();
+				state = new CheckGame(this);
+				state.handle();
+				if (end == true) {
+					break;
+				}
+			}
+			if (end == true) {
+				break;
+			}
 		}
+	}
+	
+	private void close() {
+		Server.getInstance().gameOver(this);
 	}
 
 	public Sector getSector(Player player) {

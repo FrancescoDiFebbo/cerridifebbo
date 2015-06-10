@@ -27,4 +27,6 @@ public interface ClientConnection {
 	public void disconnect() throws RemoteException;
 
 	public boolean poke() throws RemoteException;
+
+	public void suspendClient() throws RemoteException;
 }

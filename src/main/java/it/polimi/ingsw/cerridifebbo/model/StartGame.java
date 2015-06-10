@@ -18,7 +18,6 @@ public class StartGame extends GameState {
 		Deck deck = new ConcreteDeckFactory().createDeck(users.size());
 		game.setDeck(deck);
 		initializePlayers();
-		game.nextTurn();
 	}
 
 	private void initializePlayers() {

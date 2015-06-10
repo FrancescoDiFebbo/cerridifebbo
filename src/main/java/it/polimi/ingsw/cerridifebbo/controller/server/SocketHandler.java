@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,12 +41,13 @@ public class SocketHandler extends Thread implements ClientConnection {
 
 	private void listen() {
 		String input = null;
-		while (true) {
+		boolean suspended = false;
+		while (!suspended) {
 			try {
 				input = in.readLine();
 			} catch (IOException e) {
 				user.suspend(e);
-				break;
+				suspended = true;
 			}
 			if (input == null) {
 				continue;
@@ -190,10 +192,10 @@ public class SocketHandler extends Thread implements ClientConnection {
 		try {
 			oos.writeUnshared(CommandHandler.build(Command.DISCONNECT, null));
 			oos.flush();
+			close();
 		} catch (IOException e) {
 			Application.exception(e);
 		}
-
 	}
 
 	@Override
@@ -216,6 +218,17 @@ public class SocketHandler extends Thread implements ClientConnection {
 
 	public void putMove(String action, String target) {
 		user.putMove(action, target);
+	}
+	
+	@Override
+	public void suspendClient() throws RemoteException {
+		try {
+			oos.writeUnshared(CommandHandler.build(Command.SUSPEND, null));
+			oos.flush();
+			close();
+		} catch (IOException e) {
+			Application.exception(e);
+		}		
 	}
 
 	public static class CommandHandler extends Command {

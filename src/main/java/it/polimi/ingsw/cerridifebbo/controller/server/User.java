@@ -1,11 +1,9 @@
 package it.polimi.ingsw.cerridifebbo.controller.server;
 
-import it.polimi.ingsw.cerridifebbo.controller.common.Application;
 import it.polimi.ingsw.cerridifebbo.controller.common.ClientConnection;
 import it.polimi.ingsw.cerridifebbo.controller.common.RemoteUser;
 import it.polimi.ingsw.cerridifebbo.model.Card;
 import it.polimi.ingsw.cerridifebbo.model.HumanPlayer;
-import it.polimi.ingsw.cerridifebbo.model.IllegalMoveException;
 import it.polimi.ingsw.cerridifebbo.model.Map;
 import it.polimi.ingsw.cerridifebbo.model.Move;
 import it.polimi.ingsw.cerridifebbo.model.Player;
@@ -41,6 +39,10 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 	public void setConnection(ClientConnection connection) {
 		this.connection = connection;
 	}
+	
+	public boolean isOnline(){
+		return connection != null;
+	}
 
 	public Player getPlayer() {
 		return player;
@@ -73,14 +75,6 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 			} catch (RemoteException e) {
 				suspend(e);
 			}
-		}
-	}
-
-	public void sendMessage(Throwable e) {
-		if (e instanceof IllegalMoveException) {
-			sendMessage(((IllegalMoveException) e).getError());
-		} else {
-			sendMessage(e.getMessage());
 		}
 	}
 
@@ -141,10 +135,7 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 	public void updatePlayer(Player player, Card card, boolean added) {
 		if (connection != null) {
 			try {
-				connection.updatePlayer(player, card, added);
-				if (card != null) {
-					Application.println(card.toString());
-				}				
+				connection.updatePlayer(player, card, added);		
 			} catch (RemoteException e) {
 				suspend(e);
 			}
@@ -173,8 +164,12 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 	}
 
 	public void suspend(Throwable e) {
-		Application.exception(e);
 		Server.getInstance().suspendUser(this);
+		try {
+			connection.suspendClient();
+		} catch (RemoteException e1) {
+			suspend(e1);
+		}
 	}
 
 	@Override

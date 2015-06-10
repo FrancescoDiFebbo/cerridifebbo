@@ -38,7 +38,7 @@ public class Application {
 	}
 
 	public static void exception(Throwable e, String message) {
-		println(message);
+		println(e.getMessage() + " // " + message);
 	}
 
 	public static void log(Throwable e) {

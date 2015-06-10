@@ -22,6 +22,7 @@ public class Server {
 	private List<User> room = new ArrayList<User>();
 	private Map<Game, Thread> games = new HashMap<Game, Thread>();
 	private Timer timeout = new Timer();
+	private boolean started = false;
 
 	private Server() {
 
@@ -46,6 +47,7 @@ public class Server {
 			stop();
 		}
 		socket.start();
+		started = true;
 
 		Application.println("Server ready...");
 		while (true) {
@@ -79,9 +81,16 @@ public class Server {
 	}
 
 	public User registerClientOnServer(String username, ClientConnection client) {
+		if (!started) {
+			return null;
+		}
 		for (User user : users) {
-			if (user.getName().equalsIgnoreCase(username)) {
-				return null;
+			if (user.getName().equalsIgnoreCase(username) && user.isOnline()) {
+				if (user.isOnline()) {
+					return null;
+				} else {
+					user.setConnection(client);
+				}
 			}
 		}
 		User newUser;
@@ -122,7 +131,7 @@ public class Server {
 			gamers = new ArrayList<User>(room);
 			room.clear();
 		}
-		Game game = new Game(this, gamers);
+		Game game = new Game(gamers);
 		Thread t = new Thread(game, "GAME-" + games.size());
 		games.put(game, t);
 		t.start();
@@ -144,12 +153,14 @@ public class Server {
 	}
 
 	public void gameOver(Game game) {
-		List<User> gone = new ArrayList<User>(game.getUsers());
-		games.get(game).interrupt();
-		games.remove(game);
-		for (User user : gone) {
-			disconnectUser(user);
-		}
+		if (started) {
+			List<User> gone = new ArrayList<User>(game.getUsers());
+			games.get(game).interrupt();
+			games.remove(game);
+			for (User user : gone) {
+				disconnectUser(user);
+			}
+		}		
 	}
 
 	private void heartBeat() {
@@ -168,7 +179,9 @@ public class Server {
 	}
 
 	public void suspendUser(User user) {
-		user.setConnection(null);
-		Application.println(user.getName() + " suspended");
+		if (started) {
+			user.setConnection(null);
+			Application.println(user.getName() + " suspended");
+		}		
 	}
 }

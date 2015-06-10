@@ -45,7 +45,7 @@ public class NoiseAnySectorCard extends SectorCard {
 		if (player == null) {
 			throw new IllegalArgumentException("Player is null");
 		} else if (target == null || !(target instanceof Sector)) {
-			throw new IllegalMoveException("Sector not valid");
+			throw new IllegalArgumentException("Sector not valid");
 		}
 		game.informPlayers(player, Sentence.NOISE_ANY, (Sector) target);
 		if (this.containsItem()) {

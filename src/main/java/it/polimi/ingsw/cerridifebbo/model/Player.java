@@ -1,5 +1,6 @@
 package it.polimi.ingsw.cerridifebbo.model;
 
+import it.polimi.ingsw.cerridifebbo.controller.common.PlayerRemote;
 import it.polimi.ingsw.cerridifebbo.controller.server.User;
 import it.polimi.ingsw.cerridifebbo.model.Game.Sentence;
 
@@ -7,9 +8,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Player implements Serializable {
-
-	private static final long serialVersionUID = 7274673996298525756L;
+public abstract class Player implements Serializable {	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private CharacterCard playerCard;
 	private List<Card> ownCards;
 	private Sector pos;
@@ -114,7 +117,9 @@ public abstract class Player implements Serializable {
 			Card sectorCard = destination.playerEnters(this, game.getDeck());
 			Sector target = null;
 			if (sectorCard instanceof NoiseAnySectorCard) {
-				target = game.getSector(this);
+				do {
+					target = game.getSector(this);
+				} while (target == null);				
 			}
 			Card itemCard = null;
 			if (sectorCard != null) {
@@ -136,6 +141,10 @@ public abstract class Player implements Serializable {
 
 	public void setRevealed() {
 		this.revealed = true;
+	}
+	
+	public PlayerRemote getPlayerRemote(){
+		return new PlayerRemote(this);
 	}
 
 }

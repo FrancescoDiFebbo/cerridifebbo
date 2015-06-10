@@ -1,19 +1,20 @@
 package it.polimi.ingsw.cerridifebbo;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import it.polimi.ingsw.cerridifebbo.controller.common.PlayerRemote;
 import it.polimi.ingsw.cerridifebbo.controller.server.User;
 import it.polimi.ingsw.cerridifebbo.model.AlienPlayer;
 import it.polimi.ingsw.cerridifebbo.model.Card;
 import it.polimi.ingsw.cerridifebbo.model.CharacterDeckFactory;
+import it.polimi.ingsw.cerridifebbo.model.CheckGame;
 import it.polimi.ingsw.cerridifebbo.model.Deck;
-import it.polimi.ingsw.cerridifebbo.model.EndGame;
 import it.polimi.ingsw.cerridifebbo.model.Game;
 import it.polimi.ingsw.cerridifebbo.model.HumanPlayer;
 import it.polimi.ingsw.cerridifebbo.model.ItemDeckFactory;
 import it.polimi.ingsw.cerridifebbo.model.Player;
 import it.polimi.ingsw.cerridifebbo.model.Sector;
+import it.polimi.ingsw.cerridifebbo.model.StartGame;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -27,30 +28,30 @@ public class GameTest {
 	@Test
 	public void test() {
 		ArrayList<User> users = new ArrayList<User>();
-		for (int i = 0; i < 3; i++) {
+		for (int i = 0; i < Game.MIN_PLAYERS; i++) {
 			try {
 				users.add(new User(String.valueOf(i), null));
 			} catch (RemoteException e) {
 			}
 		}
-		Game game = new Game(null, users);
+		Game game = new Game(users);
 		game.run();
 		assertNotNull(game.getDeck());
 		assertNotNull(game.getMap());
 		assertNotNull(game.getUsers());
-		game.checkGame();
-		game.run();
-		assertFalse(game.getState() instanceof EndGame);
+		assertTrue(game.getEnd());
+		PlayerRemote remote = users.get(0).getPlayer().getPlayerRemote();
 
+		game = new Game(users);
+		new StartGame(game).handle();
 		for (User u : users) {
 			if (u.getPlayer() instanceof AlienPlayer) {
 				AlienPlayer alien = (AlienPlayer) u.getPlayer();
 				alien.kill(game);
 			}
 		}
-		game.checkGame();
-		game.run();
-		assertTrue(game.getState() instanceof EndGame);
+		new CheckGame(game).handle();
+		assertTrue(game.getEnd());
 
 		for (User u : users) {
 			if (u.getPlayer() instanceof HumanPlayer) {
@@ -58,7 +59,8 @@ public class GameTest {
 				human.kill(game);
 			}
 		}
-		assertTrue(game.getState() instanceof EndGame);
+		new CheckGame(game).handle();;
+		assertTrue(game.getEnd());
 	}
 
 	@Test
@@ -70,7 +72,7 @@ public class GameTest {
 			} catch (RemoteException e) {
 			}
 		}
-		Game game = new Game(null, users);
+		Game game = new Game(users);
 		game.run();
 		Deck deck = game.getDeck();
 		deck.reset();
@@ -96,7 +98,7 @@ public class GameTest {
 			} catch (RemoteException e) {
 			}
 		}
-		Game game = new Game(null, users);
+		Game game = new Game(users);
 		game.run();
 		for (int i = 0; i < 39; i++) {
 			for (int k = 0; k < Game.MAX_PLAYERS; k++) {
@@ -118,7 +120,7 @@ public class GameTest {
 			} catch (RemoteException e) {
 			}
 		}
-		Game game = new Game(null, users);
+		Game game = new Game(users);
 		game.run();
 		List<Sector> hatches = game.getMap().getEscapeHatchSectors();
 		int sector = 0;

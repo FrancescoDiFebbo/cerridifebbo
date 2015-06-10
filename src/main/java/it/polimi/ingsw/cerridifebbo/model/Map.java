@@ -1,5 +1,7 @@
 package it.polimi.ingsw.cerridifebbo.model;
 
+import it.polimi.ingsw.cerridifebbo.controller.common.MapRemote;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
@@ -11,11 +13,12 @@ import java.util.logging.Logger;
 
 public class Map implements Serializable {
 
+	
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -789290281145148337L;
-
+	private static final long serialVersionUID = 1L;
 	private static final Logger LOG = Logger.getLogger(Map.class.getName());
 
 	public static final int COLUMNMAP = 23;
@@ -23,6 +26,7 @@ public class Map implements Serializable {
 	private static final Sector[][] grid = new Sector[ROWMAP][COLUMNMAP];
 	private static Map instance = new Map(new File(System.getProperty("user.dir") + System.getProperty("file.separator") + "map"
 			+ System.getProperty("file.separator") + "galilei.txt"));
+	private static MapRemote mapRemote;
 
 	private Map(File mapFile) {
 		try {
@@ -151,5 +155,13 @@ public class Map implements Serializable {
 			}
 		}
 		return hatches;
+	}
+	
+	public MapRemote getMapRemote(){
+		if (mapRemote == null) {
+			mapRemote = new MapRemote(grid);
+			return mapRemote;
+		}
+		return mapRemote;
 	}
 }

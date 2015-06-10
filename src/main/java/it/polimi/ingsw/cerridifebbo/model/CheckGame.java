@@ -3,7 +3,7 @@ package it.polimi.ingsw.cerridifebbo.model;
 import it.polimi.ingsw.cerridifebbo.controller.server.User;
 
 public class CheckGame extends GameState {
-
+	
 	public CheckGame(Game game) {
 		super(game);
 	}
@@ -28,7 +28,7 @@ public class CheckGame extends GameState {
 			}
 		}
 		if (allHumanNotInGame || allAlienKilled) {
-			game.endGame();
+			game.setEnd(true);
 		}
 	}
 }

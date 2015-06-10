@@ -1,6 +1,7 @@
 package it.polimi.ingsw.cerridifebbo;
 
 import static org.junit.Assert.*;
+import it.polimi.ingsw.cerridifebbo.controller.common.MapRemote;
 import it.polimi.ingsw.cerridifebbo.model.Map;
 import it.polimi.ingsw.cerridifebbo.model.Sector;
 
@@ -18,5 +19,11 @@ public class MapTest {
 		start = map.getCell(5, 5);
 		end = map.getCell(10, 11);
 		assertFalse(start.getReachableSectors(maxMovement).contains(end));
+	}
+	
+	@Test
+	public void testMapRemote() {
+		Map map = Map.getInstance();
+		MapRemote remote = map.getMapRemote();
 	}
 }

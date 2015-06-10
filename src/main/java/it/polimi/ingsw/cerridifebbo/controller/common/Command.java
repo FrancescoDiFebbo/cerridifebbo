@@ -20,6 +20,7 @@ public abstract class Command {
 	public static final String UPDATE = "update";
 	public static final String DISCONNECT = "disconnect";
 	public static final String POKE = "poke";
+	public static final String SUSPEND = "suspend";
 
 	protected Command() {
 
