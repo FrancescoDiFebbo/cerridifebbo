@@ -62,10 +62,14 @@ public class CardsPanel extends JPanel {
 
 	public void remove(String cardName) {
 		int nComp = getComponentCount();
-		for (int i = 0; i < nComp; i++) {
+		CardPanel card = null;
+		boolean found = false;
+		for (int i = 0; !found && i < nComp; i++) {
 			if (getComponent(i).getName().equals(cardName))
-				remove(getComponent(i));
+				card = (CardPanel) getComponent(i);
+			found = true;
 		}
+		remove(card);
 		repaint();
 	}
 

@@ -8,7 +8,7 @@ import java.util.List;
 public class Game implements Runnable {
 
 	private static final int MAX_TURNS = 39;
-	public static final int MAX_TIMEOUT = 90;
+	public static final int MAX_TIMEOUT = 90000;
 	public static final int MAX_PLAYERS = CharacterDeckFactory.MAX_PLAYERS;
 	public static final int MIN_PLAYERS = CharacterDeckFactory.MIN_PLAYERS;
 
@@ -111,7 +111,8 @@ public class Game implements Runnable {
 
 				continue;
 			}
-			user.sendMessage("GAME) " + Sentence.toOthers(sentence, me, this, sector));
+			user.sendMessage("GAME) "
+					+ Sentence.toOthers(sentence, me, this, sector));
 
 		}
 	}
@@ -180,10 +181,13 @@ public class Game implements Runnable {
 			}
 		}
 
-		public static String toOthers(String sentence, User user, Game game, Sector sector) {
+		public static String toOthers(String sentence, User user, Game game,
+				Sector sector) {
 			String name = null;
 			if (user.getPlayer().isRevealed()) {
-				name = user.getName() + " (" + user.getPlayer().getPlayerCard().getCharacterName() + ")";
+				name = user.getName() + " ("
+						+ user.getPlayer().getPlayerCard().getCharacterName()
+						+ ")";
 			} else {
 				name = user.getName();
 			}
@@ -201,15 +205,18 @@ public class Game implements Runnable {
 			case DEFENSE_CARD:
 				return name + " has used defense card";
 			case ESCAPED:
-				return name + " reached " + sector + ". It is open. " + name + " has escaped";
+				return name + " reached " + sector + ". It is open. " + name
+						+ " has escaped";
 			case TELEPORT_CARD:
 				return name + " has used teleport card";
 			case SPOTLIGHT_CARD:
-				return name + " has used spotlight card" + spotlight(game, sector);
+				return name + " has used spotlight card"
+						+ spotlight(game, sector);
 			case SEDATIVES_CARD:
 				return name + " has used sedatives card";
 			case NOT_ESCAPED:
-				return name + " reached " + sector + ". It is closed. " + name + " can't escape.";
+				return name + " reached " + sector + ". It is closed. " + name
+						+ " can't escape.";
 			case ATTACK:
 				return name + " is attacking " + sector;
 			case TIMEFINISHED:
@@ -230,11 +237,13 @@ public class Game implements Runnable {
 				if (sectors.contains(p.getPosition())) {
 					String name = null;
 					if (user.getPlayer().isRevealed()) {
-						name = user.getPlayer().getPlayerCard().getCharacterName();
+						name = user.getPlayer().getPlayerCard()
+								.getCharacterName();
 					} else {
 						name = user.getName().toString().split("-")[0];
 					}
-					build.append("\n" + name + " is in " + p.getPosition() + "\n");
+					build.append("\n" + name + " is in " + p.getPosition()
+							+ "\n");
 				}
 			}
 			return build.toString();
