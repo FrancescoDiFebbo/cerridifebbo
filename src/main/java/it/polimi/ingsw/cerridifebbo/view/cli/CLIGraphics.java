@@ -6,6 +6,7 @@ import it.polimi.ingsw.cerridifebbo.model.AlienSector;
 import it.polimi.ingsw.cerridifebbo.model.Card;
 import it.polimi.ingsw.cerridifebbo.model.DangerousSector;
 import it.polimi.ingsw.cerridifebbo.model.EscapeHatchSector;
+import it.polimi.ingsw.cerridifebbo.model.Game;
 import it.polimi.ingsw.cerridifebbo.model.HumanPlayer;
 import it.polimi.ingsw.cerridifebbo.model.HumanSector;
 import it.polimi.ingsw.cerridifebbo.model.Map;
@@ -14,7 +15,11 @@ import it.polimi.ingsw.cerridifebbo.model.Player;
 import it.polimi.ingsw.cerridifebbo.model.Sector;
 import it.polimi.ingsw.cerridifebbo.model.SecureSector;
 
+import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.util.Scanner;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class CLIGraphics extends Graphics {
 
@@ -48,6 +53,8 @@ public class CLIGraphics extends Graphics {
 	private Player player;
 	private Map map;
 	private int turn = 0;
+	private Timer timeout = new Timer();
+	private Thread inputThread;
 
 	@Override
 	public void initialize(Map map, Player player, int numberOfPlayers) {
@@ -162,11 +169,19 @@ public class CLIGraphics extends Graphics {
 		printPlayer();
 		Application.println("TURN: " + ++turn);
 		Application.println(START_TURN_MESSAGE);
+		timeout = new Timer();
+		timeout.schedule(new TimerTask() {
+			@Override
+			public void run() {
+				inputThread.interrupt();
+			}
+		}, Game.MAX_TIMEOUT);
 	}
 
 	@Override
 	public void endTurn() {
 		Application.println(END_TURN_MESSAGE);
+		timeout.cancel();
 	}
 
 	private void printOptions() {
@@ -179,45 +194,72 @@ public class CLIGraphics extends Graphics {
 
 	@Override
 	public void declareMove() {
-		boolean chosen = false;
-		do {
-			printOptions();
-			String line = in.nextLine();
-			line = line.replace(" ", "");
-			if (line.equalsIgnoreCase(Move.ATTACK)) {
-				getNetworkInterface().sendToServer(Move.ATTACK, null);
-				chosen = true;
-			} else if (line.equalsIgnoreCase(Move.MOVEMENT)) {
-				Application.println(SECTOR_SELECTION);
-				line = in.nextLine();
-				line = line.replace(" ", "");
-				getNetworkInterface().sendToServer(Move.MOVEMENT, line);
-				chosen = true;
-			} else if (line.equalsIgnoreCase(Move.USEITEMCARD)) {
-				if (!player.getOwnCards().isEmpty()) {
-					printCardPlayer();
-					Application.println(CARD_SELECTION);
-					line = in.nextLine();
-					line = line.replace(" ", "");
-					getNetworkInterface().sendToServer(Move.USEITEMCARD, line);
-					chosen = true;
-				} else {
-					Application.println(NO_CARD_PLAYER_SELECTION);
+		inputThread = new Thread() {
+			@Override
+			public void run() {
+				try {
+					boolean chosen = false;
+					do {
+						printOptions();
+						String line = null;
+						line = in.nextLine();
+						line = line.replace(" ", "");
+						if (line.equalsIgnoreCase(Move.ATTACK)) {
+							getNetworkInterface().sendToServer(Move.ATTACK,
+									null);
+							chosen = true;
+						} else if (line.equalsIgnoreCase(Move.MOVEMENT)) {
+							Application.println(SECTOR_SELECTION);
+							line = in.nextLine();
+							line = line.replace(" ", "");
+							getNetworkInterface().sendToServer(Move.MOVEMENT,
+									line);
+							chosen = true;
+						} else if (line.equalsIgnoreCase(Move.USEITEMCARD)) {
+							if (!player.getOwnCards().isEmpty()) {
+								printCardPlayer();
+								Application.println(CARD_SELECTION);
+								line = in.nextLine();
+								line = line.replace(" ", "");
+								getNetworkInterface().sendToServer(
+										Move.USEITEMCARD, line);
+								chosen = true;
+							} else {
+								Application.println(NO_CARD_PLAYER_SELECTION);
+							}
+						} else if (line.equalsIgnoreCase(Move.FINISH)) {
+							getNetworkInterface().sendToServer(Move.FINISH,
+									null);
+							chosen = true;
+						}
+					} while (!chosen);
+				} catch (Exception e) {
+					throw new ScannerException(this, e);
 				}
-			} else if (line.equalsIgnoreCase(Move.FINISH)) {
-				getNetworkInterface().sendToServer(Move.FINISH, null);
-				chosen = true;
+
 			}
-		} while (!chosen);
+		};
+		inputThread.start();
 	}
 
 	@Override
 	public void declareSector() {
-		Application.println(SECTOR_SELECTION);
-		String move = null;
-		move = in.nextLine();
-		move = move.replace(" ", "");
-		getNetworkInterface().sendToServer(Move.SECTOR, move);
+		inputThread = new Thread() {
+			@Override
+			public void run() {
+				try {
+					Application.println(SECTOR_SELECTION);
+					String move = null;
+					move = in.nextLine();
+					move = move.replace(" ", "");
+					getNetworkInterface().sendToServer(Move.SECTOR, move);
+				} catch (Exception e) {
+					throw new ScannerException(this, e);
+				}
+
+			}
+		};
+		inputThread.start();
 	}
 
 	@Override
@@ -227,27 +269,40 @@ public class CLIGraphics extends Graphics {
 
 	@Override
 	public void declareCard() {
-		printCardPlayer();
-		Application.print(USE_DISCARD);
-		boolean chosen = false;
-		do {
-			Application.print(USE_DISCARD);
-			String line = in.nextLine();
-			line = line.replace(" ", "");
-			if (line.equalsIgnoreCase(USE_CARD)) {
-				chosen = true;
-				Application.println(CARD_SELECTION);
-				String move = in.nextLine();
-				move = move.replace(" ", "");
-				getNetworkInterface().sendToServer(Move.USEITEMCARD, move);
-			} else if (line.equalsIgnoreCase(DELETE_CARD)) {
-				chosen = true;
-				Application.println(CARD_SELECTION);
-				String move = in.nextLine();
-				move = move.replace(" ", "");
-				getNetworkInterface().sendToServer(Move.DELETECARD, move);
+		inputThread = new Thread() {
+			@Override
+			public void run() {
+				try {
+					printCardPlayer();
+					boolean chosen = false;
+					do {
+						Application.print(USE_DISCARD);
+						String line = null;
+						line = in.nextLine();
+						line = line.replace(" ", "");
+						if (line.equalsIgnoreCase(USE_CARD)) {
+							chosen = true;
+							Application.println(CARD_SELECTION);
+							String move = null;
+							move = in.nextLine();
+							move = move.replace(" ", "");
+							getNetworkInterface().sendToServer(
+									Move.USEITEMCARD, move);
+						} else if (line.equalsIgnoreCase(DELETE_CARD)) {
+							chosen = true;
+							Application.println(CARD_SELECTION);
+							String move = in.nextLine();
+							move = move.replace(" ", "");
+							getNetworkInterface().sendToServer(Move.DELETECARD,
+									move);
+						}
+					} while (!chosen);
+				} catch (Exception e) {
+					throw new ScannerException(this, e);
+				}
 			}
-		} while (!chosen);
+		};
+		inputThread.start();
 	}
 
 	@Override
@@ -259,4 +314,14 @@ public class CLIGraphics extends Graphics {
 	public void addPlayerCard(Player player, Card card) {
 		this.player = player;
 	}
+
+	public class ScannerException extends RuntimeException {
+		private static final long serialVersionUID = 1L;
+
+		ScannerException(Thread thread, Exception e) {
+			sendMessage("You didn't make your decision in time");
+			thread.interrupt();
+		}
+	}
+
 }
