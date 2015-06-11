@@ -1,14 +1,12 @@
 package it.polimi.ingsw.cerridifebbo.model;
 
-import java.io.Serializable;
-
 /**
  * This interface describes a generic card.
  * 
  * @author cerridifebbo
  */
 
-public interface Card extends Serializable {
+public interface Card {
 
 	/**
 	 * @author cerridifebbo

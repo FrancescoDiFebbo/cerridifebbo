@@ -6,6 +6,7 @@ import it.polimi.ingsw.cerridifebbo.controller.common.Connection;
 import it.polimi.ingsw.cerridifebbo.controller.common.RemoteClient;
 import it.polimi.ingsw.cerridifebbo.controller.common.RemoteServer;
 
+import java.rmi.AccessException;
 import java.rmi.AlreadyBoundException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -48,7 +49,7 @@ public class RMIServer extends UnicastRemoteObject implements ServerConnection, 
 	public void close() {
 		if (registry != null) {
 			try {
-				registry.unbind(RemoteServer.RMI_ID);
+				registry.unbind(Connection.REMOTE_SERVER_RMI);
 			} catch (NotBoundException | RemoteException e) {
 				Application.exception(e);
 				Application.exitError();
@@ -63,7 +64,7 @@ public class RMIServer extends UnicastRemoteObject implements ServerConnection, 
 	public void run() {
 		try {
 			registry = LocateRegistry.createRegistry(Connection.SERVER_REGISTRY_PORT);
-			registry.bind(RemoteServer.RMI_ID, this);
+			registry.bind(Connection.REMOTE_SERVER_RMI, this);
 		} catch (RemoteException | AlreadyBoundException e) {
 			Application.exception(e);
 			Application.exitError();
@@ -75,7 +76,7 @@ public class RMIServer extends UnicastRemoteObject implements ServerConnection, 
 		RemoteClient client;
 		try {
 			Registry clientRegistry = LocateRegistry.getRegistry(address, port);
-			client = (RemoteClient) clientRegistry.lookup(RemoteClient.RMI_ID);
+			client = (RemoteClient) clientRegistry.lookup(Connection.REMOTE_CLIENT_RMI);
 		} catch (RemoteException | NotBoundException e) {
 			Application.exception(e);
 			return false;
@@ -91,9 +92,12 @@ public class RMIServer extends UnicastRemoteObject implements ServerConnection, 
 		}
 		try {
 			registry.bind(username, newUser);
-		} catch (RemoteException | AlreadyBoundException e) {
+		} catch (RemoteException e) {
 			Application.exception(e);
 			return false;
+		} catch (AlreadyBoundException e) {
+			Application.exception(e, "", false);
+			return true;
 		}
 		newUser.sendMessage("You are connected with \"" + newUser.getName() + "\" name");
 		Application.println("Client \"" + username + "\" connected");

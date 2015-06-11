@@ -32,7 +32,7 @@ public class StartGame extends GameState {
 			} else {
 				throw new NullPointerException("Player not returned");
 			}
-			user.sendGameInformation(game.getMap(), player, game.getUsers().size());
+			user.sendGameInformation(game);
 		}
 	}
 }

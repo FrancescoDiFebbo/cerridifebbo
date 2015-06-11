@@ -53,9 +53,9 @@ public class Server {
 		while (true) {
 			String line = null;
 			try {
-				line = Application.readLine("Press 'q' to exit, 'b' to broadcast, 'h' to heartbeat");
+				line = Application.readLine("Press 'q' to exit, 'b' to broadcast");
 			} catch (IOException e) {
-				Application.exception(e, "Command not read");
+				Application.exception(e, "Command not read", true);
 				line = null;
 			}
 			if ("q".equals(line)) {
@@ -63,9 +63,6 @@ public class Server {
 			}
 			if ("b".equals(line)) {
 				broadcastEverybody("You are connected to the server");
-			}
-			if ("h".equals(line)) {
-				heartBeat();
 			}
 		}
 	}
@@ -85,11 +82,12 @@ public class Server {
 			return null;
 		}
 		for (User user : users) {
-			if (user.getName().equalsIgnoreCase(username) && user.isOnline()) {
+			if (user.getName().equalsIgnoreCase(username)) {
 				if (user.isOnline()) {
 					return null;
 				} else {
 					user.setConnection(client);
+					return user;
 				}
 			}
 		}
@@ -100,6 +98,11 @@ public class Server {
 			Application.exception(e);
 			return null;
 		}
+		setRoom(newUser);
+		return newUser;
+	}
+
+	private void setRoom(User newUser) {
 		users.add(newUser);
 		room.add(newUser);
 		if (room.size() == Game.MAX_PLAYERS) {
@@ -121,8 +124,7 @@ public class Server {
 				}
 			}, TIMEOUT_NEWGAME);
 		}
-		broadcastToRoom(username + " connected", newUser);
-		return newUser;
+		broadcastToRoom(newUser.getName() + " connected", newUser);
 	}
 
 	private void createNewGame() {
@@ -160,15 +162,6 @@ public class Server {
 			for (User user : gone) {
 				disconnectUser(user);
 			}
-		}		
-	}
-
-	private void heartBeat() {
-		List<User> temp = new ArrayList<User>(users);
-		for (User user : temp) {
-			if (!user.poke()) {
-				suspendUser(user);
-			}
 		}
 	}
 
@@ -176,12 +169,5 @@ public class Server {
 		user.disconnect();
 		users.remove(user);
 		Application.println(user.getName() + " disconnected from server");
-	}
-
-	public void suspendUser(User user) {
-		if (started) {
-			user.setConnection(null);
-			Application.println(user.getName() + " suspended");
-		}		
 	}
 }

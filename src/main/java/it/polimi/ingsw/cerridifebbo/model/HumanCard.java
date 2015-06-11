@@ -8,7 +8,10 @@ package it.polimi.ingsw.cerridifebbo.model;
  */
 public class HumanCard extends CharacterCard {
 
-	private static final long serialVersionUID = 3437849611858239415L;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * This method set the characterName of the card with the parameter

@@ -27,8 +27,8 @@ public class SocketInterface implements NetworkInterface {
 		try {
 			socket = new Socket(Connection.SERVER_SOCKET_ADDRESS, Connection.SERVER_SOCKET_PORT);
 		} catch (IOException e) {
-			Application.exception(e);
-			return;
+			Application.exception(e, "Server not found", false);
+			Application.exitError();
 		}
 
 		try {
@@ -83,20 +83,19 @@ public class SocketInterface implements NetworkInterface {
 		try {
 			return ois.readBoolean();
 		} catch (IOException e) {
-			Application.exception(e, "Unable to contact server");
+			Application.exception(e, "Unable to contact server", true);
 			return false;
 		}
 	}
 
 	private void listen() {
-		int readError = 0;
-		while (readError < 2) {
+		while (true) {
 			try {
 				String line = (String) ois.readUnshared();
 				CommandHandler.handleCommand(SocketInterface.this, line);
 			} catch (IOException | ClassNotFoundException e) {
-				Application.exception(e);
-				readError++;
+				Application.exception(e, "Socket closed", true);
+				break;
 			}
 		}
 	}
@@ -116,7 +115,6 @@ public class SocketInterface implements NetworkInterface {
 		if (graphics.isInitialized()) {
 			graphics.startTurn();
 		}
-
 	}
 
 	public void endTurn() {
@@ -195,10 +193,10 @@ public class SocketInterface implements NetworkInterface {
 			graphics.deletePlayerCard(player, card);
 		}
 	}
-	
+
 	public void disconnect() {
 		showMessage("You are disconnected from the server! Hope you like the game! :)");
-		close();		
+		close();
 	}
 
 	private static class CommandHandler extends Command {

@@ -16,6 +16,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.Random;
 
 public class RMIInterface extends UnicastRemoteObject implements NetworkInterface, RemoteClient {
+	
 	/**
 	 * 
 	 */
@@ -46,25 +47,25 @@ public class RMIInterface extends UnicastRemoteObject implements NetworkInterfac
 				registry = LocateRegistry.createRegistry(port);
 				break;
 			} catch (RemoteException e) {
-				Application.exception(e, port + " not available");
+				Application.exception(e, port + " not available", false);
 			}
 		}
 		try {
-			registry.bind(RemoteClient.RMI_ID, this);
+			registry.bind(Connection.REMOTE_CLIENT_RMI, this);
 		} catch (RemoteException | AlreadyBoundException e) {
-			Application.exception(e, "Client not bound.\nClosing client...");
+			Application.exception(e);
 			Application.exitError();
 		}
 		try {
 			registry = LocateRegistry.getRegistry(Connection.SERVER_REGISTRY_PORT);
 		} catch (RemoteException e) {
-			Application.exception(e, "Server registry not found");
+			Application.exception(e);
 			Application.exitError();
 		}
 		try {
-			server = (RemoteServer) registry.lookup(RemoteServer.RMI_ID);
+			server = (RemoteServer) registry.lookup(Connection.REMOTE_SERVER_RMI);
 		} catch (RemoteException | NotBoundException e) {
-			Application.exception(e, "Remote server not found");
+			Application.exception(e, "Server not found", false);
 			Application.exitError();
 		}
 		do {
@@ -81,7 +82,7 @@ public class RMIInterface extends UnicastRemoteObject implements NetworkInterfac
 	public void close() {
 		try {
 			Registry registry = LocateRegistry.getRegistry(port);
-			registry.unbind(RemoteClient.RMI_ID);
+			registry.unbind(Connection.REMOTE_CLIENT_RMI);
 		} catch (RemoteException | NotBoundException e) {
 			Application.exception(e);
 		}
@@ -98,7 +99,7 @@ public class RMIInterface extends UnicastRemoteObject implements NetworkInterfac
 				return false;
 			}
 		} catch (RemoteException | NotBoundException e) {
-			Application.exception(e, "Unable to contact server");
+			Application.exception(e, "Unable to contact server", true);
 			return false;
 		}
 	}
@@ -120,7 +121,6 @@ public class RMIInterface extends UnicastRemoteObject implements NetworkInterfac
 	@Override
 	public void sendGameInformation(Map map, Player player, int size) throws RemoteException {
 		setGameInformation(map, player, size);
-
 	}
 
 	@Override
@@ -133,7 +133,6 @@ public class RMIInterface extends UnicastRemoteObject implements NetworkInterfac
 		if (graphics.isInitialized()) {
 			graphics.startTurn();
 		}
-
 	}
 
 	@Override
@@ -175,7 +174,6 @@ public class RMIInterface extends UnicastRemoteObject implements NetworkInterfac
 		if (graphics.initialized) {
 			graphics.declareCard();
 		}
-
 	}
 
 	@Override
@@ -206,15 +204,5 @@ public class RMIInterface extends UnicastRemoteObject implements NetworkInterfac
 	@Override
 	public int hashCode() {
 		return super.hashCode();
-	}
-
-	@Override
-	public void suspendClient() throws RemoteException {
-		try {
-			LocateRegistry.getRegistry(port).unbind(RemoteClient.RMI_ID);
-		} catch (NotBoundException e) {
-			Application.exception(e);
-		}
-		sendMessage("You are suspended");		
 	}
 }

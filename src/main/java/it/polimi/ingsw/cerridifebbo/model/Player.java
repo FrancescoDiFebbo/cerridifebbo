@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Player implements Serializable {	
+public abstract class Player implements Serializable {
 	/**
 	 * 
 	 */
@@ -119,7 +119,7 @@ public abstract class Player implements Serializable {
 			if (sectorCard instanceof NoiseAnySectorCard) {
 				do {
 					target = game.getSector(this);
-				} while (target == null);				
+				} while (target == null);
 			}
 			Card itemCard = null;
 			if (sectorCard != null) {
@@ -142,8 +142,8 @@ public abstract class Player implements Serializable {
 	public void setRevealed() {
 		this.revealed = true;
 	}
-	
-	public PlayerRemote getPlayerRemote(){
+
+	public PlayerRemote getPlayerRemote() {
 		return new PlayerRemote(this);
 	}
 

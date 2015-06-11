@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +34,7 @@ public class SocketHandler extends Thread implements ClientConnection {
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 		} catch (IOException e) {
 			Application.exception(e);
+			return;
 		}
 		listen();
 	}
@@ -53,6 +53,12 @@ public class SocketHandler extends Thread implements ClientConnection {
 				continue;
 			}
 			CommandHandler.handleCommand(this, input);
+		}
+		try {
+			close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
@@ -218,17 +224,6 @@ public class SocketHandler extends Thread implements ClientConnection {
 
 	public void putMove(String action, String target) {
 		user.putMove(action, target);
-	}
-	
-	@Override
-	public void suspendClient() throws RemoteException {
-		try {
-			oos.writeUnshared(CommandHandler.build(Command.SUSPEND, null));
-			oos.flush();
-			close();
-		} catch (IOException e) {
-			Application.exception(e);
-		}		
 	}
 
 	public static class CommandHandler extends Command {

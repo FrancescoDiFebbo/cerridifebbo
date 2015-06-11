@@ -10,7 +10,10 @@ import it.polimi.ingsw.cerridifebbo.model.Game.Sentence;
  */
 public class DefenseItemCard extends ItemCard {
 
-	private static final long serialVersionUID = 1857948974335792760L;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private static final String NAME = "Defense";
 
 	/**

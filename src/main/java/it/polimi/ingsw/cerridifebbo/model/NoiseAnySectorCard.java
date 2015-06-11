@@ -10,8 +10,6 @@ import it.polimi.ingsw.cerridifebbo.model.Game.Sentence;
  */
 public class NoiseAnySectorCard extends SectorCard {
 
-	private static final long serialVersionUID = 6904887154489570312L;
-
 	/**
 	 * This method set if the card contains an item
 	 * 

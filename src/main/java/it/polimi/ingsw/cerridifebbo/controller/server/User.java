@@ -1,8 +1,11 @@
 package it.polimi.ingsw.cerridifebbo.controller.server;
 
+import it.polimi.ingsw.cerridifebbo.controller.common.Application;
 import it.polimi.ingsw.cerridifebbo.controller.common.ClientConnection;
 import it.polimi.ingsw.cerridifebbo.controller.common.RemoteUser;
 import it.polimi.ingsw.cerridifebbo.model.Card;
+import it.polimi.ingsw.cerridifebbo.model.Game;
+import it.polimi.ingsw.cerridifebbo.model.Game.Sentence;
 import it.polimi.ingsw.cerridifebbo.model.HumanPlayer;
 import it.polimi.ingsw.cerridifebbo.model.Map;
 import it.polimi.ingsw.cerridifebbo.model.Move;
@@ -25,6 +28,8 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 	private transient Player player;
 	private transient Queue<Move> queue = new LinkedList<Move>();
 	private transient boolean timeFinished = false;
+	private transient boolean reinitialize = false;
+	private transient Game currentGame;
 
 	public User(String name, ClientConnection connection) throws RemoteException {
 		super();
@@ -38,9 +43,10 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 
 	public void setConnection(ClientConnection connection) {
 		this.connection = connection;
+		reinitialize = true;
 	}
-	
-	public boolean isOnline(){
+
+	public boolean isOnline() {
 		return connection != null;
 	}
 
@@ -60,16 +66,26 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 		this.timeFinished = timeFinished;
 	}
 
-	public synchronized void clear() {
-		queue.clear();
-		timeFinished = false;
-		if (player instanceof HumanPlayer) {
-			((HumanPlayer) player).clear();
+	public void clear() {
+		synchronized (queue) {
+			queue.clear();
+			timeFinished = false;
+			if (player instanceof HumanPlayer) {
+				((HumanPlayer) player).clear();
+			}
 		}
+	}
+	
+	private boolean checkConnection(){
+		if (reinitialize) {
+			sendGameInformation(currentGame);
+			reinitialize = false;
+		}
+		return isOnline();
 	}
 
 	public void sendMessage(String message) {
-		if (connection != null) {
+		if (checkConnection()) {
 			try {
 				connection.sendMessage(message);
 			} catch (RemoteException e) {
@@ -78,10 +94,11 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 		}
 	}
 
-	public void sendGameInformation(Map map, Player player, int size) {
-		if (connection != null) {
+	public void sendGameInformation(Game game) {
+		if (isOnline()) {
 			try {
-				connection.sendGameInformation(map, player, size);
+				connection.sendGameInformation(game.getMap(), player, game.getUsers().size());
+				currentGame = game;
 			} catch (RemoteException e) {
 				suspend(e);
 			}
@@ -89,7 +106,7 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 	}
 
 	public void startTurn() {
-		if (connection != null) {
+		if (checkConnection()) {
 			try {
 				connection.startTurn();
 			} catch (RemoteException e) {
@@ -99,7 +116,7 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 	}
 
 	public void endTurn() {
-		if (connection != null) {
+		if (checkConnection()) {
 			try {
 				connection.endTurn();
 			} catch (RemoteException e) {
@@ -108,83 +125,8 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 		}
 	}
 
-	private void askForMove() {
-		try {
-			connection.askForMove();
-		} catch (RemoteException e) {
-			suspend(e);
-		}
-	}
-
-	private void askForSector() {
-		try {
-			connection.askForSector();
-		} catch (RemoteException e) {
-			suspend(e);
-		}
-	}
-
-	private void askForCard() {
-		try {
-			connection.askForCard();
-		} catch (RemoteException e) {
-			suspend(e);
-		}
-	}
-
-	public void updatePlayer(Player player, Card card, boolean added) {
-		if (connection != null) {
-			try {
-				connection.updatePlayer(player, card, added);		
-			} catch (RemoteException e) {
-				suspend(e);
-			}
-		}
-	}
-
-	public void disconnect() {
-		if (connection != null) {
-			try {
-				connection.disconnect();
-			} catch (RemoteException e) {
-				suspend(e);
-			}
-		}
-	}
-
-	public boolean poke() {
-		if (connection != null) {
-			try {
-				return connection.poke();
-			} catch (RemoteException e) {
-				suspend(e);
-			}
-		}
-		return false;
-	}
-
-	public void suspend(Throwable e) {
-		Server.getInstance().suspendUser(this);
-		try {
-			connection.suspendClient();
-		} catch (RemoteException e1) {
-			suspend(e1);
-		}
-	}
-
-	@Override
-	public void sendMove(String action, String target) throws RemoteException {
-		putMove(action, target);
-	}
-
-	public void putMove(String action, String target) {
-		synchronized (queue) {
-			queue.offer(new Move(action, target));
-		}
-	}
-
 	public Move getMove() {
-		if (connection != null) {
+		if (checkConnection()) {
 			askForMove();
 			Move move = null;
 			do {
@@ -199,11 +141,18 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 		} else {
 			return new Move(Move.TIMEFINISHED, null);
 		}
+	}
 
+	private void askForMove() {
+		try {
+			connection.askForMove();
+		} catch (RemoteException e) {
+			suspend(e);
+		}
 	}
 
 	public Sector getSector(Map map) {
-		if (connection != null) {
+		if (checkConnection()) {
 			askForSector();
 			Move move = null;
 			do {
@@ -220,6 +169,14 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 		}
 	}
 
+	private void askForSector() {
+		try {
+			connection.askForSector();
+		} catch (RemoteException e) {
+			suspend(e);
+		}
+	}
+
 	private Sector randomSector(Map map) {
 		Random random = new Random();
 		Sector sector = null;
@@ -230,7 +187,7 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 	}
 
 	public Move getCard() {
-		if (connection != null) {
+		if (checkConnection()) {
 			askForCard();
 			Move move = null;
 			do {
@@ -248,6 +205,62 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 
 	}
 
+	private void askForCard() {
+		try {
+			connection.askForCard();
+		} catch (RemoteException e) {
+			suspend(e);
+		}
+	}
+
+	public void updatePlayer(Player player, Card card, boolean added) {
+		if (checkConnection()) {
+			try {
+				connection.updatePlayer(player, card, added);
+			} catch (RemoteException e) {
+				suspend(e);
+			}
+		}
+	}
+
+	public void disconnect() {
+		if (isOnline()) {
+			try {
+				connection.disconnect();
+			} catch (RemoteException e) {
+				suspend(e);
+			}
+		}
+	}
+
+	public boolean poke() {
+		if (isOnline()) {
+			try {
+				return connection.poke();
+			} catch (RemoteException e) {
+				suspend(e);
+			}
+		}
+		return false;
+	}
+
+	public void suspend(Throwable e) {
+		connection = null;
+		currentGame.informPlayers(player, Sentence.DISCONNECTED, null);
+		Application.exception(e, name + " suspended", true);
+	}
+
+	@Override
+	public void sendMove(String action, String target) throws RemoteException {
+		putMove(action, target);
+	}
+
+	public void putMove(String action, String target) {
+		synchronized (queue) {
+			queue.offer(new Move(action, target));
+		}
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		return super.equals(obj);
@@ -257,5 +270,4 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 	public int hashCode() {
 		return super.hashCode();
 	}
-
 }

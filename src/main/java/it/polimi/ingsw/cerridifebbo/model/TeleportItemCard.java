@@ -10,7 +10,10 @@ import it.polimi.ingsw.cerridifebbo.model.Game.Sentence;
  */
 public class TeleportItemCard extends ItemCard {
 
-	private static final long serialVersionUID = 8890754143423061845L;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private static final String NAME = "Teleport";
 
 	/**

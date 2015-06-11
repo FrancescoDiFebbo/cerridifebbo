@@ -8,24 +8,15 @@ import java.util.List;
 public class Game implements Runnable {
 
 	private static final int MAX_TURNS = 39;
-	public static final int MAX_TIMEOUT = 30000;
+	public static final int MAX_TIMEOUT = 1000;
 	public static final int MAX_PLAYERS = CharacterDeckFactory.MAX_PLAYERS;
 	public static final int MIN_PLAYERS = CharacterDeckFactory.MIN_PLAYERS;
 
 	private final List<User> users;
-
 	private GameState state;
 	private Map map;
 	private Deck deck;
-	private Boolean end = false;
-
-	public Boolean getEnd() {
-		return end;
-	}
-
-	public void setEnd(Boolean end) {
-		this.end = end;
-	}
+	private boolean end = false;
 
 	public Game(List<User> users) {
 		this.users = users;
@@ -51,6 +42,14 @@ public class Game implements Runnable {
 		this.deck = deck;
 	}
 
+	public boolean getEnd() {
+		return end;
+	}
+
+	public void setEnd(boolean end) {
+		this.end = end;
+	}
+
 	@Override
 	public void run() {
 		state = new StartGame(this);
@@ -58,7 +57,7 @@ public class Game implements Runnable {
 		turnManage();
 		end = true;
 		state = new EndGame(this);
-		state.handle();	
+		state.handle();
 		close();
 	}
 
@@ -69,16 +68,16 @@ public class Game implements Runnable {
 				state.handle();
 				state = new CheckGame(this);
 				state.handle();
-				if (end == true) {
+				if (end) {
 					break;
 				}
 			}
-			if (end == true) {
+			if (end) {
 				break;
 			}
 		}
 	}
-	
+
 	private void close() {
 		Server.getInstance().gameOver(this);
 	}
@@ -114,12 +113,9 @@ public class Game implements Runnable {
 		for (User user : users) {
 			if (user == me) {
 				me.sendMessage(Sentence.toMe(sentence, this, sector));
-
 				continue;
 			}
-			user.sendMessage("GAME) "
-					+ Sentence.toOthers(sentence, me, this, sector));
-
+			user.sendMessage("GAME) " + Sentence.toOthers(sentence, me, this, sector));
 		}
 	}
 
@@ -133,20 +129,21 @@ public class Game implements Runnable {
 	}
 
 	public static class Sentence {
-		public static final String KILLED = "killed";
+		public static final String NOISE_IN = "noise_in";
+		public static final String NOISE_ANY = "noise_any";
 		public static final String ADRENALINE = "adrenaline";
 		public static final String ATTACK_CARD = "attack_card";
 		public static final String DEFENSE_CARD = "defense_card";
-		public static final String ESCAPED = "escaped";
-		public static final String TELEPORT_CARD = "teleport_card";
-		public static final String SPOTLIGHT_CARD = "spotlight_card";
 		public static final String SEDATIVES_CARD = "sedatives_card";
-		public static final String NOT_ESCAPED = "not_escaped";
-		public static final String NOISE_IN = "noise_in";
-		public static final String NOISE_ANY = "noise_any";
-		public static final String ATTACK = "attack";
-		public static final String TIMEFINISHED = "time_finished";
+		public static final String SPOTLIGHT_CARD = "spotlight_card";
+		public static final String TELEPORT_CARD = "teleport_card";
 		public static final String DISCARD_CARD = "discard_card";
+		public static final String ATTACK = "attack";
+		public static final String KILLED = "killed";
+		public static final String ESCAPED = "escaped";
+		public static final String NOT_ESCAPED = "not_escaped";
+		public static final String TIMEFINISHED = "time_finished";
+		public static final String DISCONNECTED = "disconnected";
 
 		private Sentence() {
 
@@ -158,77 +155,70 @@ public class Game implements Runnable {
 				return "You made noise in your sector";
 			case NOISE_ANY:
 				return "You made noise in " + sector;
-			case KILLED:
-				return "You are dead";
 			case ADRENALINE:
 				return "You have used adrenaline";
 			case ATTACK_CARD:
 				return "You have used attack card";
 			case DEFENSE_CARD:
 				return "You have used defense card";
-			case ESCAPED:
-				return "Escape hatch is open. You have escaped";
-			case TELEPORT_CARD:
-				return "You have used teleport card";
-			case SPOTLIGHT_CARD:
-				return "You have used spotlight card" + spotlight(game, sector);
 			case SEDATIVES_CARD:
 				return "You have used sedatives card";
-			case NOT_ESCAPED:
-				return "Escape hatch is closed. You can't escape.";
-			case ATTACK:
-				return "You are attacking";
-			case TIMEFINISHED:
-				return "Time is over.";
+			case SPOTLIGHT_CARD:
+				return "You have used spotlight card" + spotlight(game, sector);
+			case TELEPORT_CARD:
+				return "You have used teleport card";
 			case DISCARD_CARD:
 				return "You have discarded a card";
+			case ATTACK:
+				return "You are attacking";
+			case KILLED:
+				return "You are dead";
+			case ESCAPED:
+				return "Escape hatch is open. You have escaped";
+			case NOT_ESCAPED:
+				return "Escape hatch is closed. You can't escape.";
+			case TIMEFINISHED:
+				return "Time is over.";
+			case DISCONNECTED:
+				return "You are disconnected";
 			default:
 				return null;
 			}
 		}
 
-		public static String toOthers(String sentence, User user, Game game,
-				Sector sector) {
-			String name = null;
-			if (user.getPlayer().isRevealed()) {
-				name = user.getName() + " ("
-						+ user.getPlayer().getPlayerCard().getCharacterName()
-						+ ")";
-			} else {
-				name = user.getName();
-			}
+		public static String toOthers(String sentence, User user, Game game, Sector sector) {
+			String name = nameRevealed(user);
 			switch (sentence) {
 			case NOISE_IN:
 				return name + " made noise in " + sector;
 			case NOISE_ANY:
 				return name + " made noise in " + sector;
-			case KILLED:
-				return name + " is dead";
 			case ADRENALINE:
 				return name + " has used adrenaline";
 			case ATTACK_CARD:
 				return name + " has used attack card";
 			case DEFENSE_CARD:
 				return name + " has used defense card";
-			case ESCAPED:
-				return name + " reached " + sector + ". It is open. " + name
-						+ " has escaped";
-			case TELEPORT_CARD:
-				return name + " has used teleport card";
-			case SPOTLIGHT_CARD:
-				return name + " has used spotlight card"
-						+ spotlight(game, sector);
 			case SEDATIVES_CARD:
 				return name + " has used sedatives card";
-			case NOT_ESCAPED:
-				return name + " reached " + sector + ". It is closed. " + name
-						+ " can't escape.";
-			case ATTACK:
-				return name + " is attacking " + sector;
-			case TIMEFINISHED:
-				return name + " has finished his turn time";
+			case SPOTLIGHT_CARD:
+				return name + " has used spotlight card" + spotlight(game, sector);
+			case TELEPORT_CARD:
+				return name + " has used teleport card";
 			case DISCARD_CARD:
 				return name + " has discarded a card";
+			case ATTACK:
+				return name + " is attacking " + sector;
+			case KILLED:
+				return name + " is dead";
+			case ESCAPED:
+				return name + " reached " + sector + ". It is open. " + name + " has escaped";
+			case NOT_ESCAPED:
+				return name + " reached " + sector + ". It is closed. " + name + " can't escape.";
+			case TIMEFINISHED:
+				return name + " has finished his turn time";
+			case DISCONNECTED:
+				return name + " disconnected from match";
 			default:
 				return null;
 			}
@@ -241,18 +231,20 @@ public class Game implements Runnable {
 			for (User user : game.getUsers()) {
 				Player p = user.getPlayer();
 				if (sectors.contains(p.getPosition())) {
-					String name = null;
-					if (user.getPlayer().isRevealed()) {
-						name = user.getPlayer().getPlayerCard()
-								.getCharacterName();
-					} else {
-						name = user.getName().toString().split("-")[0];
-					}
-					build.append("\n" + name + " is in " + p.getPosition()
-							+ "\n");
+					String name = nameRevealed(user);
+					build.append("\n " + name + " is in " + p.getPosition());
 				}
 			}
 			return build.toString();
+		}
+
+		private static String nameRevealed(User user) {
+			Player player = user.getPlayer();
+			if (player.isRevealed()) {
+				return user.getName() + " (" + (player instanceof HumanPlayer ? "human" : "alien") + ")";
+			} else {
+				return user.getName();
+			}
 		}
 	}
 }

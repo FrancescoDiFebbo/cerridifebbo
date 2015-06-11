@@ -125,7 +125,7 @@ public class SingleTurn extends GameState {
 			if (selectedCard instanceof SpotlightItemCard) {
 				Sector sector = null;
 				do {
-				sector = user.getSector(game.getMap());
+					sector = user.getSector(game.getMap());
 				} while (sector != null);
 				selectedCard.performAction(player, sector, game);
 
@@ -150,7 +150,7 @@ public class SingleTurn extends GameState {
 		user.updatePlayer(player, selectedCard, false);
 		game.informPlayers(player, Sentence.DISCARD_CARD, null);
 	}
-	
+
 	private Card findCard(String target) {
 		for (Card own : player.getOwnCards()) {
 			if (own.toString().equalsIgnoreCase(target)) {
@@ -159,7 +159,7 @@ public class SingleTurn extends GameState {
 		}
 		return null;
 	}
-	
+
 	private void timeFinished() {
 		user.setTimeFinished(true);
 		game.informPlayers(player, Sentence.TIMEFINISHED, null);
@@ -168,13 +168,13 @@ public class SingleTurn extends GameState {
 		}
 		finish();
 	}
-	
+
 	private Sector randomReachableSector() {
 		Random random = new Random();
 		return player.getPosition().getReachableSectors(player.getMaxMovement())
 				.get(random.nextInt(player.getPosition().getReachableSectors(player.getMaxMovement()).size()));
 	}
-	
+
 	private void finish() {
 		if (noMoreMovement && !mustUseCard) {
 			endTurn();
@@ -184,13 +184,13 @@ public class SingleTurn extends GameState {
 			user.sendMessage("Before finish you must use or discard a card");
 		}
 	}
-	
+
 	private void endTurn() {
 		timeoutMove.cancel();
 		finish = true;
 		user.endTurn();
 		user.clear();
-	}	
+	}
 
 	private class MoveTimer extends TimerTask {
 

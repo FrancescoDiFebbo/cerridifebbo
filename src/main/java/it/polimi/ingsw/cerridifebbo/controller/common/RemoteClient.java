@@ -4,6 +4,4 @@ import java.rmi.Remote;
 
 public interface RemoteClient extends Remote, ClientConnection {
 
-	public static final String RMI_ID = "it.polimi.ingsw.cerridifebbo.remote_client";
-
 }

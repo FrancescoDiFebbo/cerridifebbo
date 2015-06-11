@@ -5,7 +5,7 @@ public class AlienSector extends Sector {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3526041625003527329L;
+	private static final long serialVersionUID = 1L;
 
 	public AlienSector(int row, int column) {
 		super(row, column, false);

@@ -9,7 +9,10 @@ package it.polimi.ingsw.cerridifebbo.model;
 
 public class AlienCard extends CharacterCard {
 
-	private static final long serialVersionUID = 8866769745221525174L;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * This method set the characterName of the card with the parameter

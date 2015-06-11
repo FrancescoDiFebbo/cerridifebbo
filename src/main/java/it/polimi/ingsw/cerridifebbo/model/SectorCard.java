@@ -8,7 +8,6 @@ package it.polimi.ingsw.cerridifebbo.model;
  */
 public abstract class SectorCard implements Card {
 
-	private static final long serialVersionUID = 5481929079638082358L;
 	private final boolean containsItem;
 
 	/**

@@ -22,6 +22,7 @@ public class Application {
 	}
 
 	private static void exit(int exitStatus) {
+		println("closing...");
 		System.exit(exitStatus);
 	}
 
@@ -37,8 +38,14 @@ public class Application {
 		LOG.log(Level.WARNING, e.getMessage(), e);
 	}
 
-	public static void exception(Throwable e, String message) {
-		println(e.getMessage() + " // " + message);
+	public static void exception(Throwable e, String message, boolean showException) {
+		if (e == null) {
+			println(message);
+		} else if (showException){
+			println(e.getMessage() + " // " + message);
+		} else {
+			println(message);
+		}
 	}
 
 	public static void log(Throwable e) {

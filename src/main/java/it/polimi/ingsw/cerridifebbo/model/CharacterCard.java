@@ -1,14 +1,19 @@
 package it.polimi.ingsw.cerridifebbo.model;
 
+import java.io.Serializable;
+
 /**
  * This class describes a generic character card.
  * 
  * @author cerridifebbo
  * @see card that is implemented by this class.
  */
-public abstract class CharacterCard implements Card {
+public abstract class CharacterCard implements Card, Serializable {
 
-	private static final long serialVersionUID = -5456628627751862631L;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private final String characterName;
 
 	/**

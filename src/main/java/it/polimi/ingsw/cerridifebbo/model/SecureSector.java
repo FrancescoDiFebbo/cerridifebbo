@@ -5,7 +5,7 @@ public class SecureSector extends Sector {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -186662127462374807L;
+	private static final long serialVersionUID = 1L;
 
 	public SecureSector(int row, int column) {
 		super(row, column, true);

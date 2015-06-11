@@ -11,24 +11,24 @@ public class MapRemote implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private final SectorRemote[][] mapRemote = new SectorRemote[Map.ROWMAP][Map.COLUMNMAP];
+	private final SectorRemote[][] mr = new SectorRemote[Map.ROWMAP][Map.COLUMNMAP];
 
 	public MapRemote(Sector[][] map) {
 		for (int i = 0; i < Map.ROWMAP; i++) {
 			for (int j = 0; j < Map.COLUMNMAP; j++) {
 				if (map[i][j] != null) {
 					SectorRemote sr = new SectorRemote(map[i][j].getClass().getSimpleName(), map[i][j].toString());
-					mapRemote[i][j] = sr;
-				}				
+					mr[i][j] = sr;
+				}
 			}
 		}
 	}
-	
-	public SectorRemote getCell(int i, int j){
-		return mapRemote[i][j];
+
+	public SectorRemote getCell(int i, int j) {
+		return mr[i][j];
 	}
 
-	public class SectorRemote implements Serializable{
+	public class SectorRemote implements Serializable {
 		/**
 		 * 
 		 */

@@ -8,8 +8,6 @@ package it.polimi.ingsw.cerridifebbo.model;
  */
 public class SilenceCard extends SectorCard {
 
-	private static final long serialVersionUID = -801729118797150396L;
-
 	/**
 	 * This method set false if the card contains an item
 	 * 

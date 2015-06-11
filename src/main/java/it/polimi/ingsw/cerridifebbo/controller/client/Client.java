@@ -78,7 +78,7 @@ public class Client implements Runnable {
 				Application.exception(e);
 				name = null;
 			}
-		} while (name == null);
+		} while (name == null || "".equals(name));
 		return name.trim();
 	}
 }

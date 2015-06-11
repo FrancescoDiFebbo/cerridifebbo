@@ -13,8 +13,6 @@ import java.util.logging.Logger;
 
 public class Map implements Serializable {
 
-	
-
 	/**
 	 * 
 	 */
@@ -156,8 +154,8 @@ public class Map implements Serializable {
 		}
 		return hatches;
 	}
-	
-	public MapRemote getMapRemote(){
+
+	public MapRemote getMapRemote() {
 		if (mapRemote == null) {
 			mapRemote = new MapRemote(grid);
 			return mapRemote;

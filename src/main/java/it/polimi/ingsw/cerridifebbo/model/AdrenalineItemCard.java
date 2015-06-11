@@ -10,7 +10,10 @@ import it.polimi.ingsw.cerridifebbo.model.Game.Sentence;
  */
 public class AdrenalineItemCard extends ItemCard {
 
-	private static final long serialVersionUID = -4808545615911692123L;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private static final int ADRENALINEMOVEMENT = 2;
 	private static final String NAME = "Adrenaline";
 

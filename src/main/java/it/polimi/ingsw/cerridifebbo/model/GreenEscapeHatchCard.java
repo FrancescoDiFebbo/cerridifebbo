@@ -10,8 +10,6 @@ import it.polimi.ingsw.cerridifebbo.model.Game.Sentence;
  */
 public class GreenEscapeHatchCard extends EscapeHatchCard {
 
-	private static final long serialVersionUID = -4333041069849793818L;
-
 	/**
 	 * With this method the player who uses this card escapes. The position of
 	 * the hatch is not more passable
