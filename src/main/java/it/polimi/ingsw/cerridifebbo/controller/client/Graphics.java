@@ -3,6 +3,7 @@ package it.polimi.ingsw.cerridifebbo.controller.client;
 import it.polimi.ingsw.cerridifebbo.model.Card;
 import it.polimi.ingsw.cerridifebbo.model.Map;
 import it.polimi.ingsw.cerridifebbo.model.Player;
+import it.polimi.ingsw.cerridifebbo.model.Sector;
 
 public abstract class Graphics {
 
@@ -40,4 +41,6 @@ public abstract class Graphics {
 	public abstract void deletePlayerCard(Player player, Card card);
 
 	public abstract void addPlayerCard(Player player, Card card);
+	
+	public abstract void updateEscapeHatch(Map map, Sector sector);
 }

@@ -85,4 +85,15 @@ public class MapContainer extends Container {
 		}
 
 	}
+
+	public void updateEscapeHatchStatus(String sector) {
+		int nComp = getComponentCount();
+		for (int i = 0; i < nComp; i++) {
+			if (getComponent(i) != null
+					&& getComponent(i).getName().equals(sector.toString())) {
+				getComponent(i).setForeground(
+						EscapeHatchSectorButton.ESCAPE_HATCH_COLOR_KO);
+			}
+		}
+	}
 }

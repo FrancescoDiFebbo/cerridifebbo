@@ -15,8 +15,6 @@ import it.polimi.ingsw.cerridifebbo.model.Player;
 import it.polimi.ingsw.cerridifebbo.model.Sector;
 import it.polimi.ingsw.cerridifebbo.model.SecureSector;
 
-import java.io.PrintStream;
-import java.io.PrintWriter;
 import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -28,7 +26,8 @@ public class CLIGraphics extends Graphics {
 	private static final String DANGEROUS_SECTOR = "\u001B[31m";
 	private static final String ALIEN_SECTOR = "\u001B[32m";
 	private static final String HUMAN_SECTOR = "\u001B[34m";
-	private static final String ESCAPE_HATCH_SECTOR = "\u001B[33m";
+	private static final String ESCAPE_HATCH_SECTOR_OK = "\u001B[33m";
+	private static final String ESCAPE_HATCH_SECTOR_KO = "\u001B[35m";
 	private static final String START_TURN_MESSAGE = "It's your turn";
 	private static final String END_TURN_MESSAGE = "----------------------------------------";
 
@@ -49,6 +48,7 @@ public class CLIGraphics extends Graphics {
 	private static final String PLAYER_POSITION = "Player position : ";
 	private static final String PLAYER_RACE_HUMAN = "You are a human. Your name is ";
 	private static final String PLAYER_RACE_ALIEN = "You are an alien. Your name is ";
+	private static final String SECTOR_ESCAPE_UPDATE = " is not more available for escape";
 	private Scanner in = new Scanner(System.in);
 	private Player player;
 	private Map map;
@@ -140,7 +140,11 @@ public class CLIGraphics extends Graphics {
 		} else if (currentCell instanceof HumanSector) {
 			return HUMAN_SECTOR;
 		} else if (currentCell instanceof EscapeHatchSector) {
-			return ESCAPE_HATCH_SECTOR;
+			if (currentCell.isPassable()) {
+				return ESCAPE_HATCH_SECTOR_OK;
+			} else {
+				return ESCAPE_HATCH_SECTOR_KO;
+			}
 		} else
 			return null;
 	}
@@ -234,7 +238,8 @@ public class CLIGraphics extends Graphics {
 						}
 					} while (!chosen);
 				} catch (Exception e) {
-					throw new ScannerException(this, e);
+					Application.exception(e,
+							"You didn't make your decision in time", false);
 				}
 
 			}
@@ -254,7 +259,8 @@ public class CLIGraphics extends Graphics {
 					move = move.replace(" ", "");
 					getNetworkInterface().sendToServer(Move.SECTOR, move);
 				} catch (Exception e) {
-					throw new ScannerException(this, e);
+					Application.exception(e,
+							"You didn't make your decision in time", false);
 				}
 
 			}
@@ -298,7 +304,8 @@ public class CLIGraphics extends Graphics {
 						}
 					} while (!chosen);
 				} catch (Exception e) {
-					throw new ScannerException(this, e);
+					Application.exception(e,
+							"You didn't make your decision in time", false);
 				}
 			}
 		};
@@ -315,13 +322,9 @@ public class CLIGraphics extends Graphics {
 		this.player = player;
 	}
 
-	public class ScannerException extends RuntimeException {
-		private static final long serialVersionUID = 1L;
-
-		ScannerException(Thread thread, Exception e) {
-			sendMessage("You didn't make your decision in time");
-			thread.interrupt();
-		}
+	@Override
+	public void updateEscapeHatch(Map map, Sector sector) {
+		this.map = map;
+		sendMessage(sector.toString() + SECTOR_ESCAPE_UPDATE);
 	}
-
 }

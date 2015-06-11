@@ -6,6 +6,7 @@ import it.polimi.ingsw.cerridifebbo.model.HumanPlayer;
 import it.polimi.ingsw.cerridifebbo.model.Map;
 import it.polimi.ingsw.cerridifebbo.model.Move;
 import it.polimi.ingsw.cerridifebbo.model.Player;
+import it.polimi.ingsw.cerridifebbo.model.Sector;
 
 import java.awt.Color;
 import java.awt.Container;
@@ -190,6 +191,11 @@ public class GUIGraphics extends Graphics implements ActionListener {
 	@Override
 	public void addPlayerCard(Player player, Card card) {
 		cards.add(new CardPanel(card.toString(), playerRace));
+	}
+
+	@Override
+	public void updateEscapeHatch(Map map, Sector sector) {
+		mapGrid.updateEscapeHatchStatus(sector.toString());
 	}
 
 }
