@@ -59,7 +59,8 @@ public class GameTest {
 				human.kill(game);
 			}
 		}
-		new CheckGame(game).handle();;
+		new CheckGame(game).handle();
+		;
 		assertTrue(game.getEnd());
 	}
 
@@ -80,12 +81,13 @@ public class GameTest {
 		for (User user : users) {
 			if (user.getPlayer() instanceof HumanPlayer) {
 				player = user.getPlayer();
-				break;
+				for (int i = 0; i < ItemDeckFactory.MAX_ITEM_CARDS; i++) {
+					Card card = deck.drawItemCard();
+					card.performAction(player, game.getMap().getCell(5, 5),
+							game);
+
+				}
 			}
-		}
-		for (int i = 0; i < ItemDeckFactory.MAX_ITEM_CARDS; i++) {
-			Card card = deck.drawItemCard();
-			card.performAction(player, game.getMap().getCell(5, 5), game);
 		}
 	}
 
@@ -103,7 +105,8 @@ public class GameTest {
 		for (int i = 0; i < 39; i++) {
 			for (int k = 0; k < Game.MAX_PLAYERS; k++) {
 				Player player = game.getUsers().get(k).getPlayer();
-				List<Sector> sectors = player.getPosition().getReachableSectors(player.getMaxMovement());
+				List<Sector> sectors = player.getPosition()
+						.getReachableSectors(player.getMaxMovement());
 				int index = new Random().nextInt(sectors.size());
 				player.movement(sectors.get(index), game);
 				player.attack(game);
@@ -128,7 +131,8 @@ public class GameTest {
 			Player player = user.getPlayer();
 			if (player instanceof HumanPlayer) {
 				player.setPosition(hatches.get(sector));
-				hatches.get(sector++).playerEnters(player, game.getDeck()).performAction(player, null, game);
+				hatches.get(sector++).playerEnters(player, game.getDeck())
+						.performAction(player, null, game);
 			}
 		}
 	}
