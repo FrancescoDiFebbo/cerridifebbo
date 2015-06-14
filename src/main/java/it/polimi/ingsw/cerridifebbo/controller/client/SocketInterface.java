@@ -164,7 +164,7 @@ public class SocketInterface implements NetworkInterface {
 
 	@Override
 	public void setGameInformation(Map map, Player player, int size) {
-		graphics.initialize(map, player, size);
+		graphics.initialize(map.getMapRemote(), player.getPlayerRemote(), size);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -183,14 +183,14 @@ public class SocketInterface implements NetworkInterface {
 
 	@Override
 	public void updatePlayer(Player player, Card card, boolean added) {
-		graphics.updatePlayerPosition(player);
+		graphics.updatePlayerPosition(player.getPlayerRemote());
 		if (card == null) {
 			return;
 		}
 		if (added) {
-			graphics.addPlayerCard(player, card);
+			graphics.addPlayerCard(player.getPlayerRemote(), card);
 		} else {
-			graphics.deletePlayerCard(player, card);
+			graphics.deletePlayerCard(player.getPlayerRemote(), card);
 		}
 	}
 
