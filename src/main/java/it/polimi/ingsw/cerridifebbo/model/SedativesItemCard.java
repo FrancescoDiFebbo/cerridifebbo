@@ -1,6 +1,6 @@
 package it.polimi.ingsw.cerridifebbo.model;
 
-import it.polimi.ingsw.cerridifebbo.model.Game.Sentence;
+import it.polimi.ingsw.cerridifebbo.controller.common.ItemCardName;
 
 /**
  * This class describes a sedatives card.
@@ -14,7 +14,6 @@ public class SedativesItemCard extends ItemCard {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private static final String NAME = "Sedatives";
 
 	/**
 	 * With this method the player who uses this card does not draw a Dangerous
@@ -54,6 +53,6 @@ public class SedativesItemCard extends ItemCard {
 	 */
 	@Override
 	public String toString() {
-		return NAME;
+		return ItemCardName.SEDATIVES.getName();
 	}
 }

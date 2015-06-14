@@ -154,6 +154,11 @@ public class RMIInterface extends UnicastRemoteObject implements NetworkInterfac
 			graphics.deletePlayerCard(player, card);
 		}
 	}
+	
+	@Override
+	public void updatePlayer(PlayerRemote player) throws RemoteException {
+		// TODO Auto-generated method stub		
+	}
 
 	@Override
 	public void askForMove() throws RemoteException {
@@ -191,10 +196,10 @@ public class RMIInterface extends UnicastRemoteObject implements NetworkInterfac
 		close();
 	}
 
-	@Override
-	public boolean poke() throws RemoteException {
-		return true;
-	}
+//	@Override
+//	public boolean poke() throws RemoteException {
+//		return true;
+//	}
 
 	@Override
 	public boolean equals(Object obj) {

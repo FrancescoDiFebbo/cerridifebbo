@@ -1,7 +1,5 @@
 package it.polimi.ingsw.cerridifebbo.model;
 
-import it.polimi.ingsw.cerridifebbo.model.Game.Sentence;
-
 /**
  * This class describes a red escape hatch card.
  * 

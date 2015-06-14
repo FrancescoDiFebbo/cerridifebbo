@@ -23,8 +23,8 @@ public interface ClientConnection {
 	public void askForCard() throws RemoteException;
 
 	public void updatePlayer(Player player, Card card, boolean added) throws RemoteException;
+	
+	public void updatePlayer(PlayerRemote player) throws RemoteException;
 
 	public void disconnect() throws RemoteException;
-
-	public boolean poke() throws RemoteException;
 }

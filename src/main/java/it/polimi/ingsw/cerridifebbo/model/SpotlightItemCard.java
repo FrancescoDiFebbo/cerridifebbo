@@ -1,6 +1,6 @@
 package it.polimi.ingsw.cerridifebbo.model;
 
-import it.polimi.ingsw.cerridifebbo.model.Game.Sentence;
+import it.polimi.ingsw.cerridifebbo.controller.common.ItemCardName;
 
 public class SpotlightItemCard extends ItemCard {
 
@@ -8,7 +8,6 @@ public class SpotlightItemCard extends ItemCard {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private static final String NAME = "Spotlight";
 
 	/**
 	 * With this method the player who uses this card names a target sector. Any
@@ -50,6 +49,6 @@ public class SpotlightItemCard extends ItemCard {
 	 */
 	@Override
 	public String toString() {
-		return NAME;
+		return ItemCardName.SPOTLIGHT.getName();
 	}
 }

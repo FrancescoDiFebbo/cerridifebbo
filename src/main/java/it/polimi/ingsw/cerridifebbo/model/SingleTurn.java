@@ -5,7 +5,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import it.polimi.ingsw.cerridifebbo.controller.server.User;
-import it.polimi.ingsw.cerridifebbo.model.Game.Sentence;
 
 public class SingleTurn extends GameState {
 
@@ -161,7 +160,6 @@ public class SingleTurn extends GameState {
 	}
 
 	private void timeFinished() {
-		user.setTimeFinished(true);
 		game.informPlayers(player, Sentence.TIMEFINISHED, null);
 		if (!noMoreMovement) {
 			movement(randomReachableSector().toString());

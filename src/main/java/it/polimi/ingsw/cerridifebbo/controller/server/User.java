@@ -5,12 +5,12 @@ import it.polimi.ingsw.cerridifebbo.controller.common.ClientConnection;
 import it.polimi.ingsw.cerridifebbo.controller.common.RemoteUser;
 import it.polimi.ingsw.cerridifebbo.model.Card;
 import it.polimi.ingsw.cerridifebbo.model.Game;
-import it.polimi.ingsw.cerridifebbo.model.Game.Sentence;
 import it.polimi.ingsw.cerridifebbo.model.HumanPlayer;
 import it.polimi.ingsw.cerridifebbo.model.Map;
 import it.polimi.ingsw.cerridifebbo.model.Move;
 import it.polimi.ingsw.cerridifebbo.model.Player;
 import it.polimi.ingsw.cerridifebbo.model.Sector;
+import it.polimi.ingsw.cerridifebbo.model.Sentence;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -18,54 +18,116 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Random;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class User.
+ */
 public class User extends UnicastRemoteObject implements RemoteUser {
-	/**
-	 * 
-	 */
+	
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
+	
+	/** The name. */
 	private final transient String name;
+	
+	/** The connection. */
 	private transient ClientConnection connection;
+	
+	/** The player. */
 	private transient Player player;
+	
+	/** The queue. */
 	private transient Queue<Move> queue = new LinkedList<Move>();
+	
+	/** The time finished. */
 	private transient boolean timeFinished = false;
+	
+	/** The reinitialize. */
 	private transient boolean reinitialize = false;
+	
+	/** The current game. */
 	private transient Game currentGame;
 
+	/**
+	 * Instantiates a new user.
+	 *
+	 * @param name the name
+	 * @param connection the connection
+	 * @throws RemoteException the remote exception
+	 */
 	public User(String name, ClientConnection connection) throws RemoteException {
 		super();
 		this.name = name;
 		this.connection = connection;
 	}
 
+	/**
+	 * Gets the name.
+	 *
+	 * @return the name
+	 */
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 * Sets the connection.
+	 *
+	 * @param connection the new connection
+	 */
 	public void setConnection(ClientConnection connection) {
 		this.connection = connection;
 		reinitialize = true;
 	}
 
+	/**
+	 * Checks if is online.
+	 *
+	 * @return true, if is online
+	 */
 	public boolean isOnline() {
 		return connection != null;
 	}
 
+	/**
+	 * Gets the player.
+	 *
+	 * @return the player
+	 */
 	public Player getPlayer() {
 		return player;
 	}
 
+	/**
+	 * Sets the player.
+	 *
+	 * @param player the new player
+	 */
 	public void setPlayer(Player player) {
 		this.player = player;
 	}
 
+	/**
+	 * Checks if is time finished.
+	 *
+	 * @return true, if is time finished
+	 */
 	public boolean isTimeFinished() {
 		return timeFinished;
 	}
 
+	/**
+	 * Sets the time finished.
+	 *
+	 * @param timeFinished the new time finished
+	 */
 	public void setTimeFinished(boolean timeFinished) {
 		this.timeFinished = timeFinished;
 	}
 
+	/**
+	 * Clear.
+	 */
 	public void clear() {
 		synchronized (queue) {
 			queue.clear();
@@ -76,6 +138,11 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 		}
 	}
 	
+	/**
+	 * Check connection.
+	 *
+	 * @return true, if successful
+	 */
 	private boolean checkConnection(){
 		if (reinitialize) {
 			sendGameInformation(currentGame);
@@ -84,6 +151,11 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 		return isOnline();
 	}
 
+	/**
+	 * Send message.
+	 *
+	 * @param message the message
+	 */
 	public void sendMessage(String message) {
 		if (checkConnection()) {
 			try {
@@ -94,6 +166,11 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 		}
 	}
 
+	/**
+	 * Send game information.
+	 *
+	 * @param game the game
+	 */
 	public void sendGameInformation(Game game) {
 		if (isOnline()) {
 			try {
@@ -105,6 +182,9 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 		}
 	}
 
+	/**
+	 * Start turn.
+	 */
 	public void startTurn() {
 		if (checkConnection()) {
 			try {
@@ -115,6 +195,9 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 		}
 	}
 
+	/**
+	 * End turn.
+	 */
 	public void endTurn() {
 		if (checkConnection()) {
 			try {
@@ -125,6 +208,11 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 		}
 	}
 
+	/**
+	 * Gets the move.
+	 *
+	 * @return the move
+	 */
 	public Move getMove() {
 		if (checkConnection()) {
 			askForMove();
@@ -143,6 +231,9 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 		}
 	}
 
+	/**
+	 * Ask for move.
+	 */
 	private void askForMove() {
 		try {
 			connection.askForMove();
@@ -151,6 +242,12 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 		}
 	}
 
+	/**
+	 * Gets the sector.
+	 *
+	 * @param map the map
+	 * @return the sector
+	 */
 	public Sector getSector(Map map) {
 		if (checkConnection()) {
 			askForSector();
@@ -169,6 +266,9 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 		}
 	}
 
+	/**
+	 * Ask for sector.
+	 */
 	private void askForSector() {
 		try {
 			connection.askForSector();
@@ -177,6 +277,12 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 		}
 	}
 
+	/**
+	 * Random sector.
+	 *
+	 * @param map the map
+	 * @return the sector
+	 */
 	private Sector randomSector(Map map) {
 		Random random = new Random();
 		Sector sector = null;
@@ -186,6 +292,11 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 		return sector;
 	}
 
+	/**
+	 * Gets the card.
+	 *
+	 * @return the card
+	 */
 	public Move getCard() {
 		if (checkConnection()) {
 			askForCard();
@@ -205,6 +316,9 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 
 	}
 
+	/**
+	 * Ask for card.
+	 */
 	private void askForCard() {
 		try {
 			connection.askForCard();
@@ -213,6 +327,13 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 		}
 	}
 
+	/**
+	 * Update player.
+	 *
+	 * @param player the player
+	 * @param card the card
+	 * @param added the added
+	 */
 	public void updatePlayer(Player player, Card card, boolean added) {
 		if (checkConnection()) {
 			try {
@@ -223,6 +344,9 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 		}
 	}
 
+	/**
+	 * Disconnect.
+	 */
 	public void disconnect() {
 		if (isOnline()) {
 			try {
@@ -233,39 +357,48 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 		}
 	}
 
-	public boolean poke() {
-		if (isOnline()) {
-			try {
-				return connection.poke();
-			} catch (RemoteException e) {
-				suspend(e);
-			}
-		}
-		return false;
-	}
-
+	/**
+	 * Suspend.
+	 *
+	 * @param e the e
+	 */
 	public void suspend(Throwable e) {
 		connection = null;
 		currentGame.informPlayers(player, Sentence.DISCONNECTED, null);
 		Application.exception(e, name + " suspended", true);
 	}
 
+	/* (non-Javadoc)
+	 * @see it.polimi.ingsw.cerridifebbo.controller.common.RemoteUser#sendMove(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public void sendMove(String action, String target) throws RemoteException {
 		putMove(action, target);
 	}
 
+	/**
+	 * Put move.
+	 *
+	 * @param action the action
+	 * @param target the target
+	 */
 	public void putMove(String action, String target) {
 		synchronized (queue) {
 			queue.offer(new Move(action, target));
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see java.rmi.server.RemoteObject#equals(java.lang.Object)
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		return super.equals(obj);
 	}
 
+	/* (non-Javadoc)
+	 * @see java.rmi.server.RemoteObject#hashCode()
+	 */
 	@Override
 	public int hashCode() {
 		return super.hashCode();

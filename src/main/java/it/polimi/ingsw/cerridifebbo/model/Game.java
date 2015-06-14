@@ -8,7 +8,7 @@ import java.util.List;
 public class Game implements Runnable {
 
 	private static final int MAX_TURNS = 39;
-	public static final int MAX_TIMEOUT = 1000;
+	public static final int MAX_TIMEOUT = 30000;
 	public static final int MAX_PLAYERS = CharacterDeckFactory.MAX_PLAYERS;
 	public static final int MIN_PLAYERS = CharacterDeckFactory.MIN_PLAYERS;
 
@@ -108,7 +108,7 @@ public class Game implements Runnable {
 		}
 	}
 
-	public void informPlayers(Player player, String sentence, Sector sector) {
+	public void informPlayers(Player player, Sentence sentence, Sector sector) {
 		User me = findUser(player);
 		for (User user : users) {
 			if (user == me) {
@@ -126,125 +126,5 @@ public class Game implements Runnable {
 			}
 		}
 		return null;
-	}
-
-	public static class Sentence {
-		public static final String NOISE_IN = "noise_in";
-		public static final String NOISE_ANY = "noise_any";
-		public static final String ADRENALINE = "adrenaline";
-		public static final String ATTACK_CARD = "attack_card";
-		public static final String DEFENSE_CARD = "defense_card";
-		public static final String SEDATIVES_CARD = "sedatives_card";
-		public static final String SPOTLIGHT_CARD = "spotlight_card";
-		public static final String TELEPORT_CARD = "teleport_card";
-		public static final String DISCARD_CARD = "discard_card";
-		public static final String ATTACK = "attack";
-		public static final String KILLED = "killed";
-		public static final String ESCAPED = "escaped";
-		public static final String NOT_ESCAPED = "not_escaped";
-		public static final String TIMEFINISHED = "time_finished";
-		public static final String DISCONNECTED = "disconnected";
-
-		private Sentence() {
-
-		}
-
-		public static String toMe(String sentence, Game game, Sector sector) {
-			switch (sentence) {
-			case NOISE_IN:
-				return "You made noise in your sector";
-			case NOISE_ANY:
-				return "You made noise in " + sector;
-			case ADRENALINE:
-				return "You have used adrenaline";
-			case ATTACK_CARD:
-				return "You have used attack card";
-			case DEFENSE_CARD:
-				return "You have used defense card";
-			case SEDATIVES_CARD:
-				return "You have used sedatives card";
-			case SPOTLIGHT_CARD:
-				return "You have used spotlight card" + spotlight(game, sector);
-			case TELEPORT_CARD:
-				return "You have used teleport card";
-			case DISCARD_CARD:
-				return "You have discarded a card";
-			case ATTACK:
-				return "You are attacking";
-			case KILLED:
-				return "You are dead";
-			case ESCAPED:
-				return "Escape hatch is open. You have escaped";
-			case NOT_ESCAPED:
-				return "Escape hatch is closed. You can't escape.";
-			case TIMEFINISHED:
-				return "Time is over.";
-			case DISCONNECTED:
-				return "You are disconnected";
-			default:
-				return null;
-			}
-		}
-
-		public static String toOthers(String sentence, User user, Game game, Sector sector) {
-			String name = nameRevealed(user);
-			switch (sentence) {
-			case NOISE_IN:
-				return name + " made noise in " + sector;
-			case NOISE_ANY:
-				return name + " made noise in " + sector;
-			case ADRENALINE:
-				return name + " has used adrenaline";
-			case ATTACK_CARD:
-				return name + " has used attack card";
-			case DEFENSE_CARD:
-				return name + " has used defense card";
-			case SEDATIVES_CARD:
-				return name + " has used sedatives card";
-			case SPOTLIGHT_CARD:
-				return name + " has used spotlight card" + spotlight(game, sector);
-			case TELEPORT_CARD:
-				return name + " has used teleport card";
-			case DISCARD_CARD:
-				return name + " has discarded a card";
-			case ATTACK:
-				return name + " is attacking " + sector;
-			case KILLED:
-				return name + " is dead";
-			case ESCAPED:
-				return name + " reached " + sector + ". It is open. " + name + " has escaped";
-			case NOT_ESCAPED:
-				return name + " reached " + sector + ". It is closed. " + name + " can't escape.";
-			case TIMEFINISHED:
-				return name + " has finished his turn time";
-			case DISCONNECTED:
-				return name + " disconnected from match";
-			default:
-				return null;
-			}
-		}
-
-		private static String spotlight(Game game, Sector sector) {
-			StringBuilder build = new StringBuilder();
-			List<Sector> sectors = sector.getAdjacentSectors();
-			sectors.add(sector);
-			for (User user : game.getUsers()) {
-				Player p = user.getPlayer();
-				if (sectors.contains(p.getPosition())) {
-					String name = nameRevealed(user);
-					build.append("\n " + name + " is in " + p.getPosition());
-				}
-			}
-			return build.toString();
-		}
-
-		private static String nameRevealed(User user) {
-			Player player = user.getPlayer();
-			if (player.isRevealed()) {
-				return user.getName() + " (" + (player instanceof HumanPlayer ? "human" : "alien") + ")";
-			} else {
-				return user.getName();
-			}
-		}
 	}
 }

@@ -6,7 +6,6 @@ import it.polimi.ingsw.cerridifebbo.controller.common.Connection;
 import it.polimi.ingsw.cerridifebbo.controller.common.RemoteClient;
 import it.polimi.ingsw.cerridifebbo.controller.common.RemoteServer;
 
-import java.rmi.AccessException;
 import java.rmi.AlreadyBoundException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -14,19 +13,41 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 
+/**
+ * The Class RMIServer.
+ * 
+ * @author cerridifebbo
+ *
+ */
 public class RMIServer extends UnicastRemoteObject implements ServerConnection, RemoteServer {
-	/**
-	 * 
-	 */
+
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
-	private static RMIServer instance;
+
+	/** The instance of RMIServer. */
+	private static transient RMIServer instance;
+
+	/** The registry of RMIServer. */
 	private transient Registry registry;
+
+	/** The thread containing RMIServer. */
 	private transient Thread thread;
 
+	/**
+	 * Instantiates a new RMI server.
+	 *
+	 * @throws RemoteException
+	 *             the remote exception
+	 */
 	private RMIServer() throws RemoteException {
 		super();
 	}
 
+	/**
+	 * Gets the single instance of RMIServer.
+	 *
+	 * @return single instance of RMIServer
+	 */
 	public static RMIServer getInstance() {
 		if (instance == null) {
 			try {
@@ -39,12 +60,24 @@ public class RMIServer extends UnicastRemoteObject implements ServerConnection, 
 		return instance;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * it.polimi.ingsw.cerridifebbo.controller.server.ServerConnection#start()
+	 */
 	@Override
 	public void start() {
 		thread = new Thread(this, "RMI_SERVER");
 		thread.start();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * it.polimi.ingsw.cerridifebbo.controller.server.ServerConnection#close()
+	 */
 	@Override
 	public void close() {
 		if (registry != null) {
@@ -60,6 +93,11 @@ public class RMIServer extends UnicastRemoteObject implements ServerConnection, 
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Runnable#run()
+	 */
 	@Override
 	public void run() {
 		try {
@@ -71,6 +109,13 @@ public class RMIServer extends UnicastRemoteObject implements ServerConnection, 
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * it.polimi.ingsw.cerridifebbo.controller.common.RemoteServer#registerOnServer
+	 * (java.lang.String, java.lang.String, int)
+	 */
 	@Override
 	public boolean registerOnServer(String username, String address, int port) throws RemoteException {
 		RemoteClient client;
@@ -84,6 +129,13 @@ public class RMIServer extends UnicastRemoteObject implements ServerConnection, 
 		return registerClientOnServer(username, client);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see it.polimi.ingsw.cerridifebbo.controller.server.ServerConnection#
+	 * registerClientOnServer(java.lang.String,
+	 * it.polimi.ingsw.cerridifebbo.controller.common.ClientConnection)
+	 */
 	@Override
 	public boolean registerClientOnServer(String username, ClientConnection client) {
 		User newUser = Server.getInstance().registerClientOnServer(username, client);
@@ -104,11 +156,21 @@ public class RMIServer extends UnicastRemoteObject implements ServerConnection, 
 		return true;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.rmi.server.RemoteObject#equals(java.lang.Object)
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		return super.equals(obj);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.rmi.server.RemoteObject#hashCode()
+	 */
 	@Override
 	public int hashCode() {
 		return super.hashCode();

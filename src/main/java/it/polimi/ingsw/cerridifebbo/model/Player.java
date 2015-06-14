@@ -2,7 +2,6 @@ package it.polimi.ingsw.cerridifebbo.model;
 
 import it.polimi.ingsw.cerridifebbo.controller.common.PlayerRemote;
 import it.polimi.ingsw.cerridifebbo.controller.server.User;
-import it.polimi.ingsw.cerridifebbo.model.Game.Sentence;
 
 import java.io.Serializable;
 import java.util.ArrayList;
