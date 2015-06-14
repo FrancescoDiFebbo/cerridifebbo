@@ -16,6 +16,7 @@ public class PlayerRemote implements Serializable {
 	private final CharacterCardRemote playerCard;
 	private final SerializableArrayList<ItemCardRemote> ownCards;
 	private final String pos;
+	private final String race;
 
 	public PlayerRemote(Player player) {
 		this.playerCard = new CharacterCardRemote(player.getPlayerCard());
@@ -24,6 +25,11 @@ public class PlayerRemote implements Serializable {
 			ownCards.add(new ItemCardRemote(item));
 		}
 		this.pos = player.getPosition().toString();
+		this.race = player.getClass().getSimpleName();
+	}
+
+	public String getRace() {
+		return race;
 	}
 
 	public CharacterCardRemote getPlayerCard() {
@@ -45,19 +51,18 @@ public class PlayerRemote implements Serializable {
 		 */
 		private static final long serialVersionUID = 1L;
 		private final String name;
-		private final String race;
 
 		public CharacterCardRemote(CharacterCard playerCard) {
 			this.name = playerCard.getCharacterName();
-			this.race = playerCard.getClass().getSimpleName();
 		}
 
 		public String getName() {
 			return name;
 		}
 
-		public String getRace() {
-			return race;
+		public String getCharacterName() {
+			// TODO Auto-generated method stub
+			return null;
 		}
 	}
 

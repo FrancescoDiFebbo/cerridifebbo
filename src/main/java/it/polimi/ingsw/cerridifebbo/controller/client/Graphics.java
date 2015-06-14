@@ -1,9 +1,11 @@
 package it.polimi.ingsw.cerridifebbo.controller.client;
 
 import it.polimi.ingsw.cerridifebbo.model.Card;
-import it.polimi.ingsw.cerridifebbo.model.Map;
-import it.polimi.ingsw.cerridifebbo.model.Player;
-import it.polimi.ingsw.cerridifebbo.model.Sector;
+import it.polimi.ingsw.cerridifebbo.controller.common.MapRemote;
+import it.polimi.ingsw.cerridifebbo.controller.common.PlayerRemote;
+import it.polimi.ingsw.cerridifebbo.controller.common.MapRemote.SectorRemote;
+
+;
 
 public abstract class Graphics {
 
@@ -14,7 +16,8 @@ public abstract class Graphics {
 		return initialized;
 	}
 
-	public abstract void initialize(Map map, Player player, int numberOfPlayers);
+	public abstract void initialize(MapRemote map, PlayerRemote player,
+			int numberOfPlayers);
 
 	public abstract void sendMessage(String message);
 
@@ -34,13 +37,13 @@ public abstract class Graphics {
 
 	public abstract void declareSector();
 
-	public abstract void updatePlayerPosition(Player player);
+	public abstract void updatePlayerPosition(PlayerRemote player);
 
 	public abstract void declareCard();
 
-	public abstract void deletePlayerCard(Player player, Card card);
+	public abstract void deletePlayerCard(PlayerRemote player, Card card);
 
-	public abstract void addPlayerCard(Player player, Card card);
-	
-	public abstract void updateEscapeHatch(Map map, Sector sector);
+	public abstract void addPlayerCard(PlayerRemote player, Card card);
+
+	public abstract void updateEscapeHatch(MapRemote map, SectorRemote sector);
 }

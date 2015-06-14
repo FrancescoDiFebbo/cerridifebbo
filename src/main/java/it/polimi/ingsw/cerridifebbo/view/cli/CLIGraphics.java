@@ -2,17 +2,17 @@ package it.polimi.ingsw.cerridifebbo.view.cli;
 
 import it.polimi.ingsw.cerridifebbo.controller.client.Graphics;
 import it.polimi.ingsw.cerridifebbo.controller.common.Application;
+import it.polimi.ingsw.cerridifebbo.controller.common.MapRemote.SectorRemote;
+import it.polimi.ingsw.cerridifebbo.model.AlienPlayer;
 import it.polimi.ingsw.cerridifebbo.model.AlienSector;
 import it.polimi.ingsw.cerridifebbo.model.Card;
 import it.polimi.ingsw.cerridifebbo.model.DangerousSector;
 import it.polimi.ingsw.cerridifebbo.model.EscapeHatchSector;
 import it.polimi.ingsw.cerridifebbo.model.Game;
-import it.polimi.ingsw.cerridifebbo.model.HumanPlayer;
 import it.polimi.ingsw.cerridifebbo.model.HumanSector;
-import it.polimi.ingsw.cerridifebbo.model.Map;
+import it.polimi.ingsw.cerridifebbo.controller.common.MapRemote;
 import it.polimi.ingsw.cerridifebbo.model.Move;
-import it.polimi.ingsw.cerridifebbo.model.Player;
-import it.polimi.ingsw.cerridifebbo.model.Sector;
+import it.polimi.ingsw.cerridifebbo.controller.common.PlayerRemote;
 import it.polimi.ingsw.cerridifebbo.model.SecureSector;
 
 import java.util.Scanner;
@@ -30,13 +30,18 @@ public class CLIGraphics extends Graphics {
 	private static final String ESCAPE_HATCH_SECTOR_KO = "\u001B[35m";
 	private static final String START_TURN_MESSAGE = "It's your turn";
 	private static final String END_TURN_MESSAGE = "----------------------------------------";
-
+	private static final String DANGEROUS = DangerousSector.class
+			.getSimpleName();
+	private static final String SECURE = SecureSector.class.getSimpleName();
+	private static final String HATCH = EscapeHatchSector.class.getSimpleName();
+	private static final String ALIEN = AlienSector.class.getSimpleName();
+	private static final String HUMAN = HumanSector.class.getSimpleName();
 	private static final String MOVE_OPTIONS_HUMAN = "What do you want to do?"
 			+ "\n" + Move.MOVEMENT + "\n" + Move.USEITEMCARD + "\n"
 			+ Move.FINISH;
 	private static final String MOVE_OPTIONS_ALIEN = "What do you want to do?"
 			+ "\n" + Move.ATTACK + "\n" + Move.MOVEMENT + "\n" + Move.FINISH;
-
+	private static final String ALIEN_CLASS = AlienPlayer.class.getSimpleName();
 	private static final String SECTOR_SELECTION = "Which sector?";
 	private static final String CARD_SELECTION = "Which card?";
 	private static final String USE_DISCARD = "Chose if you want use or discard a card";
@@ -50,14 +55,15 @@ public class CLIGraphics extends Graphics {
 	private static final String PLAYER_RACE_ALIEN = "You are an alien. Your name is ";
 	private static final String SECTOR_ESCAPE_UPDATE = " is not more available for escape";
 	private Scanner in = new Scanner(System.in);
-	private Player player;
-	private Map map;
+	private PlayerRemote player;
+	private MapRemote map;
 	private int turn = 0;
 	private Timer timeout = new Timer();
 	private Thread inputThread;
 
 	@Override
-	public void initialize(Map map, Player player, int numberOfPlayers) {
+	public void initialize(MapRemote map, PlayerRemote player,
+			int numberOfPlayers) {
 		this.player = player;
 		this.map = map;
 		printMap();
@@ -74,31 +80,31 @@ public class CLIGraphics extends Graphics {
 	}
 
 	private void printMap() {
-		for (int i = 0; i < Map.COLUMNMAP; i = i + 2) {
+		for (int i = 0; i < MapRemote.COLUMNMAP; i = i + 2) {
 			Application.print(" ___    ");
 		}
 		Application.println("");
-		for (int i = 0; i < Map.ROWMAP; i++) {
-			for (int j = 0; j < Map.COLUMNMAP; j = j + 2) {
-				Sector currentCell = map.getCell(i, j);
+		for (int i = 0; i < MapRemote.ROWMAP; i++) {
+			for (int j = 0; j < MapRemote.COLUMNMAP; j = j + 2) {
+				SectorRemote currentCell = map.getCell(i, j);
 				Application.print("/");
 				if (currentCell != null) {
 					Application.print(printTypeOfSector(currentCell)
-							+ currentCell.toString() + RESET_COLOR);
+							+ currentCell.getName() + RESET_COLOR);
 				} else {
 					Application.print("   ");
 
 				}
-				if (j != Map.COLUMNMAP - 1)
+				if (j != MapRemote.COLUMNMAP - 1)
 					Application.print("\\___");
 			}
 			Application.println("\\");
-			for (int j = 1; j < Map.COLUMNMAP; j = j + 2) {
+			for (int j = 1; j < MapRemote.COLUMNMAP; j = j + 2) {
 				Application.print("\\___/");
-				Sector currentCell = map.getCell(i, j);
+				SectorRemote currentCell = map.getCell(i, j);
 				if (currentCell != null) {
 					Application.print(printTypeOfSector(currentCell)
-							+ currentCell.toString() + RESET_COLOR);
+							+ currentCell.getName() + RESET_COLOR);
 				} else {
 					Application.print("   ");
 				}
@@ -107,7 +113,7 @@ public class CLIGraphics extends Graphics {
 			Application.println("\\___/");
 		}
 		Application.print("    \\___/");
-		for (int i = 3; i < Map.COLUMNMAP; i = i + 2) {
+		for (int i = 3; i < MapRemote.COLUMNMAP; i = i + 2) {
 			Application.print("   \\___/");
 		}
 		Application.println("");
@@ -115,31 +121,31 @@ public class CLIGraphics extends Graphics {
 	}
 
 	private void printPlayer() {
-		if (player instanceof HumanPlayer) {
-			Application.print(PLAYER_RACE_HUMAN);
-		} else {
+		if (player.getRace().equals(ALIEN_CLASS)) {
 			Application.print(PLAYER_RACE_ALIEN);
+		} else {
+			Application.print(PLAYER_RACE_HUMAN);
 		}
-		Application.println(player.getPlayerCard().getCharacterName());
+		Application.println(player.getPlayerCard().getName());
 		printPlayerPosition();
 		printCardPlayer();
 
 	}
 
 	private void printPlayerPosition() {
-		Application.println(PLAYER_POSITION + player.getPosition());
+		Application.println(PLAYER_POSITION + player.getPos());
 	}
 
-	private String printTypeOfSector(Sector currentCell) {
-		if (currentCell instanceof SecureSector) {
+	private String printTypeOfSector(SectorRemote currentCell) {
+		if (currentCell.getType().equals(SECURE)) {
 			return SECURE_SECTOR;
-		} else if (currentCell instanceof DangerousSector) {
+		} else if (currentCell.getType().equals(DANGEROUS)) {
 			return DANGEROUS_SECTOR;
-		} else if (currentCell instanceof AlienSector) {
+		} else if (currentCell.getType().equals(ALIEN)) {
 			return ALIEN_SECTOR;
-		} else if (currentCell instanceof HumanSector) {
+		} else if (currentCell.getType().equals(HUMAN)) {
 			return HUMAN_SECTOR;
-		} else if (currentCell instanceof EscapeHatchSector) {
+		} else if (currentCell.getType().equals(HATCH)) {
 			if (currentCell.isPassable()) {
 				return ESCAPE_HATCH_SECTOR_OK;
 			} else {
@@ -189,10 +195,10 @@ public class CLIGraphics extends Graphics {
 	}
 
 	private void printOptions() {
-		if (player instanceof HumanPlayer) {
-			Application.println("\n" + MOVE_OPTIONS_HUMAN);
-		} else {
+		if (player.getRace().equals(ALIEN_CLASS)) {
 			Application.println("\n" + MOVE_OPTIONS_ALIEN);
+		} else {
+			Application.println("\n" + MOVE_OPTIONS_HUMAN);
 		}
 	}
 
@@ -269,7 +275,7 @@ public class CLIGraphics extends Graphics {
 	}
 
 	@Override
-	public void updatePlayerPosition(Player player) {
+	public void updatePlayerPosition(PlayerRemote player) {
 		this.player = player;
 	}
 
@@ -313,17 +319,17 @@ public class CLIGraphics extends Graphics {
 	}
 
 	@Override
-	public void deletePlayerCard(Player player, Card card) {
+	public void deletePlayerCard(PlayerRemote player, Card card) {
 		this.player = player;
 	}
 
 	@Override
-	public void addPlayerCard(Player player, Card card) {
+	public void addPlayerCard(PlayerRemote player, Card card) {
 		this.player = player;
 	}
 
 	@Override
-	public void updateEscapeHatch(Map map, Sector sector) {
+	public void updateEscapeHatch(MapRemote map, SectorRemote sector) {
 		this.map = map;
 		sendMessage(sector.toString() + SECTOR_ESCAPE_UPDATE);
 	}

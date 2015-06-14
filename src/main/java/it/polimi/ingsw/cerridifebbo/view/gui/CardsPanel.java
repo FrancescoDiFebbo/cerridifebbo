@@ -3,6 +3,7 @@ package it.polimi.ingsw.cerridifebbo.view.gui;
 import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
 
+import it.polimi.ingsw.cerridifebbo.controller.common.PlayerRemote;
 import it.polimi.ingsw.cerridifebbo.model.Player;
 
 import javax.swing.JPanel;
@@ -13,7 +14,7 @@ public class CardsPanel extends JPanel {
 	public static final int WIDTH = 400;
 	public static final int HEIGHT = 165;
 
-	public CardsPanel(Player player, String playerRace) {
+	public CardsPanel(PlayerRemote player, String playerRace) {
 		setOpaque(true);
 		setLayout(new FlowLayout());
 		if (player.getOwnCards() != null) {

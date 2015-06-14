@@ -1,12 +1,12 @@
 package it.polimi.ingsw.cerridifebbo.view.gui;
 
 import it.polimi.ingsw.cerridifebbo.controller.client.Graphics;
+import it.polimi.ingsw.cerridifebbo.model.AlienPlayer;
 import it.polimi.ingsw.cerridifebbo.model.Card;
-import it.polimi.ingsw.cerridifebbo.model.HumanPlayer;
-import it.polimi.ingsw.cerridifebbo.model.Map;
+import it.polimi.ingsw.cerridifebbo.controller.common.MapRemote;
 import it.polimi.ingsw.cerridifebbo.model.Move;
-import it.polimi.ingsw.cerridifebbo.model.Player;
-import it.polimi.ingsw.cerridifebbo.model.Sector;
+import it.polimi.ingsw.cerridifebbo.controller.common.PlayerRemote;
+import it.polimi.ingsw.cerridifebbo.controller.common.MapRemote.SectorRemote;
 
 import java.awt.Color;
 import java.awt.Container;
@@ -42,13 +42,15 @@ public class GUIGraphics extends Graphics implements ActionListener {
 	public static final int HEIGHT = 810;
 	private static final int SPACE_BETWEEN_COMP_Y2 = 20;
 	private static final int SPACE_BETWEEN_COMP_Y1 = 80;
+	private static final String ALIEN_CLASS = AlienPlayer.class.getSimpleName();
 
 	@Override
-	public void initialize(Map map, Player player, int numberOfPlayers) {
-		if (player instanceof HumanPlayer) {
-			playerRace = HUMAN;
-		} else {
+	public void initialize(MapRemote map, PlayerRemote player,
+			int numberOfPlayers) {
+		if (player.getRace().equals(ALIEN_CLASS)) {
 			playerRace = ALIEN;
+		} else {
+			playerRace = HUMAN;
 		}
 		frame = new JFrame(FRAME_NAME);
 		contentPane = frame.getContentPane();
@@ -173,7 +175,7 @@ public class GUIGraphics extends Graphics implements ActionListener {
 	}
 
 	@Override
-	public void updatePlayerPosition(Player player) {
+	public void updatePlayerPosition(PlayerRemote player) {
 		mapGrid.setPlayerPawn(player);
 	}
 
@@ -183,19 +185,19 @@ public class GUIGraphics extends Graphics implements ActionListener {
 	}
 
 	@Override
-	public void deletePlayerCard(Player player, Card card) {
+	public void deletePlayerCard(PlayerRemote player, Card card) {
 		cards.remove(card.toString());
 		cards.repaint();
 	}
 
 	@Override
-	public void addPlayerCard(Player player, Card card) {
+	public void addPlayerCard(PlayerRemote player, Card card) {
 		cards.add(new CardPanel(card.toString(), playerRace));
 	}
 
 	@Override
-	public void updateEscapeHatch(Map map, Sector sector) {
-		mapGrid.updateEscapeHatchStatus(sector.toString());
+	public void updateEscapeHatch(MapRemote map, SectorRemote sector) {
+		mapGrid.updateEscapeHatchStatus(sector.getName());
 	}
 
 }

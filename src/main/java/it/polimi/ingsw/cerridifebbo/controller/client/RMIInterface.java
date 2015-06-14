@@ -15,8 +15,9 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Random;
 
-public class RMIInterface extends UnicastRemoteObject implements NetworkInterface, RemoteClient {
-	
+public class RMIInterface extends UnicastRemoteObject implements
+		NetworkInterface, RemoteClient {
+
 	/**
 	 * 
 	 */
@@ -57,13 +58,15 @@ public class RMIInterface extends UnicastRemoteObject implements NetworkInterfac
 			Application.exitError();
 		}
 		try {
-			registry = LocateRegistry.getRegistry(Connection.SERVER_REGISTRY_PORT);
+			registry = LocateRegistry
+					.getRegistry(Connection.SERVER_REGISTRY_PORT);
 		} catch (RemoteException e) {
 			Application.exception(e);
 			Application.exitError();
 		}
 		try {
-			server = (RemoteServer) registry.lookup(Connection.REMOTE_SERVER_RMI);
+			server = (RemoteServer) registry
+					.lookup(Connection.REMOTE_SERVER_RMI);
 		} catch (RemoteException | NotBoundException e) {
 			Application.exception(e, "Server not found", false);
 			Application.exitError();
@@ -92,7 +95,8 @@ public class RMIInterface extends UnicastRemoteObject implements NetworkInterfac
 	public boolean registerClientOnServer() {
 		try {
 			if (server.registerOnServer(username, ip, port)) {
-				user = (RemoteUser) LocateRegistry.getRegistry(Connection.SERVER_REGISTRY_PORT).lookup(username);
+				user = (RemoteUser) LocateRegistry.getRegistry(
+						Connection.SERVER_REGISTRY_PORT).lookup(username);
 				return true;
 			} else {
 				Application.println("Name already used");
@@ -119,13 +123,14 @@ public class RMIInterface extends UnicastRemoteObject implements NetworkInterfac
 	}
 
 	@Override
-	public void sendGameInformation(Map map, Player player, int size) throws RemoteException {
+	public void sendGameInformation(Map map, Player player, int size)
+			throws RemoteException {
 		setGameInformation(map, player, size);
 	}
 
 	@Override
 	public void setGameInformation(Map map, Player player, int size) {
-		graphics.initialize(map, player, size);
+		graphics.initialize(map.getMapRemote(), player.getPlayerRemote(), size);
 	}
 
 	@Override
@@ -144,14 +149,14 @@ public class RMIInterface extends UnicastRemoteObject implements NetworkInterfac
 
 	@Override
 	public void updatePlayer(Player player, Card card, boolean added) {
-		graphics.updatePlayerPosition(player);
+		graphics.updatePlayerPosition(player.getPlayerRemote());
 		if (card == null) {
 			return;
 		}
 		if (added) {
-			graphics.addPlayerCard(player, card);
+			graphics.addPlayerCard(player.getPlayerRemote(), card);
 		} else {
-			graphics.deletePlayerCard(player, card);
+			graphics.deletePlayerCard(player.getPlayerRemote(), card);
 		}
 	}
 

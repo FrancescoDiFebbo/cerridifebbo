@@ -1,8 +1,9 @@
 package it.polimi.ingsw.cerridifebbo.view.gui;
 
+import it.polimi.ingsw.cerridifebbo.controller.common.MapRemote;
+import it.polimi.ingsw.cerridifebbo.controller.common.MapRemote.SectorRemote;
+import it.polimi.ingsw.cerridifebbo.controller.common.PlayerRemote;
 import it.polimi.ingsw.cerridifebbo.model.Map;
-import it.polimi.ingsw.cerridifebbo.model.Player;
-import it.polimi.ingsw.cerridifebbo.model.Sector;
 import it.polimi.ingsw.cerridifebbo.view.gui.ConcreteSectorButtonFactory;
 
 import java.awt.Color;
@@ -21,17 +22,17 @@ public class MapContainer extends Container {
 	private int precPosition;
 	private boolean restore = false;
 
-	public MapContainer(Map map) {
+	public MapContainer(MapRemote map) {
 		mapLayout = new MapLayout(Map.ROWMAP, Map.COLUMNMAP);
 		SectorButtonFactory factory = new ConcreteSectorButtonFactory();
 		for (int i = 0; i < Map.ROWMAP; i++) {
 			for (int j = 0; j < Map.COLUMNMAP; j++) {
-				Sector temp = map.getCell(i, j);
+				SectorRemote temp = map.getCell(i, j);
 				String label = null;
 				if (temp == null) {
 					label = "";
 				} else {
-					label = temp.toString();
+					label = temp.getName();
 				}
 				SectorButton button = factory.createSectorButton(temp, label);
 				button.setBackground(Color.BLACK);
@@ -65,16 +66,16 @@ public class MapContainer extends Container {
 
 	}
 
-	public void setPlayerPawn(Player player) {
+	public void setPlayerPawn(PlayerRemote player) {
 		if (restore) {
 			getComponent(precPosition).setName(precName);
 			getComponent(precPosition).setForeground(precColor);
 		}
-		Sector position = player.getPosition();
+		String position = player.getPos();
 		int nComp = getComponentCount();
 		for (int i = 0; i < nComp; i++) {
 			if (getComponent(i) != null
-					&& getComponent(i).getName().equals(position.toString())) {
+					&& getComponent(i).getName().equals(position)) {
 				restore = true;
 				precPosition = i;
 				precName = getComponent(i).getName();
