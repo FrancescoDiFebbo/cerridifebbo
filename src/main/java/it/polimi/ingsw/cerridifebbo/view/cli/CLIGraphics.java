@@ -19,6 +19,13 @@ import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
 
+/**
+ * This class describes a CLI Graphics.
+ * 
+ * @see Graphics that is implemented by this classs
+ * @author cerridifebbo
+ *
+ */
 public class CLIGraphics extends Graphics {
 
 	private static final String RESET_COLOR = "\u001B[0m";
@@ -57,6 +64,18 @@ public class CLIGraphics extends Graphics {
 	private Timer timeout = new Timer();
 	private Thread inputThread;
 
+	/**
+	 * This method initializes the graphics.It prints the map and the player and
+	 * also a brief start game message.
+	 * 
+	 * @author cerridifebbo
+	 * @param map
+	 *            the map of the specific game
+	 * @param player
+	 *            the player used by the client
+	 * @param numberOfPlayers
+	 *            the number of player of the specific game
+	 */
 	@Override
 	public void initialize(MapRemote map, PlayerRemote player, int numberOfPlayers) {
 		this.player = player;
@@ -111,6 +130,11 @@ public class CLIGraphics extends Graphics {
 
 	}
 
+	/**
+	 * This method print the player info.
+	 * 
+	 * @author cerridifebbo
+	 */
 	private void printPlayer() {
 		if (player.getRace().equals(ALIEN_CLASS)) {
 			Application.print(PLAYER_RACE_ALIEN);
@@ -123,10 +147,24 @@ public class CLIGraphics extends Graphics {
 
 	}
 
+	/**
+	 * This method print the player position.
+	 * 
+	 * @author cerridifebbo
+	 */
 	private void printPlayerPosition() {
 		Application.println(PLAYER_POSITION + player.getPos());
 	}
 
+	/**
+	 * This method chooses and return the color of the parameter currentCell
+	 * (ANSI Color: String). The type of currentCell determines the returned
+	 * color.
+	 * 
+	 * @author cerridifebbo
+	 * @param currentCell
+	 *            the sector that is analyzed
+	 */
 	private String printTypeOfSector(SectorRemote currentCell) {
 		if (currentCell.getType().equals(SECURE)) {
 			return SECURE_SECTOR;
@@ -146,6 +184,11 @@ public class CLIGraphics extends Graphics {
 			return null;
 	}
 
+	/**
+	 * This method print the cards of the player.
+	 * 
+	 * @author cerridifebbo
+	 */
 	private void printCardPlayer() {
 		Application.print(CARD_PLAYER);
 		int nCard = player.getOwnCards().size();
@@ -159,11 +202,25 @@ public class CLIGraphics extends Graphics {
 		}
 	}
 
+	/**
+	 * This method print the parameter message.
+	 * 
+	 * @author cerridifebbo
+	 * @param message
+	 *            the message that will be displayed
+	 */
 	@Override
 	public void sendMessage(String message) {
 		Application.println(message);
 	}
 
+	/**
+	 * This method prepare all the staff for start the player's turn.It prints
+	 * the map and the player's info. It also run a timer that indicates the
+	 * maximum player's time turn. It also prints a START_TURN_MESSAGE.
+	 * 
+	 * @author cerridifebbo
+	 */
 	@Override
 	public void startTurn() {
 		printMap();
@@ -179,12 +236,23 @@ public class CLIGraphics extends Graphics {
 		}, Game.MAX_TIMEOUT);
 	}
 
+	/**
+	 * This method prepare all the staff for end the player's turn. It prints a
+	 * END_TURN_MESSAGE.
+	 * 
+	 * @author cerridifebbo
+	 */
 	@Override
 	public void endTurn() {
 		Application.println(END_TURN_MESSAGE);
 		timeout.cancel();
 	}
 
+	/**
+	 * This method prints the move options of the player.
+	 * 
+	 * @author cerridifebbo
+	 */
 	private void printOptions() {
 		if (player.getRace().equals(ALIEN_CLASS)) {
 			Application.println("\n" + MOVE_OPTIONS_ALIEN);
@@ -193,39 +261,109 @@ public class CLIGraphics extends Graphics {
 		}
 	}
 
+	/**
+	 * This method prepare all the staff for prepare the player to declare a
+	 * move. It prints the move options and wait the user's command. If the
+	 * start turn finish or if there is an exception the thread that is open
+	 * when the client try to insert a command will be interrupted.
+	 * 
+	 * @author cerridifebbo
+	 * @throws Exception
+	 *             when the scanner or the thread have some problems.
+	 */
 	@Override
 	public void declareMove() {
 		inputThread = new Thread(new DeclareMoveRunnable());
 		inputThread.start();
 	}
 
+	/**
+	 * This method prepare all the staff for prepare the player to declare a
+	 * sector. It prints SECTOR_SELECTION and wait the user's command. If the
+	 * start turn finish or if there is an exception the thread that is open
+	 * when the client try to insert a command will be interrupted.
+	 * 
+	 * @author cerridifebbo
+	 * @throws Exception
+	 *             when the scanner or the thread have some problems.
+	 */
 	@Override
 	public void declareSector() {
 		inputThread = new Thread(new DeclareSectorRunnable());
 		inputThread.start();
 	}
 
+	/**
+	 * This method update the position of the player. It also prints the player
+	 * position.
+	 * 
+	 * @author cerridifebbo
+	 * @param player
+	 *            the player that has just changed the position
+	 */
 	@Override
 	public void updatePlayerPosition(PlayerRemote player) {
 		this.player = player;
+		printPlayerPosition();
 	}
 
+	/**
+	 * This method prepare all the staff for prepare the player to declare a
+	 * card. It prints USE_DISCARD and wait the user's command. If the start
+	 * turn finish or if there is an exception the thread that is open when the
+	 * client try to insert a command will be interrupted.
+	 * 
+	 * @author cerridifebbo
+	 * @throws Exception
+	 *             when the scanner or the thread have some problems.
+	 */
 	@Override
 	public void declareCard() {
 		inputThread = new Thread(new DeclareCardRunnable());
 		inputThread.start();
 	}
 
+	/**
+	 * This method update the cards of the player. It also prints the player
+	 * cards.
+	 * 
+	 * @author cerridifebbo
+	 * @param player
+	 *            the player that has just deleted a card
+	 * @param card
+	 *            the card that has just been deleted
+	 */
 	@Override
 	public void deletePlayerCard(PlayerRemote player, ItemCardRemote card) {
 		this.player = player;
+		printCardPlayer();
 	}
 
+	/**
+	 * This method update the cards of the player. It also prints the player
+	 * cards.
+	 * 
+	 * @author cerridifebbo
+	 * @param player
+	 *            the player that has just added a card
+	 * @param card
+	 *            the card that has just been added
+	 */
 	@Override
 	public void addPlayerCard(PlayerRemote player, ItemCardRemote card) {
 		this.player = player;
 	}
 
+	/**
+	 * This method update the status of the parameter sector of the parameter
+	 * map.
+	 * 
+	 * @author cerridifebbo
+	 * @param map
+	 *            the current map of the game
+	 * @param sector
+	 *            the sector that has just been modified
+	 */
 	@Override
 	public void updateEscapeHatch(MapRemote map, SectorRemote sector) {
 		this.map = map;

@@ -3,7 +3,6 @@ package it.polimi.ingsw.cerridifebbo.view.gui;
 import it.polimi.ingsw.cerridifebbo.controller.common.MapRemote;
 import it.polimi.ingsw.cerridifebbo.controller.common.MapRemote.SectorRemote;
 import it.polimi.ingsw.cerridifebbo.controller.common.PlayerRemote;
-import it.polimi.ingsw.cerridifebbo.model.Map;
 import it.polimi.ingsw.cerridifebbo.view.gui.ConcreteSectorButtonFactory;
 
 import java.awt.Color;
@@ -23,10 +22,10 @@ public class MapContainer extends Container {
 	private boolean restore = false;
 
 	public MapContainer(MapRemote map) {
-		mapLayout = new MapLayout(Map.ROWMAP, Map.COLUMNMAP);
+		mapLayout = new MapLayout(MapRemote.ROWMAP, MapRemote.COLUMNMAP);
 		SectorButtonFactory factory = new ConcreteSectorButtonFactory();
-		for (int i = 0; i < Map.ROWMAP; i++) {
-			for (int j = 0; j < Map.COLUMNMAP; j++) {
+		for (int i = 0; i < MapRemote.ROWMAP; i++) {
+			for (int j = 0; j < MapRemote.COLUMNMAP; j++) {
 				SectorRemote temp = map.getCell(i, j);
 				String label = null;
 				if (temp == null) {
