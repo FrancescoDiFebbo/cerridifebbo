@@ -1,12 +1,12 @@
 package it.polimi.ingsw.cerridifebbo.view.gui;
 
 import it.polimi.ingsw.cerridifebbo.controller.client.Graphics;
-import it.polimi.ingsw.cerridifebbo.model.AlienPlayer;
-import it.polimi.ingsw.cerridifebbo.model.Card;
+import it.polimi.ingsw.cerridifebbo.controller.common.ItemCardRemote;
 import it.polimi.ingsw.cerridifebbo.controller.common.MapRemote;
-import it.polimi.ingsw.cerridifebbo.model.Move;
-import it.polimi.ingsw.cerridifebbo.controller.common.PlayerRemote;
 import it.polimi.ingsw.cerridifebbo.controller.common.MapRemote.SectorRemote;
+import it.polimi.ingsw.cerridifebbo.controller.common.PlayerRemote;
+import it.polimi.ingsw.cerridifebbo.model.AlienPlayer;
+import it.polimi.ingsw.cerridifebbo.model.Move;
 
 import java.awt.Color;
 import java.awt.Container;
@@ -45,8 +45,7 @@ public class GUIGraphics extends Graphics implements ActionListener {
 	private static final String ALIEN_CLASS = AlienPlayer.class.getSimpleName();
 
 	@Override
-	public void initialize(MapRemote map, PlayerRemote player,
-			int numberOfPlayers) {
+	public void initialize(MapRemote map, PlayerRemote player, int numberOfPlayers) {
 		if (player.getRace().equals(ALIEN_CLASS)) {
 			playerRace = ALIEN;
 		} else {
@@ -67,8 +66,7 @@ public class GUIGraphics extends Graphics implements ActionListener {
 		contentPane.add(serverMessage);
 		contentPane.add(cards);
 		contentPane.add(buttonPanel);
-		contentPane.setLayout(new CustomLayout(SPACE_BETWEEN_COMP_Y1,
-				SPACE_BETWEEN_COMP_Y2));
+		contentPane.setLayout(new CustomLayout(SPACE_BETWEEN_COMP_Y1, SPACE_BETWEEN_COMP_Y2));
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setMinimumSize(new Dimension(WIDTH, HEIGHT));
 		frame.setVisible(true);
@@ -80,14 +78,11 @@ public class GUIGraphics extends Graphics implements ActionListener {
 		} else {
 			message = PLAYER_RACE_ALIEN;
 		}
-		serverMessage.addText(message
-				+ player.getPlayerCard().getCharacterName());
+		serverMessage.addText(message + player.getPlayerCard().getCharacterName());
 		if (numberOfPlayers == 2) {
-			serverMessage
-					.addText("You are not alone. There is a creature on the ship");
+			serverMessage.addText("You are not alone. There is a creature on the ship");
 		} else {
-			serverMessage.addText("You are not alone. There are "
-					+ (numberOfPlayers - 1) + " creatures on the ship");
+			serverMessage.addText("You are not alone. There are " + (numberOfPlayers - 1) + " creatures on the ship");
 		}
 	}
 
@@ -140,13 +135,11 @@ public class GUIGraphics extends Graphics implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() instanceof SectorButton) {
 			if (declareSector) {
-				getNetworkInterface().sendToServer(Move.SECTOR,
-						e.getActionCommand());
+				getNetworkInterface().sendToServer(Move.SECTOR, e.getActionCommand());
 				mapGrid.deleteListenersToButton(moveListener);
 				declareSector = false;
 			} else {
-				getNetworkInterface().sendToServer(Move.MOVEMENT,
-						e.getActionCommand());
+				getNetworkInterface().sendToServer(Move.MOVEMENT, e.getActionCommand());
 				deleteListeners(moveListener, false);
 			}
 		} else if (e.getActionCommand().equals(CardPanel.USE_TEXT)) {
@@ -185,14 +178,14 @@ public class GUIGraphics extends Graphics implements ActionListener {
 	}
 
 	@Override
-	public void deletePlayerCard(PlayerRemote player, Card card) {
-		cards.remove(card.toString());
+	public void deletePlayerCard(PlayerRemote player, ItemCardRemote card) {
+		cards.remove(card.getName());
 		cards.repaint();
 	}
 
 	@Override
-	public void addPlayerCard(PlayerRemote player, Card card) {
-		cards.add(new CardPanel(card.toString(), playerRace));
+	public void addPlayerCard(PlayerRemote player, ItemCardRemote card) {
+		cards.add(new CardPanel(card.getName(), playerRace));
 	}
 
 	@Override

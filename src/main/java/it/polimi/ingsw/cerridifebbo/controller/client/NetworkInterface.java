@@ -1,8 +1,8 @@
 package it.polimi.ingsw.cerridifebbo.controller.client;
 
-import it.polimi.ingsw.cerridifebbo.model.Card;
-import it.polimi.ingsw.cerridifebbo.model.Map;
-import it.polimi.ingsw.cerridifebbo.model.Player;
+import it.polimi.ingsw.cerridifebbo.controller.common.ItemCardRemote;
+import it.polimi.ingsw.cerridifebbo.controller.common.MapRemote;
+import it.polimi.ingsw.cerridifebbo.controller.common.PlayerRemote;
 
 public interface NetworkInterface {
 
@@ -16,9 +16,9 @@ public interface NetworkInterface {
 
 	public void setGraphicInterface(Graphics graphics);
 
-	public void setGameInformation(Map map, Player player, int size);
+	public void setGameInformation(MapRemote map, PlayerRemote player, int size);
 
-	public void updatePlayer(Player player, Card card, boolean added);
+	public void updatePlayer(PlayerRemote player, ItemCardRemote card, boolean added);
 
 	public String chooseUsername();
 }

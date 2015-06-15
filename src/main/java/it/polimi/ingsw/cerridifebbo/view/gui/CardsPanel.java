@@ -19,7 +19,7 @@ public class CardsPanel extends JPanel {
 		setLayout(new FlowLayout());
 		if (player.getOwnCards() != null) {
 			for (int i = 0; i < player.getOwnCards().size(); i++) {
-				add(new CardPanel(player.getOwnCards().get(i).toString(),
+				add(new CardPanel(player.getOwnCards().get(i).getName(),
 						playerRace));
 			}
 		}

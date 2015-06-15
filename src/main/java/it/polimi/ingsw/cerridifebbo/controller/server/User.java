@@ -2,6 +2,7 @@ package it.polimi.ingsw.cerridifebbo.controller.server;
 
 import it.polimi.ingsw.cerridifebbo.controller.common.Application;
 import it.polimi.ingsw.cerridifebbo.controller.common.ClientConnection;
+import it.polimi.ingsw.cerridifebbo.controller.common.ItemCardRemote;
 import it.polimi.ingsw.cerridifebbo.controller.common.RemoteUser;
 import it.polimi.ingsw.cerridifebbo.model.Card;
 import it.polimi.ingsw.cerridifebbo.model.Game;
@@ -23,37 +24,40 @@ import java.util.Random;
  * The Class User.
  */
 public class User extends UnicastRemoteObject implements RemoteUser {
-	
+
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
-	
+
 	/** The name. */
 	private final transient String name;
-	
+
 	/** The connection. */
 	private transient ClientConnection connection;
-	
+
 	/** The player. */
 	private transient Player player;
-	
+
 	/** The queue. */
 	private transient Queue<Move> queue = new LinkedList<Move>();
-	
+
 	/** The time finished. */
 	private transient boolean timeFinished = false;
-	
+
 	/** The reinitialize. */
 	private transient boolean reinitialize = false;
-	
+
 	/** The current game. */
 	private transient Game currentGame;
 
 	/**
 	 * Instantiates a new user.
 	 *
-	 * @param name the name
-	 * @param connection the connection
-	 * @throws RemoteException the remote exception
+	 * @param name
+	 *            the name
+	 * @param connection
+	 *            the connection
+	 * @throws RemoteException
+	 *             the remote exception
 	 */
 	public User(String name, ClientConnection connection) throws RemoteException {
 		super();
@@ -73,7 +77,8 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 	/**
 	 * Sets the connection.
 	 *
-	 * @param connection the new connection
+	 * @param connection
+	 *            the new connection
 	 */
 	public void setConnection(ClientConnection connection) {
 		this.connection = connection;
@@ -101,7 +106,8 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 	/**
 	 * Sets the player.
 	 *
-	 * @param player the new player
+	 * @param player
+	 *            the new player
 	 */
 	public void setPlayer(Player player) {
 		this.player = player;
@@ -119,7 +125,8 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 	/**
 	 * Sets the time finished.
 	 *
-	 * @param timeFinished the new time finished
+	 * @param timeFinished
+	 *            the new time finished
 	 */
 	public void setTimeFinished(boolean timeFinished) {
 		this.timeFinished = timeFinished;
@@ -137,13 +144,13 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 			}
 		}
 	}
-	
+
 	/**
 	 * Check connection.
 	 *
 	 * @return true, if successful
 	 */
-	private boolean checkConnection(){
+	private boolean checkConnection() {
 		if (reinitialize) {
 			sendGameInformation(currentGame);
 			reinitialize = false;
@@ -154,7 +161,8 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 	/**
 	 * Send message.
 	 *
-	 * @param message the message
+	 * @param message
+	 *            the message
 	 */
 	public void sendMessage(String message) {
 		if (checkConnection()) {
@@ -169,12 +177,13 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 	/**
 	 * Send game information.
 	 *
-	 * @param game the game
+	 * @param game
+	 *            the game
 	 */
 	public void sendGameInformation(Game game) {
 		if (isOnline()) {
 			try {
-				connection.sendGameInformation(game.getMap(), player, game.getUsers().size());
+				connection.sendGameInformation(game.getMap().getMapRemote(), player.getPlayerRemote(), game.getUsers().size());
 				currentGame = game;
 			} catch (RemoteException e) {
 				suspend(e);
@@ -245,7 +254,8 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 	/**
 	 * Gets the sector.
 	 *
-	 * @param map the map
+	 * @param map
+	 *            the map
 	 * @return the sector
 	 */
 	public Sector getSector(Map map) {
@@ -280,7 +290,8 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 	/**
 	 * Random sector.
 	 *
-	 * @param map the map
+	 * @param map
+	 *            the map
 	 * @return the sector
 	 */
 	private Sector randomSector(Map map) {
@@ -330,14 +341,22 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 	/**
 	 * Update player.
 	 *
-	 * @param player the player
-	 * @param card the card
-	 * @param added the added
+	 * @param player
+	 *            the player
+	 * @param card
+	 *            the card
+	 * @param added
+	 *            the added
 	 */
 	public void updatePlayer(Player player, Card card, boolean added) {
 		if (checkConnection()) {
 			try {
-				connection.updatePlayer(player, card, added);
+				if (card == null) {
+					connection.updatePlayer(player.getPlayerRemote(), null, added);
+				} else {
+					connection.updatePlayer(player.getPlayerRemote(), new ItemCardRemote(card), added);
+				}
+
 			} catch (RemoteException e) {
 				suspend(e);
 			}
@@ -360,7 +379,8 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 	/**
 	 * Suspend.
 	 *
-	 * @param e the e
+	 * @param e
+	 *            the e
 	 */
 	public void suspend(Throwable e) {
 		connection = null;
@@ -368,8 +388,12 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 		Application.exception(e, name + " suspended", true);
 	}
 
-	/* (non-Javadoc)
-	 * @see it.polimi.ingsw.cerridifebbo.controller.common.RemoteUser#sendMove(java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * it.polimi.ingsw.cerridifebbo.controller.common.RemoteUser#sendMove(java
+	 * .lang.String, java.lang.String)
 	 */
 	@Override
 	public void sendMove(String action, String target) throws RemoteException {
@@ -379,8 +403,10 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 	/**
 	 * Put move.
 	 *
-	 * @param action the action
-	 * @param target the target
+	 * @param action
+	 *            the action
+	 * @param target
+	 *            the target
 	 */
 	public void putMove(String action, String target) {
 		synchronized (queue) {
@@ -388,7 +414,9 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.rmi.server.RemoteObject#equals(java.lang.Object)
 	 */
 	@Override
@@ -396,7 +424,9 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 		return super.equals(obj);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.rmi.server.RemoteObject#hashCode()
 	 */
 	@Override

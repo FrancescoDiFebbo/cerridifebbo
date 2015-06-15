@@ -3,9 +3,9 @@ package it.polimi.ingsw.cerridifebbo.controller.client;
 import it.polimi.ingsw.cerridifebbo.controller.common.Application;
 import it.polimi.ingsw.cerridifebbo.controller.common.Command;
 import it.polimi.ingsw.cerridifebbo.controller.common.Connection;
-import it.polimi.ingsw.cerridifebbo.model.Card;
-import it.polimi.ingsw.cerridifebbo.model.Map;
-import it.polimi.ingsw.cerridifebbo.model.Player;
+import it.polimi.ingsw.cerridifebbo.controller.common.ItemCardRemote;
+import it.polimi.ingsw.cerridifebbo.controller.common.MapRemote;
+import it.polimi.ingsw.cerridifebbo.controller.common.PlayerRemote;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -152,9 +152,9 @@ public class SocketInterface implements NetworkInterface {
 	@SuppressWarnings("unchecked")
 	private void receiveGameInformation() {
 		try {
-			List<Object> info = (List<Object>) ois.readUnshared();
-			Map map = (Map) info.get(0);
-			Player player = (Player) info.get(1);
+			List<Object> info = (List<Object>) ois.readObject();
+			MapRemote map = (MapRemote) info.get(0);
+			PlayerRemote player = (PlayerRemote) info.get(1);
 			int numberOfPlayers = (Integer) info.get(2);
 			setGameInformation(map, player, numberOfPlayers);
 		} catch (IOException | ClassNotFoundException e) {
@@ -163,8 +163,8 @@ public class SocketInterface implements NetworkInterface {
 	}
 
 	@Override
-	public void setGameInformation(Map map, Player player, int size) {
-		graphics.initialize(map.getMapRemote(), player.getPlayerRemote(), size);
+	public void setGameInformation(MapRemote map, PlayerRemote player, int size) {
+		graphics.initialize(map, player, size);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -172,26 +172,27 @@ public class SocketInterface implements NetworkInterface {
 		try {
 			Object obj = ois.readUnshared();
 			List<Object> update = (ArrayList<Object>) obj;
-			Player player = (Player) update.get(0);
-			Card card = (Card) update.get(1);
+			PlayerRemote player = (PlayerRemote) update.get(0);
+			ItemCardRemote card = (ItemCardRemote) update.get(1);
 			boolean added = (Boolean) update.get(2);
 			updatePlayer(player, card, added);
 		} catch (IOException | ClassNotFoundException e) {
 			Application.exception(e);
 		}
 	}
-
+	
 	@Override
-	public void updatePlayer(Player player, Card card, boolean added) {
-		graphics.updatePlayerPosition(player.getPlayerRemote());
+	public void updatePlayer(PlayerRemote player, ItemCardRemote card, boolean added) {
+		graphics.updatePlayerPosition(player);
 		if (card == null) {
 			return;
 		}
 		if (added) {
-			graphics.addPlayerCard(player.getPlayerRemote(), card);
+			graphics.addPlayerCard(player, card);
 		} else {
-			graphics.deletePlayerCard(player.getPlayerRemote(), card);
+			graphics.deletePlayerCard(player, card);
 		}
+		
 	}
 
 	public void disconnect() {

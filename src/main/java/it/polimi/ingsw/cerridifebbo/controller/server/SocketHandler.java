@@ -3,10 +3,9 @@ package it.polimi.ingsw.cerridifebbo.controller.server;
 import it.polimi.ingsw.cerridifebbo.controller.common.Application;
 import it.polimi.ingsw.cerridifebbo.controller.common.ClientConnection;
 import it.polimi.ingsw.cerridifebbo.controller.common.Command;
+import it.polimi.ingsw.cerridifebbo.controller.common.ItemCardRemote;
+import it.polimi.ingsw.cerridifebbo.controller.common.MapRemote;
 import it.polimi.ingsw.cerridifebbo.controller.common.PlayerRemote;
-import it.polimi.ingsw.cerridifebbo.model.Card;
-import it.polimi.ingsw.cerridifebbo.model.Map;
-import it.polimi.ingsw.cerridifebbo.model.Player;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -156,13 +155,34 @@ public class SocketHandler extends Thread implements ClientConnection {
 	 * sendGameInformation(it.polimi.ingsw.cerridifebbo.model.Map,
 	 * it.polimi.ingsw.cerridifebbo.model.Player, int)
 	 */
+	// @Override
+	// public void sendGameInformation(Map map, Player player, int size) {
+	// try {
+	// oos.writeUnshared(Command.build(Command.SEND, Command.GAME_INFORMATION));
+	// oos.flush();
+	// } catch (IOException e1) {
+	// user.suspend(e1);
+	// return;
+	// }
+	// List<Object> info = new ArrayList<Object>();
+	// info.add(map);
+	// info.add(player);
+	// info.add(size);
+	// try {
+	// oos.writeUnshared((ArrayList<Object>) info);
+	// oos.flush();
+	// } catch (IOException e) {
+	// Application.exception(e);
+	// }
+	// }
+
 	@Override
-	public void sendGameInformation(Map map, Player player, int size) {
+	public void sendGameInformation(MapRemote map, PlayerRemote player, int size) throws RemoteException {
 		try {
-			oos.writeUnshared(Command.build(Command.SEND, Command.GAME_INFORMATION));
+			oos.writeObject(Command.build(Command.SEND, Command.GAME_INFORMATION));
 			oos.flush();
-		} catch (IOException e1) {
-			user.suspend(e1);
+		} catch (IOException e) {
+			user.suspend(e);
 			return;
 		}
 		List<Object> info = new ArrayList<Object>();
@@ -170,10 +190,11 @@ public class SocketHandler extends Thread implements ClientConnection {
 		info.add(player);
 		info.add(size);
 		try {
-			oos.writeUnshared((ArrayList<Object>) info);
+			oos.writeObject((ArrayList<Object>) info);
 			oos.flush();
 		} catch (IOException e) {
-			Application.exception(e);
+			user.suspend(e);
+			return;
 		}
 	}
 
@@ -182,11 +203,10 @@ public class SocketHandler extends Thread implements ClientConnection {
 	 * 
 	 * @see
 	 * it.polimi.ingsw.cerridifebbo.controller.common.ClientConnection#updatePlayer
-	 * (it.polimi.ingsw.cerridifebbo.model.Player,
-	 * it.polimi.ingsw.cerridifebbo.model.Card, boolean)
+	 * (it.polimi.ingsw.cerridifebbo.controller.common.PlayerRemote)
 	 */
 	@Override
-	public void updatePlayer(Player player, Card card, boolean added) {
+	public void updatePlayer(PlayerRemote player, ItemCardRemote card, boolean added) throws RemoteException {
 		try {
 			oos.writeUnshared(CommandHandler.build(Command.SEND, Command.UPDATE));
 			oos.flush();
@@ -199,25 +219,6 @@ public class SocketHandler extends Thread implements ClientConnection {
 		update.add(added);
 		try {
 			oos.writeUnshared((ArrayList<Object>) update);
-			oos.flush();
-		} catch (IOException e) {
-			user.suspend(e);
-		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * it.polimi.ingsw.cerridifebbo.controller.common.ClientConnection#updatePlayer
-	 * (it.polimi.ingsw.cerridifebbo.controller.common.PlayerRemote)
-	 */
-	@Override
-	public void updatePlayer(PlayerRemote player) throws RemoteException {
-		try {
-			oos.writeObject(Command.build(Command.SEND, Command.UPDATE));
-			oos.flush();
-			oos.writeObject(player);
 			oos.flush();
 		} catch (IOException e) {
 			user.suspend(e);

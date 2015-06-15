@@ -2,17 +2,17 @@ package it.polimi.ingsw.cerridifebbo.view.cli;
 
 import it.polimi.ingsw.cerridifebbo.controller.client.Graphics;
 import it.polimi.ingsw.cerridifebbo.controller.common.Application;
+import it.polimi.ingsw.cerridifebbo.controller.common.ItemCardRemote;
+import it.polimi.ingsw.cerridifebbo.controller.common.MapRemote;
 import it.polimi.ingsw.cerridifebbo.controller.common.MapRemote.SectorRemote;
+import it.polimi.ingsw.cerridifebbo.controller.common.PlayerRemote;
 import it.polimi.ingsw.cerridifebbo.model.AlienPlayer;
 import it.polimi.ingsw.cerridifebbo.model.AlienSector;
-import it.polimi.ingsw.cerridifebbo.model.Card;
 import it.polimi.ingsw.cerridifebbo.model.DangerousSector;
 import it.polimi.ingsw.cerridifebbo.model.EscapeHatchSector;
 import it.polimi.ingsw.cerridifebbo.model.Game;
 import it.polimi.ingsw.cerridifebbo.model.HumanSector;
-import it.polimi.ingsw.cerridifebbo.controller.common.MapRemote;
 import it.polimi.ingsw.cerridifebbo.model.Move;
-import it.polimi.ingsw.cerridifebbo.controller.common.PlayerRemote;
 import it.polimi.ingsw.cerridifebbo.model.SecureSector;
 
 import java.util.Scanner;
@@ -30,17 +30,13 @@ public class CLIGraphics extends Graphics {
 	private static final String ESCAPE_HATCH_SECTOR_KO = "\u001B[35m";
 	private static final String START_TURN_MESSAGE = "It's your turn";
 	private static final String END_TURN_MESSAGE = "----------------------------------------";
-	private static final String DANGEROUS = DangerousSector.class
-			.getSimpleName();
+	private static final String DANGEROUS = DangerousSector.class.getSimpleName();
 	private static final String SECURE = SecureSector.class.getSimpleName();
 	private static final String HATCH = EscapeHatchSector.class.getSimpleName();
 	private static final String ALIEN = AlienSector.class.getSimpleName();
 	private static final String HUMAN = HumanSector.class.getSimpleName();
-	private static final String MOVE_OPTIONS_HUMAN = "What do you want to do?"
-			+ "\n" + Move.MOVEMENT + "\n" + Move.USEITEMCARD + "\n"
-			+ Move.FINISH;
-	private static final String MOVE_OPTIONS_ALIEN = "What do you want to do?"
-			+ "\n" + Move.ATTACK + "\n" + Move.MOVEMENT + "\n" + Move.FINISH;
+	private static final String MOVE_OPTIONS_HUMAN = "What do you want to do?" + "\n" + Move.MOVEMENT + "\n" + Move.USEITEMCARD + "\n" + Move.FINISH;
+	private static final String MOVE_OPTIONS_ALIEN = "What do you want to do?" + "\n" + Move.ATTACK + "\n" + Move.MOVEMENT + "\n" + Move.FINISH;
 	private static final String ALIEN_CLASS = AlienPlayer.class.getSimpleName();
 	private static final String SECTOR_SELECTION = "Which sector?";
 	private static final String CARD_SELECTION = "Which card?";
@@ -62,18 +58,15 @@ public class CLIGraphics extends Graphics {
 	private Thread inputThread;
 
 	@Override
-	public void initialize(MapRemote map, PlayerRemote player,
-			int numberOfPlayers) {
+	public void initialize(MapRemote map, PlayerRemote player, int numberOfPlayers) {
 		this.player = player;
 		this.map = map;
 		printMap();
 		printPlayer();
 		if (numberOfPlayers == 2) {
-			Application
-					.println("You are not alone. There is a creature on the ship");
+			Application.println("You are not alone. There is a creature on the ship");
 		} else {
-			Application.println("You are not alone. There are "
-					+ (numberOfPlayers - 1) + " creatures on the ship");
+			Application.println("You are not alone. There are " + (numberOfPlayers - 1) + " creatures on the ship");
 		}
 		Application.println(END_TURN_MESSAGE);
 		initialized = true;
@@ -89,8 +82,7 @@ public class CLIGraphics extends Graphics {
 				SectorRemote currentCell = map.getCell(i, j);
 				Application.print("/");
 				if (currentCell != null) {
-					Application.print(printTypeOfSector(currentCell)
-							+ currentCell.getName() + RESET_COLOR);
+					Application.print(printTypeOfSector(currentCell) + currentCell.getName() + RESET_COLOR);
 				} else {
 					Application.print("   ");
 
@@ -103,8 +95,7 @@ public class CLIGraphics extends Graphics {
 				Application.print("\\___/");
 				SectorRemote currentCell = map.getCell(i, j);
 				if (currentCell != null) {
-					Application.print(printTypeOfSector(currentCell)
-							+ currentCell.getName() + RESET_COLOR);
+					Application.print(printTypeOfSector(currentCell) + currentCell.getName() + RESET_COLOR);
 				} else {
 					Application.print("   ");
 				}
@@ -204,73 +195,13 @@ public class CLIGraphics extends Graphics {
 
 	@Override
 	public void declareMove() {
-		inputThread = new Thread() {
-			@Override
-			public void run() {
-				try {
-					boolean chosen = false;
-					do {
-						printOptions();
-						String line = null;
-						line = in.nextLine();
-						line = line.replace(" ", "");
-						if (line.equalsIgnoreCase(Move.ATTACK)) {
-							getNetworkInterface().sendToServer(Move.ATTACK,
-									null);
-							chosen = true;
-						} else if (line.equalsIgnoreCase(Move.MOVEMENT)) {
-							Application.println(SECTOR_SELECTION);
-							line = in.nextLine();
-							line = line.replace(" ", "");
-							getNetworkInterface().sendToServer(Move.MOVEMENT,
-									line);
-							chosen = true;
-						} else if (line.equalsIgnoreCase(Move.USEITEMCARD)) {
-							if (!player.getOwnCards().isEmpty()) {
-								printCardPlayer();
-								Application.println(CARD_SELECTION);
-								line = in.nextLine();
-								line = line.replace(" ", "");
-								getNetworkInterface().sendToServer(
-										Move.USEITEMCARD, line);
-								chosen = true;
-							} else {
-								Application.println(NO_CARD_PLAYER_SELECTION);
-							}
-						} else if (line.equalsIgnoreCase(Move.FINISH)) {
-							getNetworkInterface().sendToServer(Move.FINISH,
-									null);
-							chosen = true;
-						}
-					} while (!chosen);
-				} catch (Exception e) {
-					Application.exception(e,
-							"You didn't make your decision in time", false);
-				}
-
-			}
-		};
+		inputThread = new Thread(new DeclareMoveRunnable());
 		inputThread.start();
 	}
 
 	@Override
 	public void declareSector() {
-		inputThread = new Thread() {
-			@Override
-			public void run() {
-				try {
-					Application.println(SECTOR_SELECTION);
-					String move = null;
-					move = in.nextLine();
-					move = move.replace(" ", "");
-					getNetworkInterface().sendToServer(Move.SECTOR, move);
-				} catch (Exception e) {
-					Application.exception(e,
-							"You didn't make your decision in time", false);
-				}
-
-			}
-		};
+		inputThread = new Thread(new DeclareSectorRunnable());
 		inputThread.start();
 	}
 
@@ -281,50 +212,17 @@ public class CLIGraphics extends Graphics {
 
 	@Override
 	public void declareCard() {
-		inputThread = new Thread() {
-			@Override
-			public void run() {
-				try {
-					printCardPlayer();
-					boolean chosen = false;
-					do {
-						Application.print(USE_DISCARD);
-						String line = null;
-						line = in.nextLine();
-						line = line.replace(" ", "");
-						if (line.equalsIgnoreCase(USE_CARD)) {
-							chosen = true;
-							Application.println(CARD_SELECTION);
-							String move = null;
-							move = in.nextLine();
-							move = move.replace(" ", "");
-							getNetworkInterface().sendToServer(
-									Move.USEITEMCARD, move);
-						} else if (line.equalsIgnoreCase(DELETE_CARD)) {
-							chosen = true;
-							Application.println(CARD_SELECTION);
-							String move = in.nextLine();
-							move = move.replace(" ", "");
-							getNetworkInterface().sendToServer(Move.DELETECARD,
-									move);
-						}
-					} while (!chosen);
-				} catch (Exception e) {
-					Application.exception(e,
-							"You didn't make your decision in time", false);
-				}
-			}
-		};
+		inputThread = new Thread(new DeclareCardRunnable());
 		inputThread.start();
 	}
 
 	@Override
-	public void deletePlayerCard(PlayerRemote player, Card card) {
+	public void deletePlayerCard(PlayerRemote player, ItemCardRemote card) {
 		this.player = player;
 	}
 
 	@Override
-	public void addPlayerCard(PlayerRemote player, Card card) {
+	public void addPlayerCard(PlayerRemote player, ItemCardRemote card) {
 		this.player = player;
 	}
 
@@ -332,5 +230,100 @@ public class CLIGraphics extends Graphics {
 	public void updateEscapeHatch(MapRemote map, SectorRemote sector) {
 		this.map = map;
 		sendMessage(sector.toString() + SECTOR_ESCAPE_UPDATE);
+	}
+
+	private class DeclareMoveRunnable implements Runnable {
+
+		@Override
+		public void run() {
+			try {
+				boolean chosen = false;
+				do {
+					printOptions();
+					String line = null;
+					line = in.nextLine();
+					line = line.replace(" ", "");
+					if (line.equalsIgnoreCase(Move.ATTACK)) {
+						getNetworkInterface().sendToServer(Move.ATTACK, null);
+						chosen = true;
+					} else if (line.equalsIgnoreCase(Move.MOVEMENT)) {
+						Application.println(SECTOR_SELECTION);
+						line = in.nextLine();
+						line = line.replace(" ", "");
+						getNetworkInterface().sendToServer(Move.MOVEMENT, line);
+						chosen = true;
+					} else if (line.equalsIgnoreCase(Move.USEITEMCARD)) {
+						if (!player.getOwnCards().isEmpty()) {
+							printCardPlayer();
+							Application.println(CARD_SELECTION);
+							line = in.nextLine();
+							line = line.replace(" ", "");
+							getNetworkInterface().sendToServer(Move.USEITEMCARD, line);
+							chosen = true;
+						} else {
+							Application.println(NO_CARD_PLAYER_SELECTION);
+						}
+					} else if (line.equalsIgnoreCase(Move.FINISH)) {
+						getNetworkInterface().sendToServer(Move.FINISH, null);
+						chosen = true;
+					}
+				} while (!chosen);
+			} catch (Exception e) {
+				Application.exception(e, "You didn't make your decision in time", false);
+			}
+		}
+	}
+
+	private class DeclareSectorRunnable implements Runnable {
+
+		@Override
+		public void run() {
+			try {
+				Application.println(SECTOR_SELECTION);
+				String move = null;
+				move = in.nextLine();
+				move = move.replace(" ", "");
+				getNetworkInterface().sendToServer(Move.SECTOR, move);
+			} catch (Exception e) {
+				Application.exception(e, "You didn't make your decision in time", false);
+			}
+
+		}
+
+	}
+
+	private class DeclareCardRunnable implements Runnable {
+
+		@Override
+		public void run() {
+			try {
+				printCardPlayer();
+				boolean chosen = false;
+				do {
+					Application.print(USE_DISCARD);
+					String line = null;
+					line = in.nextLine();
+					line = line.replace(" ", "");
+					if (line.equalsIgnoreCase(USE_CARD)) {
+						chosen = true;
+						Application.println(CARD_SELECTION);
+						String move = null;
+						move = in.nextLine();
+						move = move.replace(" ", "");
+						getNetworkInterface().sendToServer(Move.USEITEMCARD, move);
+					} else if (line.equalsIgnoreCase(DELETE_CARD)) {
+						chosen = true;
+						Application.println(CARD_SELECTION);
+						String move = in.nextLine();
+						move = move.replace(" ", "");
+						getNetworkInterface().sendToServer(Move.DELETECARD, move);
+					}
+				} while (!chosen);
+			} catch (Exception e) {
+				Application.exception(e, "You didn't make your decision in time", false);
+			}
+
+		}
+
 	}
 }
