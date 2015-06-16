@@ -10,6 +10,12 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.Timer;
 
+/**
+ * This class describes a TimerPanel that is a JPanel with a displayed timer.
+ * 
+ * @author cerridifebbo
+ *
+ */
 public class TimerPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
@@ -23,6 +29,13 @@ public class TimerPanel extends JPanel {
 	private Timer timer;
 
 	private transient ActionListener updateTimer = new ActionListener() {
+		/**
+		 * This method displays the time left in the format Minutes:Seconds.
+		 * 
+		 * @author cerridifebbo
+		 * @param e
+		 *            the actionEvent that invokes the method
+		 */
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			numberOfUpdate++;
@@ -42,6 +55,13 @@ public class TimerPanel extends JPanel {
 		}
 	};
 
+	/**
+	 * This constructor creates the JPanel and the JtextArea.
+	 * 
+	 * @author cerridifebbo
+	 * @param playerRace
+	 *            the race of the player
+	 */
 	public TimerPanel(String playerRace) {
 
 		timeLeft = new JTextArea();
@@ -55,12 +75,22 @@ public class TimerPanel extends JPanel {
 		setForeground(GUIGraphics.getColorRace(playerRace));
 	}
 
+	/**
+	 * This method starts the timer.
+	 * 
+	 * @author cerridifebbo
+	 */
 	public void startTimer() {
 		numberOfUpdate = 0;
 		timer = new Timer(PERIOD, updateTimer);
 		timer.start();
 	}
 
+	/**
+	 * This method stops the timer.
+	 * 
+	 * @author cerridifebbo
+	 */
 	public void stopTimer() {
 		timer.stop();
 		timeLeft.setText("");

@@ -37,13 +37,17 @@ public class CLIGraphics extends Graphics {
 	private static final String ESCAPE_HATCH_SECTOR_KO = "\u001B[35m";
 	private static final String START_TURN_MESSAGE = "It's your turn";
 	private static final String END_TURN_MESSAGE = "----------------------------------------";
-	private static final String DANGEROUS = DangerousSector.class.getSimpleName();
+	private static final String DANGEROUS = DangerousSector.class
+			.getSimpleName();
 	private static final String SECURE = SecureSector.class.getSimpleName();
 	private static final String HATCH = EscapeHatchSector.class.getSimpleName();
 	private static final String ALIEN = AlienSector.class.getSimpleName();
 	private static final String HUMAN = HumanSector.class.getSimpleName();
-	private static final String MOVE_OPTIONS_HUMAN = "What do you want to do?" + "\n" + Move.MOVEMENT + "\n" + Move.USEITEMCARD + "\n" + Move.FINISH;
-	private static final String MOVE_OPTIONS_ALIEN = "What do you want to do?" + "\n" + Move.ATTACK + "\n" + Move.MOVEMENT + "\n" + Move.FINISH;
+	private static final String MOVE_OPTIONS = "What do you want to do?";
+	private static final String MOVE_ATTACK = Move.ATTACK;
+	private static final String MOVE_USEITEMCARD = Move.USEITEMCARD;
+	private static final String MOVE_FINISH = Move.FINISH;
+	private static final String MOVE_MOVEMENT = Move.MOVEMENT;
 	private static final String ALIEN_CLASS = AlienPlayer.class.getSimpleName();
 	private static final String SECTOR_SELECTION = "Which sector?";
 	private static final String CARD_SELECTION = "Which card?";
@@ -52,11 +56,11 @@ public class CLIGraphics extends Graphics {
 	private static final String DELETE_CARD = "delete";
 	private static final String CARD_PLAYER = "Player cards: ";
 	private static final String NO_CARD_PLAYER = "No card!";
-	private static final String NO_CARD_PLAYER_SELECTION = "You have no card to use!";
 	private static final String PLAYER_POSITION = "Player position : ";
 	private static final String PLAYER_RACE_HUMAN = "You are a human. Your name is ";
 	private static final String PLAYER_RACE_ALIEN = "You are an alien. Your name is ";
 	private static final String SECTOR_ESCAPE_UPDATE = " is not more available for escape";
+	private static final String EXCEPTION_MESSAGE = "You didn't make your decision in time";
 	private Scanner in = new Scanner(System.in);
 	private PlayerRemote player;
 	private MapRemote map;
@@ -77,20 +81,28 @@ public class CLIGraphics extends Graphics {
 	 *            the number of player of the specific game
 	 */
 	@Override
-	public void initialize(MapRemote map, PlayerRemote player, int numberOfPlayers) {
+	public void initialize(MapRemote map, PlayerRemote player,
+			int numberOfPlayers) {
 		this.player = player;
 		this.map = map;
 		printMap();
 		printPlayer();
 		if (numberOfPlayers == 2) {
-			Application.println("You are not alone. There is a creature on the ship");
+			Application
+					.println("You are not alone. There is a creature on the ship");
 		} else {
-			Application.println("You are not alone. There are " + (numberOfPlayers - 1) + " creatures on the ship");
+			Application.println("You are not alone. There are "
+					+ (numberOfPlayers - 1) + " creatures on the ship");
 		}
 		Application.println(END_TURN_MESSAGE);
 		initialized = true;
 	}
 
+	/**
+	 * This method prints the map.
+	 * 
+	 * @author cerridifebbo
+	 */
 	private void printMap() {
 		for (int i = 0; i < MapRemote.COLUMNMAP; i = i + 2) {
 			Application.print(" ___    ");
@@ -101,7 +113,8 @@ public class CLIGraphics extends Graphics {
 				SectorRemote currentCell = map.getCell(i, j);
 				Application.print("/");
 				if (currentCell != null) {
-					Application.print(printTypeOfSector(currentCell) + currentCell.getName() + RESET_COLOR);
+					Application.print(printTypeOfSector(currentCell)
+							+ currentCell.getName() + RESET_COLOR);
 				} else {
 					Application.print("   ");
 
@@ -114,7 +127,8 @@ public class CLIGraphics extends Graphics {
 				Application.print("\\___/");
 				SectorRemote currentCell = map.getCell(i, j);
 				if (currentCell != null) {
-					Application.print(printTypeOfSector(currentCell) + currentCell.getName() + RESET_COLOR);
+					Application.print(printTypeOfSector(currentCell)
+							+ currentCell.getName() + RESET_COLOR);
 				} else {
 					Application.print("   ");
 				}
@@ -131,7 +145,7 @@ public class CLIGraphics extends Graphics {
 	}
 
 	/**
-	 * This method print the player info.
+	 * This method prints the player info.
 	 * 
 	 * @author cerridifebbo
 	 */
@@ -148,7 +162,7 @@ public class CLIGraphics extends Graphics {
 	}
 
 	/**
-	 * This method print the player position.
+	 * This method prints the player position.
 	 * 
 	 * @author cerridifebbo
 	 */
@@ -185,7 +199,7 @@ public class CLIGraphics extends Graphics {
 	}
 
 	/**
-	 * This method print the cards of the player.
+	 * This method prints the cards of the player.
 	 * 
 	 * @author cerridifebbo
 	 */
@@ -203,7 +217,7 @@ public class CLIGraphics extends Graphics {
 	}
 
 	/**
-	 * This method print the parameter message.
+	 * This method prints the parameter message.
 	 * 
 	 * @author cerridifebbo
 	 * @param message
@@ -215,7 +229,7 @@ public class CLIGraphics extends Graphics {
 	}
 
 	/**
-	 * This method prepare all the staff for start the player's turn.It prints
+	 * This method prepares all the staff for start the player's turn.It prints
 	 * the map and the player's info. It also run a timer that indicates the
 	 * maximum player's time turn. It also prints a START_TURN_MESSAGE.
 	 * 
@@ -237,7 +251,7 @@ public class CLIGraphics extends Graphics {
 	}
 
 	/**
-	 * This method prepare all the staff for end the player's turn. It prints a
+	 * This method prepares all the staff for end the player's turn. It prints a
 	 * END_TURN_MESSAGE.
 	 * 
 	 * @author cerridifebbo
@@ -254,15 +268,18 @@ public class CLIGraphics extends Graphics {
 	 * @author cerridifebbo
 	 */
 	private void printOptions() {
+		Application.println("\n" + MOVE_OPTIONS);
+		Application.println(MOVE_MOVEMENT);
 		if (player.getRace().equals(ALIEN_CLASS)) {
-			Application.println("\n" + MOVE_OPTIONS_ALIEN);
-		} else {
-			Application.println("\n" + MOVE_OPTIONS_HUMAN);
+			Application.println(MOVE_ATTACK);
+		} else if (!player.getOwnCards().isEmpty()) {
+			Application.println(MOVE_USEITEMCARD);
 		}
+		Application.println(MOVE_FINISH);
 	}
 
 	/**
-	 * This method prepare all the staff for prepare the player to declare a
+	 * This method prepares all the staff for prepare the player to declare a
 	 * move. It prints the move options and wait the user's command. If the
 	 * start turn finish or if there is an exception the thread that is open
 	 * when the client try to insert a command will be interrupted.
@@ -278,14 +295,10 @@ public class CLIGraphics extends Graphics {
 	}
 
 	/**
-	 * This method prepare all the staff for prepare the player to declare a
-	 * sector. It prints SECTOR_SELECTION and wait the user's command. If the
-	 * start turn finish or if there is an exception the thread that is open
-	 * when the client try to insert a command will be interrupted.
+	 * This method prepares all the staff for prepare the player to declare a
+	 * sector.
 	 * 
 	 * @author cerridifebbo
-	 * @throws Exception
-	 *             when the scanner or the thread have some problems.
 	 */
 	@Override
 	public void declareSector() {
@@ -309,13 +322,9 @@ public class CLIGraphics extends Graphics {
 
 	/**
 	 * This method prepare all the staff for prepare the player to declare a
-	 * card. It prints USE_DISCARD and wait the user's command. If the start
-	 * turn finish or if there is an exception the thread that is open when the
-	 * client try to insert a command will be interrupted.
+	 * card.
 	 * 
 	 * @author cerridifebbo
-	 * @throws Exception
-	 *             when the scanner or the thread have some problems.
 	 */
 	@Override
 	public void declareCard() {
@@ -370,8 +379,24 @@ public class CLIGraphics extends Graphics {
 		sendMessage(sector.toString() + SECTOR_ESCAPE_UPDATE);
 	}
 
+	/**
+	 * This class implements Runnable.
+	 * 
+	 * @author cerridifebbo
+	 *
+	 */
 	private class DeclareMoveRunnable implements Runnable {
 
+		/**
+		 * This method prepares all the staff for prepare the player to declare
+		 * a move. It prints the move options and wait the user's command. If
+		 * the start turn finish or if there is an exception the thread that is
+		 * open when the client try to insert a command will be interrupted.
+		 * 
+		 * @author cerridifebbo
+		 * @throws Exception
+		 *             when the scanner or the thread have some problems.
+		 */
 		@Override
 		public void run() {
 			try {
@@ -391,29 +416,42 @@ public class CLIGraphics extends Graphics {
 						getNetworkInterface().sendToServer(Move.MOVEMENT, line);
 						chosen = true;
 					} else if (line.equalsIgnoreCase(Move.USEITEMCARD)) {
-						if (!player.getOwnCards().isEmpty()) {
-							printCardPlayer();
-							Application.println(CARD_SELECTION);
-							line = in.nextLine();
-							line = line.replace(" ", "");
-							getNetworkInterface().sendToServer(Move.USEITEMCARD, line);
-							chosen = true;
-						} else {
-							Application.println(NO_CARD_PLAYER_SELECTION);
-						}
+						printCardPlayer();
+						Application.println(CARD_SELECTION);
+						line = in.nextLine();
+						line = line.replace(" ", "");
+						getNetworkInterface().sendToServer(Move.USEITEMCARD,
+								line);
+						chosen = true;
 					} else if (line.equalsIgnoreCase(Move.FINISH)) {
 						getNetworkInterface().sendToServer(Move.FINISH, null);
 						chosen = true;
 					}
 				} while (!chosen);
 			} catch (Exception e) {
-				Application.exception(e, "You didn't make your decision in time", false);
+				Application.exception(e, EXCEPTION_MESSAGE, false);
 			}
 		}
 	}
 
+	/**
+	 * This class implements Runnable.
+	 * 
+	 * @author cerridifebbo
+	 *
+	 */
 	private class DeclareSectorRunnable implements Runnable {
 
+		/**
+		 * This method prepares all the staff for prepare the player to declare
+		 * a sector. It prints SECTOR_SELECTION and wait the user's command. If
+		 * the start turn finish or if there is an exception the thread that is
+		 * open when the client try to insert a command will be interrupted.
+		 * 
+		 * @author cerridifebbo
+		 * @throws Exception
+		 *             when the scanner or the thread have some problems.
+		 */
 		@Override
 		public void run() {
 			try {
@@ -423,15 +461,31 @@ public class CLIGraphics extends Graphics {
 				move = move.replace(" ", "");
 				getNetworkInterface().sendToServer(Move.SECTOR, move);
 			} catch (Exception e) {
-				Application.exception(e, "You didn't make your decision in time", false);
+				Application.exception(e, EXCEPTION_MESSAGE, false);
 			}
 
 		}
 
 	}
 
+	/**
+	 * This class implements Runnable.
+	 * 
+	 * @author cerridifebbo
+	 *
+	 */
 	private class DeclareCardRunnable implements Runnable {
 
+		/**
+		 * This method prepares all the staff for prepare the player to declare
+		 * a card. It prints USE_DISCARD and wait the user's command. If the
+		 * start turn finish or if there is an exception the thread that is open
+		 * when the client try to insert a command will be interrupted.
+		 * 
+		 * @author cerridifebbo
+		 * @throws Exception
+		 *             when the scanner or the thread have some problems.
+		 */
 		@Override
 		public void run() {
 			try {
@@ -448,17 +502,19 @@ public class CLIGraphics extends Graphics {
 						String move = null;
 						move = in.nextLine();
 						move = move.replace(" ", "");
-						getNetworkInterface().sendToServer(Move.USEITEMCARD, move);
+						getNetworkInterface().sendToServer(Move.USEITEMCARD,
+								move);
 					} else if (line.equalsIgnoreCase(DELETE_CARD)) {
 						chosen = true;
 						Application.println(CARD_SELECTION);
 						String move = in.nextLine();
 						move = move.replace(" ", "");
-						getNetworkInterface().sendToServer(Move.DELETECARD, move);
+						getNetworkInterface().sendToServer(Move.DELETECARD,
+								move);
 					}
 				} while (!chosen);
 			} catch (Exception e) {
-				Application.exception(e, "You didn't make your decision in time", false);
+				Application.exception(e, EXCEPTION_MESSAGE, false);
 			}
 
 		}

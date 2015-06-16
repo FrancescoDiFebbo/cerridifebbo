@@ -3,6 +3,14 @@ package it.polimi.ingsw.cerridifebbo.view.gui;
 import java.awt.*;
 import java.io.Serializable;
 
+/**
+ * This class is a custom layout. It puts the elements of the container in a
+ * hexagonal grid.
+ * 
+ * @see LayoutManager
+ * @author cerridifebbo
+ *
+ */
 public class MapLayout implements LayoutManager, Serializable {
 
 	private static final long serialVersionUID = -5980749297800669540L;
@@ -11,17 +19,43 @@ public class MapLayout implements LayoutManager, Serializable {
 	private int preferredWidth, preferredHeight;
 	private static final int BORDER = 5;
 
+	/**
+	 * This constructor sets the raw and the column of the grid.It also sets the
+	 * sizes of the layout.
+	 * 
+	 * @see LayoutManager
+	 * @author cerridifebbo
+	 *
+	 */
 	public MapLayout(int raw, int column) {
 		this.raw = raw;
 		this.column = column;
 		setSizes();
 	}
 
+	/**
+	 * This method is empty because the layout has not need to make changes when
+	 * this method is invoked.
+	 * 
+	 * @author cerridifebbo
+	 * @param name
+	 *            null
+	 * @param comp
+	 *            null
+	 */
 	@Override
 	public void addLayoutComponent(String name, Component comp) {
 		// No need to add layout components
 	}
 
+	/**
+	 * This method is empty because the layout has not need to make changes when
+	 * this method is invoked.
+	 * 
+	 * @author cerridifebbo
+	 * @param comp
+	 *            null
+	 */
 	@Override
 	public void removeLayoutComponent(Component comp) {
 		// No need to remove layout components
@@ -34,6 +68,15 @@ public class MapLayout implements LayoutManager, Serializable {
 				+ 4 * BORDER;
 	}
 
+	/**
+	 * This method returns the preferred size of the layout. The preferred size
+	 * are the size of the preferredWidth and preferredHeight plus the insets'
+	 * size.
+	 * 
+	 * @author cerridifebbo
+	 * @param parent
+	 *            the container that uses the layout
+	 */
 	@Override
 	public Dimension preferredLayoutSize(Container parent) {
 		Dimension dim = new Dimension(0, 0);
@@ -44,11 +87,28 @@ public class MapLayout implements LayoutManager, Serializable {
 		return dim;
 	}
 
+	/**
+	 * This method returns the minimum size of the layout. The minimum size are
+	 * the preferred size
+	 * 
+	 * @see preferredLayoutSize
+	 * 
+	 * @author cerridifebbo
+	 * @param parent
+	 *            the container that uses the layout
+	 */
 	@Override
 	public Dimension minimumLayoutSize(Container parent) {
 		return preferredLayoutSize(parent);
 	}
 
+	/**
+	 * This method sets the element of the parent parameter.
+	 * 
+	 * @author cerridifebbo
+	 * @param parent
+	 *            the container that uses the layout
+	 */
 	@Override
 	public void layoutContainer(Container parent) {
 		int x = BORDER;

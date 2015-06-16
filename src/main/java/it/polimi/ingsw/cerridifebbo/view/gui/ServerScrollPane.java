@@ -8,6 +8,12 @@ import javax.swing.JTextArea;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 
+/**
+ * This class describes a JScrollPane that shows messages.
+ * 
+ * @author cerridifebbo
+ *
+ */
 public class ServerScrollPane extends JScrollPane {
 
 	private static final long serialVersionUID = 1L;
@@ -30,6 +36,14 @@ public class ServerScrollPane extends JScrollPane {
 	private String playerRace;
 	Container textContainer = new Container();
 
+	/**
+	 * This constructor set the JScrollPane and shows an initial message. It
+	 * uses the box layout.
+	 * 
+	 * @author cerridifebbo
+	 * @param playerRace
+	 *            the race of the player
+	 */
 	public ServerScrollPane(String playerRace) {
 		this.playerRace = playerRace;
 		Border thickBorder = new LineBorder(
@@ -46,6 +60,13 @@ public class ServerScrollPane extends JScrollPane {
 		setBorder(thickBorder);
 	}
 
+	/**
+	 * This method show the text int the JscrollPane.
+	 * 
+	 * @author cerridifebbo
+	 * @param message
+	 *            the message that will be displayed in the JScrollPane
+	 */
 	public void addText(String message) {
 		JTextArea text = new JTextArea("  " + message);
 		text.setEditable(false);

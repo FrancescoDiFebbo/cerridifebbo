@@ -12,6 +12,14 @@ import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 
+/**
+ * This class describes a panel card. The panel is formed by an image of a card,
+ * a name of the card and two buttons use and discard.
+ * 
+ * @see CustomLayout that is the layout of this class.
+ * @author cerridifebbo
+ *
+ */
 public class CardPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
@@ -28,7 +36,18 @@ public class CardPanel extends JPanel {
 	public static final int BUTTON_HEIGHT = 30;
 	private static final int SPACE_BETWEEN_COMP_Y2 = 2;
 	private static final int SPACE_BETWEEN_COMP_Y1 = 0;
+	private static final String FONT_NAME = "Arial";
 
+	/**
+	 * This constructor creates the panel and the buttons.
+	 * 
+	 * @author cerridifebbo
+	 * @param label
+	 *            the name of the card
+	 * @param playerRace
+	 *            the race of the player
+	 *
+	 */
 	public CardPanel(String label, String playerRace) {
 		LayoutManager cardLayout = new CustomLayout(SPACE_BETWEEN_COMP_Y1,
 				SPACE_BETWEEN_COMP_Y2);
@@ -43,13 +62,23 @@ public class CardPanel extends JPanel {
 		initializeButton(playerRace);
 	}
 
+	/**
+	 * This constructor initializes the card's label.
+	 * 
+	 * @author cerridifebbo
+	 * @param label
+	 *            the name of the card
+	 * @param playerRace
+	 *            the race of the player
+	 *
+	 */
 	private void initializeCardLabel(String label, String playerRace) {
 		card = new JLabel();
 		card.setName(label);
 		card.setVerticalTextPosition(AbstractButton.BOTTOM);
 		card.setHorizontalTextPosition(AbstractButton.CENTER);
 		card.setText(" " + label + " ");
-		card.setFont(new Font("Arial", Font.PLAIN, 10));
+		card.setFont(new Font(FONT_NAME, Font.PLAIN, 10));
 		card.setBackground(GUIGraphics.BACKGROUND_COLOR);
 		card.setForeground(GUIGraphics.getColorRace(playerRace));
 		card.setOpaque(false);
@@ -62,11 +91,18 @@ public class CardPanel extends JPanel {
 		add(card);
 	}
 
+	/**
+	 * This method initialize the use and discard buttons.
+	 * 
+	 * @author cerridifebbo
+	 * @param playerRace
+	 *            the race of the player
+	 */
 	private void initializeButton(String playerRace) {
 		UIManager.getDefaults().put("Button.disabledText",
 				GUIGraphics.getColorRace(playerRace));
 		use = new JButton(USE_TEXT);
-		use.setFont(new Font("Arial", Font.PLAIN, 10));
+		use.setFont(new Font(FONT_NAME, Font.PLAIN, 10));
 		use.setName(card.getName());
 		use.setBackground(GUIGraphics.BACKGROUND_COLOR);
 		use.setForeground(GUIGraphics.getColorRace(playerRace));
@@ -76,7 +112,7 @@ public class CardPanel extends JPanel {
 		discard.setBackground(GUIGraphics.BACKGROUND_COLOR);
 		discard.setForeground(GUIGraphics.getColorRace(playerRace));
 		discard.setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
-		discard.setFont(new Font("Arial", Font.PLAIN, 10));
+		discard.setFont(new Font(FONT_NAME, Font.PLAIN, 10));
 		add(use);
 		add(discard);
 		discard.setEnabled(false);
@@ -87,10 +123,16 @@ public class CardPanel extends JPanel {
 		use.setBorder(thickBorder);
 	}
 
+	/**
+	 * getter of use
+	 */
 	public JButton getUse() {
 		return use;
 	}
 
+	/**
+	 * getter of discard
+	 */
 	public JButton getDiscard() {
 		return discard;
 	}

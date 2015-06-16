@@ -9,6 +9,12 @@ import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 
+/**
+ * This class describes a panel with buttons.
+ * 
+ * @author cerridifebbo
+ *
+ */
 public class ButtonPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
@@ -21,6 +27,15 @@ public class ButtonPanel extends JPanel {
 	private JButton attack;
 	private String playerRace;
 
+	/**
+	 * The constructor of the class creates the panel and the button. It also
+	 * sets the layout to gridLayout. The panel has different colors for
+	 * different player races.
+	 * 
+	 * @author cerridifebbo
+	 * @param playerRace
+	 *            the race of the player
+	 */
 	public ButtonPanel(String playerRace) {
 		this.playerRace = playerRace;
 		setButton();
@@ -31,8 +46,16 @@ public class ButtonPanel extends JPanel {
 
 	}
 
+	/**
+	 * This method sets the buttons. If the player is a alien the buttons are
+	 * attack and finish, else the button is only finish.
+	 * 
+	 * @author cerridifebbo
+	 * 
+	 */
 	private void setButton() {
-		UIManager.getDefaults().put("Button.disabledText",GUIGraphics.getColorRace(playerRace));
+		UIManager.getDefaults().put("Button.disabledText",
+				GUIGraphics.getColorRace(playerRace));
 		Border thickBorder = new LineBorder(
 				GUIGraphics.getColorRace(playerRace), 2);
 		finishTurn = new JButton(FINISH_TURN);
@@ -52,6 +75,13 @@ public class ButtonPanel extends JPanel {
 
 	}
 
+	/**
+	 * This methods adds an action listener to the buttons of the panel.
+	 * 
+	 * @author cerridifebbo
+	 * @param moveListener
+	 *            the actionListener that will be added to the buttons
+	 */
 	public void addListenersToButton(ActionListener moveListener) {
 		if (GUIGraphics.ALIEN.equals(playerRace)) {
 			attack.setEnabled(true);
@@ -61,6 +91,13 @@ public class ButtonPanel extends JPanel {
 		finishTurn.addActionListener(moveListener);
 	}
 
+	/**
+	 * This methods deletes an action listener to the buttons of the panel.
+	 * 
+	 * @author cerridifebbo
+	 * @param moveListener
+	 *            the actionListener that will be deleted to the buttons
+	 */
 	public void deleteListenersToButton(ActionListener moveListener) {
 		if (GUIGraphics.ALIEN.equals(playerRace)) {
 			attack.setEnabled(false);

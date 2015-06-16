@@ -8,6 +8,13 @@ import java.awt.Polygon;
 import java.awt.RenderingHints;
 import javax.swing.JButton;
 
+/**
+ * This class describes a generic sector button. It extends the JButton class.
+ * 
+ * @see Jbutton
+ * @author cerridifebbo
+ *
+ */
 public abstract class SectorButton extends JButton {
 
 	private static final long serialVersionUID = 1L;
@@ -26,6 +33,14 @@ public abstract class SectorButton extends JButton {
 	public static final int HEIGHT = 2 * RADIUS + 2 * BORDER_HEIGHT;
 	private static Polygon hexagon;
 
+	/**
+	 * This constructor creates the sectorButton it also set the name of the
+	 * sector.
+	 * 
+	 * @author cerridifebbo
+	 * @param label
+	 *            the name of the sector
+	 */
 	public SectorButton(String label) {
 		super(label);
 		this.setName(label);
@@ -34,7 +49,12 @@ public abstract class SectorButton extends JButton {
 		setOpaque(false);
 	}
 
-	protected void initializeHexagon() {
+	/**
+	 * This methods initializes the hexagon Polygon
+	 * 
+	 * @author cerridifebbo
+	 */
+	private void initializeHexagon() {
 		int[] cx, cy;
 		cx = new int[] { 0, SHIFT_OBLIQUE_SIDE, SIDE + SHIFT_OBLIQUE_SIDE,
 				SIDE + SHIFT_OBLIQUE_SIDE + SHIFT_OBLIQUE_SIDE,
@@ -43,11 +63,31 @@ public abstract class SectorButton extends JButton {
 		hexagon = new Polygon(cx, cy, 6);
 	}
 
+	/**
+	 * This methods override the precedent contains. It return if the coordinate
+	 * x and y are inside the hexagon polygon.
+	 * 
+	 * @author cerridifebbo
+	 * @param x
+	 *            the coordinate x
+	 * @param y
+	 *            the coordinate y
+	 * @return true if is contained , false otherwise
+	 */
+
 	@Override
 	public boolean contains(int x, int y) {
 		return hexagon.contains(x, y);
 	}
 
+	/**
+	 * This methods override the precedent paintComponent. It paints the hexagon
+	 * in the button and paints also the label name.
+	 * 
+	 * @author cerridifebbo
+	 * @param g
+	 *            the graphics
+	 */
 	@Override
 	protected void paintComponent(Graphics g) {
 		Graphics2D graphics2d = (Graphics2D) g;
@@ -62,6 +102,12 @@ public abstract class SectorButton extends JButton {
 
 	}
 
+	/**
+	 * This methods is empty because there is no need to paint the border of the
+	 * sector.
+	 * 
+	 * @author cerridifebbo
+	 */
 	@Override
 	public void paintBorder(Graphics g) {
 		// no button's borders
