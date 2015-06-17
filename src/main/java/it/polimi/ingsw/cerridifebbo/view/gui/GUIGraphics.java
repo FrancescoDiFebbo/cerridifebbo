@@ -50,6 +50,8 @@ public class GUIGraphics extends Graphics implements ActionListener {
 	private static final int SPACE_BETWEEN_COMP_Y2 = 20;
 	private static final int SPACE_BETWEEN_COMP_Y1 = 80;
 	private static final String ALIEN_CLASS = AlienPlayer.class.getSimpleName();
+	private boolean listenerOn = false;
+	private boolean declareCard = false;
 
 	/**
 	 * This method initializes the graphics.It creates the main window and adds
@@ -163,6 +165,19 @@ public class GUIGraphics extends Graphics implements ActionListener {
 	public void endTurn() {
 		timerPanel.stopTimer();
 		sendMessage("------------------------------");
+		if (listenerOn) {
+			if (declareSector) {
+				listenerOn = false;
+				declareSector = false;
+				mapGrid.deleteListenersToButton(moveListener);
+			}
+			if (declareCard) {
+				listenerOn = false;
+				declareCard = false;
+				cards.deleteListenersToButton(moveListener, true);
+			}
+			deleteListeners(moveListener, false);
+		}
 	}
 
 	/**
@@ -176,6 +191,7 @@ public class GUIGraphics extends Graphics implements ActionListener {
 	public void declareMove() {
 		sendMessage("Make your move");
 		addListeners(moveListener, false);
+		listenerOn = true;
 	}
 
 	/**
@@ -196,6 +212,7 @@ public class GUIGraphics extends Graphics implements ActionListener {
 	 * @author cerridifebbo
 	 */
 	private void deleteListeners(ActionListener moveListener, boolean discard) {
+		listenerOn = false;
 		mapGrid.deleteListenersToButton(moveListener);
 		cards.deleteListenersToButton(moveListener, discard);
 		buttonPanel.deleteListenersToButton(moveListener);
@@ -212,10 +229,11 @@ public class GUIGraphics extends Graphics implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() instanceof SectorButton) {
 			if (declareSector) {
+				listenerOn = false;
+				declareSector = false;
 				getNetworkInterface().sendToServer(Move.SECTOR,
 						e.getActionCommand());
 				mapGrid.deleteListenersToButton(moveListener);
-				declareSector = false;
 			} else {
 				getNetworkInterface().sendToServer(Move.MOVEMENT,
 						e.getActionCommand());
@@ -226,11 +244,12 @@ public class GUIGraphics extends Graphics implements ActionListener {
 			getNetworkInterface().sendToServer(Move.USEITEMCARD, cardName);
 			deleteListeners(moveListener, false);
 		} else if (e.getActionCommand().equals(CardPanel.DISCARD_TEXT)) {
+			listenerOn = false;
+			declareCard = false;
 			String cardName = ((JButton) e.getSource()).getName();
 			getNetworkInterface().sendToServer(Move.DELETECARD, cardName);
 			cards.deleteListenersToButton(moveListener, true);
 		} else if (e.getActionCommand().equals(ButtonPanel.ATTACK)) {
-
 			getNetworkInterface().sendToServer(Move.ATTACK, null);
 			deleteListeners(moveListener, false);
 		} else if (e.getActionCommand().equals(ButtonPanel.FINISH_TURN)) {
@@ -249,6 +268,7 @@ public class GUIGraphics extends Graphics implements ActionListener {
 	public void declareSector() {
 		sendMessage("Choose a sector");
 		declareSector = true;
+		listenerOn = true;
 		mapGrid.addListenersToButton(moveListener);
 	}
 
@@ -272,6 +292,8 @@ public class GUIGraphics extends Graphics implements ActionListener {
 	 */
 	@Override
 	public void declareCard() {
+		listenerOn = true;
+		declareCard = true;
 		cards.addListenersToButton(moveListener, true);
 	}
 

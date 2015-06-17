@@ -1,7 +1,6 @@
 package it.polimi.ingsw.cerridifebbo.view.gui;
 
 import it.polimi.ingsw.cerridifebbo.model.Game;
-
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -28,32 +27,7 @@ public class TimerPanel extends JPanel {
 	private JTextArea timeLeft;
 	private Timer timer;
 
-	private transient ActionListener updateTimer = new ActionListener() {
-		/**
-		 * This method displays the time left in the format Minutes:Seconds.
-		 * 
-		 * @author cerridifebbo
-		 * @param e
-		 *            the actionEvent that invokes the method
-		 */
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			numberOfUpdate++;
-			if (numberOfUpdate < DELAY / PERIOD) {
-				int remainingSeconds = (DELAY - PERIOD * numberOfUpdate) / 1000;
-				int remainingMinutes = 0;
-				while (remainingSeconds >= 60) {
-					remainingSeconds = remainingSeconds - 60;
-					remainingMinutes++;
-				}
-				timeLeft.setText(String.valueOf(remainingMinutes + " : "
-						+ remainingSeconds));
-			} else {
-				timeLeft.setText(TIME_FINISHED);
-				timer.stop();
-			}
-		}
-	};
+	private transient ActionListener updateTimer = new TimerActionListener();
 
 	/**
 	 * This constructor creates the JPanel and the JtextArea.
@@ -96,4 +70,37 @@ public class TimerPanel extends JPanel {
 		timeLeft.setText("");
 	}
 
+	/**
+	 * This class implements ActionListener.
+	 * 
+	 * @author cerridifebbo
+	 *
+	 */
+	private class TimerActionListener implements ActionListener {
+
+		/**
+		 * This method displays the time left in the format Minutes:Seconds.
+		 * 
+		 * @author cerridifebbo
+		 * @param e
+		 *            the actionEvent that invokes the method
+		 */
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			numberOfUpdate++;
+			if (numberOfUpdate < DELAY / PERIOD) {
+				int remainingSeconds = (DELAY - PERIOD * numberOfUpdate) / 1000;
+				int remainingMinutes = 0;
+				while (remainingSeconds >= 60) {
+					remainingSeconds = remainingSeconds - 60;
+					remainingMinutes++;
+				}
+				timeLeft.setText(String.valueOf(remainingMinutes + " : "
+						+ remainingSeconds));
+			} else {
+				timeLeft.setText(TIME_FINISHED);
+				timer.stop();
+			}
+		}
+	}
 }
