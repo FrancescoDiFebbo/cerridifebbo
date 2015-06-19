@@ -18,12 +18,12 @@ public class RMIInterface extends UnicastRemoteObject implements NetworkInterfac
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private transient RemoteServer server;
-	private transient Graphics graphics;
 	private transient String username;
 	private transient String ip;
 	private transient int port;
+	private transient RemoteServer server;
 	private transient RemoteUser user;
+	private transient Graphics graphics;	
 
 	protected RMIInterface() throws RemoteException {
 		super();
@@ -31,48 +31,40 @@ public class RMIInterface extends UnicastRemoteObject implements NetworkInterfac
 
 	@Override
 	public void connect() {
-		Random random = new Random();
-		Registry registry = null;
 		try {
 			ip = InetAddress.getLocalHost().getHostAddress();
 		} catch (UnknownHostException e) {
-			Application.exception(e);
+			Application.exit(e);
 		}
+		Random random = new Random();
+		Registry registry = null;
 		while (true) {
 			try {
 				port = random.nextInt(65535);
 				registry = LocateRegistry.createRegistry(port);
 				break;
 			} catch (RemoteException e) {
-				Application.exception(e, port + " not available", false);
+				Application.exception(e, port + " not available");
 			}
 		}
 		try {
 			registry.bind(Connection.REMOTE_CLIENT_RMI, this);
 		} catch (RemoteException | AlreadyBoundException e) {
-			Application.exception(e);
-			Application.exitError();
+			Application.exit(e);
 		}
 		try {
 			registry = LocateRegistry.getRegistry(Connection.SERVER_REGISTRY_PORT);
 		} catch (RemoteException e) {
-			Application.exception(e);
-			Application.exitError();
+			Application.exit(e);
 		}
 		try {
 			server = (RemoteServer) registry.lookup(Connection.REMOTE_SERVER_RMI);
 		} catch (RemoteException | NotBoundException e) {
-			Application.exception(e, "Server not found", false);
-			Application.exitError();
+			Application.exit(e, "Server not found");
 		}
 		do {
-			username = chooseUsername();
+			username = Client.chooseUsername();
 		} while (!registerClientOnServer());
-	}
-
-	@Override
-	public String chooseUsername() {
-		return Client.chooseUsername();
 	}
 
 	@Override
@@ -96,9 +88,14 @@ public class RMIInterface extends UnicastRemoteObject implements NetworkInterfac
 				return false;
 			}
 		} catch (RemoteException | NotBoundException e) {
-			Application.exception(e, "Unable to contact server", true);
+			Application.exception(e, "Unable to contact server");
 			return false;
 		}
+	}
+	
+	@Override
+	public void setGraphicInterface(Graphics graphics) {
+		this.graphics = graphics;
 	}
 
 	@Override
@@ -108,18 +105,7 @@ public class RMIInterface extends UnicastRemoteObject implements NetworkInterfac
 			return;
 		}
 		Application.println("SERVER) " + message);
-	}
-
-	@Override
-	public void setGraphicInterface(Graphics graphics) {
-		this.graphics = graphics;
-	}
-
-	// @Override
-	// public void sendGameInformation(Map map, Player player, int size)
-	// throws RemoteException {
-	// setGameInformation(map, player, size);
-	// }
+	}	
 
 	@Override
 	public void sendGameInformation(MapRemote map, PlayerRemote player, int size) throws RemoteException {
@@ -144,19 +130,6 @@ public class RMIInterface extends UnicastRemoteObject implements NetworkInterfac
 			graphics.endTurn();
 		}
 	}
-
-	// @Override
-	// public void updatePlayer(Player player, Card card, boolean added) {
-	// graphics.updatePlayerPosition(player.getPlayerRemote());
-	// if (card == null) {
-	// return;
-	// }
-	// if (added) {
-	// graphics.addPlayerCard(player.getPlayerRemote(), card);
-	// } else {
-	// graphics.deletePlayerCard(player.getPlayerRemote(), card);
-	// }
-	// }
 
 	@Override
 	public void updatePlayer(PlayerRemote player, ItemCardRemote card, boolean added) {
@@ -206,11 +179,6 @@ public class RMIInterface extends UnicastRemoteObject implements NetworkInterfac
 		sendMessage("You are disconnected from the server! Hope you like the game! :)");
 		close();
 	}
-
-	// @Override
-	// public boolean poke() throws RemoteException {
-	// return true;
-	// }
 
 	@Override
 	public boolean equals(Object obj) {

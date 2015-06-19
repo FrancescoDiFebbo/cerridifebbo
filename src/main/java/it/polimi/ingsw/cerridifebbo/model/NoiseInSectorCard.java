@@ -43,7 +43,7 @@ public class NoiseInSectorCard extends SectorCard {
 		}
 		game.informPlayers(player, Sentence.NOISE_IN, player.getPosition());
 		if (this.containsItem()) {
-			return (ItemCard) game.getDeck().drawItemCard();
+			return game.getDeck().drawItemCard();
 		} else {
 			return null;
 		}

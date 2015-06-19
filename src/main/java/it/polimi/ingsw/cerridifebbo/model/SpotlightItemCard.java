@@ -5,11 +5,6 @@ import it.polimi.ingsw.cerridifebbo.controller.common.ItemCardName;
 public class SpotlightItemCard extends ItemCard {
 
 	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
-	/**
 	 * With this method the player who uses this card names a target sector. Any
 	 * players (including the player who uses the card) that are in the target
 	 * Sector or any of the six adjacent Sectors declare their positions. This

@@ -3,15 +3,11 @@ package it.polimi.ingsw.cerridifebbo.model;
 import it.polimi.ingsw.cerridifebbo.controller.common.PlayerRemote;
 import it.polimi.ingsw.cerridifebbo.controller.server.User;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Player implements Serializable {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+public abstract class Player{
+
 	private CharacterCard playerCard;
 	private List<Card> ownCards;
 	private Sector pos;

@@ -103,7 +103,7 @@ public class GUIGraphics extends Graphics implements ActionListener {
 			message = PLAYER_RACE_ALIEN;
 		}
 		serverMessage.addText(message
-				+ player.getPlayerCard().getCharacterName());
+				+ player.getPlayerCard().getName());
 		if (numberOfPlayers == 2) {
 			serverMessage
 					.addText("You are not alone. There is a creature on the ship");

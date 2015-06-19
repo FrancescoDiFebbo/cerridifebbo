@@ -59,10 +59,5 @@ public class PlayerRemote implements Serializable {
 		public String getName() {
 			return name;
 		}
-
-		public String getCharacterName() {
-			// TODO Auto-generated method stub
-			return null;
-		}
 	}
 }

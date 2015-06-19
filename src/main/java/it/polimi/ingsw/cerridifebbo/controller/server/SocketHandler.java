@@ -85,7 +85,7 @@ public class SocketHandler extends Thread implements ClientConnection {
 		try {
 			close();
 		} catch (IOException e) {
-			Application.exception(e, "Already closed", false);
+			Application.exception(e, "Already closed");
 		}
 	}
 
@@ -126,7 +126,7 @@ public class SocketHandler extends Thread implements ClientConnection {
 			oos.writeBoolean(true);
 			oos.flush();
 		} catch (IOException e) {
-			Application.exception(e, "BOOOH", true);
+			Application.exception(e, "BOOOH");
 		}
 		newUser.sendMessage("You are connected with \"" + newUser.getName() + "\" name");
 	}
@@ -148,34 +148,6 @@ public class SocketHandler extends Thread implements ClientConnection {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see it.polimi.ingsw.cerridifebbo.controller.common.ClientConnection#
-	 * sendGameInformation(it.polimi.ingsw.cerridifebbo.model.Map,
-	 * it.polimi.ingsw.cerridifebbo.model.Player, int)
-	 */
-	// @Override
-	// public void sendGameInformation(Map map, Player player, int size) {
-	// try {
-	// oos.writeUnshared(Command.build(Command.SEND, Command.GAME_INFORMATION));
-	// oos.flush();
-	// } catch (IOException e1) {
-	// user.suspend(e1);
-	// return;
-	// }
-	// List<Object> info = new ArrayList<Object>();
-	// info.add(map);
-	// info.add(player);
-	// info.add(size);
-	// try {
-	// oos.writeUnshared((ArrayList<Object>) info);
-	// oos.flush();
-	// } catch (IOException e) {
-	// Application.exception(e);
-	// }
-	// }
-
 	@Override
 	public void sendGameInformation(MapRemote map, PlayerRemote player, int size) throws RemoteException {
 		try {
@@ -190,7 +162,7 @@ public class SocketHandler extends Thread implements ClientConnection {
 		info.add(player);
 		info.add(size);
 		try {
-			oos.writeObject((ArrayList<Object>) info);
+			oos.writeObject(info);
 			oos.flush();
 		} catch (IOException e) {
 			user.suspend(e);
@@ -208,7 +180,7 @@ public class SocketHandler extends Thread implements ClientConnection {
 	@Override
 	public void updatePlayer(PlayerRemote player, ItemCardRemote card, boolean added) throws RemoteException {
 		try {
-			oos.writeUnshared(CommandHandler.build(Command.SEND, Command.UPDATE));
+			oos.writeUnshared(Command.build(Command.SEND, Command.UPDATE));
 			oos.flush();
 		} catch (IOException e) {
 			user.suspend(e);
@@ -218,7 +190,7 @@ public class SocketHandler extends Thread implements ClientConnection {
 		update.add(card);
 		update.add(added);
 		try {
-			oos.writeUnshared((ArrayList<Object>) update);
+			oos.writeUnshared(update);
 			oos.flush();
 		} catch (IOException e) {
 			user.suspend(e);
@@ -235,7 +207,7 @@ public class SocketHandler extends Thread implements ClientConnection {
 	@Override
 	public void askForMove() {
 		try {
-			oos.writeUnshared(CommandHandler.build(Command.MOVE, null));
+			oos.writeUnshared(Command.build(Command.MOVE, null));
 			oos.flush();
 		} catch (IOException e) {
 			user.suspend(e);
@@ -252,7 +224,7 @@ public class SocketHandler extends Thread implements ClientConnection {
 	@Override
 	public void askForSector() {
 		try {
-			oos.writeUnshared(CommandHandler.build(Command.SECTOR, null));
+			oos.writeUnshared(Command.build(Command.SECTOR, null));
 			oos.flush();
 		} catch (IOException e) {
 			user.suspend(e);
@@ -270,7 +242,7 @@ public class SocketHandler extends Thread implements ClientConnection {
 	@Override
 	public void askForCard() {
 		try {
-			oos.writeUnshared(CommandHandler.build(Command.CARD, null));
+			oos.writeUnshared(Command.build(Command.CARD, null));
 			oos.flush();
 		} catch (IOException e) {
 			user.suspend(e);
@@ -288,7 +260,7 @@ public class SocketHandler extends Thread implements ClientConnection {
 	@Override
 	public void startTurn() {
 		try {
-			oos.writeUnshared(CommandHandler.build(Command.START_TURN, null));
+			oos.writeUnshared(Command.build(Command.START_TURN, null));
 			oos.flush();
 		} catch (IOException e) {
 			user.suspend(e);
@@ -305,7 +277,7 @@ public class SocketHandler extends Thread implements ClientConnection {
 	@Override
 	public void endTurn() {
 		try {
-			oos.writeUnshared(CommandHandler.build(Command.END_TURN, null));
+			oos.writeUnshared(Command.build(Command.END_TURN, null));
 			oos.flush();
 		} catch (IOException e) {
 			user.suspend(e);
@@ -322,30 +294,13 @@ public class SocketHandler extends Thread implements ClientConnection {
 	@Override
 	public void disconnect() {
 		try {
-			oos.writeUnshared(CommandHandler.build(Command.DISCONNECT, null));
+			oos.writeUnshared(Command.build(Command.DISCONNECT, null));
 			oos.flush();
 			close();
 		} catch (IOException e) {
-			Application.exception(e, "Already disconnected", false);
+			Application.exception(e, "Already disconnected");
 		}
 	}
-
-	// @Override
-	// public boolean poke() {
-	// try {
-	// oos.writeUnshared(CommandHandler.build(Command.POKE, null));
-	// oos.flush();
-	// } catch (IOException e) {
-	// user.suspend(e);
-	// }
-	// try {
-	// String input = in.readLine();
-	// return Boolean.parseBoolean(input);
-	// } catch (IOException e) {
-	// user.suspend(e);
-	// return false;
-	// }
-	// }
 
 	/**
 	 * Put move.

@@ -12,11 +12,6 @@ import it.polimi.ingsw.cerridifebbo.controller.common.ItemCardName;
 public class AttackItemCard extends ItemCard {
 
 	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
-	/**
 	 * With this method the player who uses this card can attack. The player
 	 * must be a human, if is the method throws an exception. The card is
 	 * deleted from the player's cards.

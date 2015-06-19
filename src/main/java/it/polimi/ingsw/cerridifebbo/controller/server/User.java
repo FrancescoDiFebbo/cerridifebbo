@@ -385,7 +385,7 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 	public void suspend(Throwable e) {
 		connection = null;
 		currentGame.informPlayers(player, Sentence.DISCONNECTED, null);
-		Application.exception(e, name + " suspended", true);
+		Application.exception(e, name + " suspended");
 	}
 
 	/*

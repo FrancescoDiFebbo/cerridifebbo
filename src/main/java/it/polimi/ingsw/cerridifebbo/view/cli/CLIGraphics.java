@@ -429,7 +429,7 @@ public class CLIGraphics extends Graphics {
 					}
 				} while (!chosen);
 			} catch (Exception e) {
-				Application.exception(e, EXCEPTION_MESSAGE, false);
+				Application.exception(e, EXCEPTION_MESSAGE);
 			}
 		}
 	}
@@ -461,7 +461,7 @@ public class CLIGraphics extends Graphics {
 				move = move.replace(" ", "");
 				getNetworkInterface().sendToServer(Move.SECTOR, move);
 			} catch (Exception e) {
-				Application.exception(e, EXCEPTION_MESSAGE, false);
+				Application.exception(e, EXCEPTION_MESSAGE);
 			}
 
 		}
@@ -514,7 +514,7 @@ public class CLIGraphics extends Graphics {
 					}
 				} while (!chosen);
 			} catch (Exception e) {
-				Application.exception(e, EXCEPTION_MESSAGE, false);
+				Application.exception(e, EXCEPTION_MESSAGE);
 			}
 
 		}

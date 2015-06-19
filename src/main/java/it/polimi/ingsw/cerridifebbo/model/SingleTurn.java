@@ -34,6 +34,7 @@ public class SingleTurn extends GameState {
 				Move move = user.getMove();
 				perform(move);
 			}
+			timeoutMove.cancel();
 		}
 	}
 

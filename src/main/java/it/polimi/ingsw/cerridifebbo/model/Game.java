@@ -8,7 +8,7 @@ import java.util.List;
 public class Game implements Runnable {
 
 	private static final int MAX_TURNS = 39;
-	public static final int MAX_TIMEOUT = 1000;
+	public static final int MAX_TIMEOUT = 60000;
 	public static final int MAX_PLAYERS = CharacterDeckFactory.MAX_PLAYERS;
 	public static final int MIN_PLAYERS = CharacterDeckFactory.MIN_PLAYERS;
 
@@ -115,7 +115,7 @@ public class Game implements Runnable {
 				me.sendMessage(Sentence.toMe(sentence, this, sector));
 				continue;
 			}
-			user.sendMessage("GAME) " + Sentence.toOthers(sentence, me, this, sector));
+			user.sendMessage(Sentence.toOthers(sentence, me, this, sector));
 		}
 	}
 

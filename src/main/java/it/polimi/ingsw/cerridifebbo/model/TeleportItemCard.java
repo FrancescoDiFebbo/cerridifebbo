@@ -11,11 +11,6 @@ import it.polimi.ingsw.cerridifebbo.controller.common.ItemCardName;
 public class TeleportItemCard extends ItemCard {
 
 	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
-	/**
 	 * With this method the player who uses this card returns in the human
 	 * sector.
 	 * 

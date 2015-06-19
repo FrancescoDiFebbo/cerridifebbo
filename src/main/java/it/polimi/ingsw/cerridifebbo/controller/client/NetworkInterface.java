@@ -19,6 +19,4 @@ public interface NetworkInterface {
 	public void setGameInformation(MapRemote map, PlayerRemote player, int size);
 
 	public void updatePlayer(PlayerRemote player, ItemCardRemote card, boolean added);
-
-	public String chooseUsername();
 }

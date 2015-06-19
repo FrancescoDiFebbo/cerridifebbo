@@ -10,10 +10,6 @@ import it.polimi.ingsw.cerridifebbo.controller.common.ItemCardName;
  */
 public class AdrenalineItemCard extends ItemCard {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 	private static final int ADRENALINEMOVEMENT = 2;
 
 	/**

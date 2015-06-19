@@ -19,7 +19,6 @@ public abstract class Command {
 	public static final String GAME_INFORMATION = "game_information";
 	public static final String UPDATE = "update";
 	public static final String DISCONNECT = "disconnect";
-	public static final String POKE = "poke";
 
 	protected Command() {
 
@@ -29,7 +28,7 @@ public abstract class Command {
 		java.util.Map<String, String> params = new HashMap<String, String>();
 		String[] splitted = line.split("&");
 		for (int i = 0; i < splitted.length; i++) {
-			String first = splitted[i].split("=")[0].replace("_", "\n");
+			String first = splitted[i].split("=")[0].replace("*", "\n");
 			String second = splitted[i].split("=")[1];
 			params.put(first, second == null ? second : second.replace("*", "\n"));
 		}

@@ -99,7 +99,7 @@ public class Server {
 			try {
 				line = Application.readLine("Press 'q' to exit, 'b' to broadcast");
 			} catch (IOException e) {
-				Application.exception(e, "Command not read", true);
+				Application.exception(e, "Command not read");
 				line = null;
 			}
 			if ("q".equals(line)) {

@@ -11,11 +11,6 @@ import it.polimi.ingsw.cerridifebbo.controller.common.ItemCardName;
 public class SedativesItemCard extends ItemCard {
 
 	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
-	/**
 	 * With this method the player who uses this card does not draw a Dangerous
 	 * Sector Card , even if he moves into a Dangerous Sector. The card is
 	 * deleted from the player's cards.

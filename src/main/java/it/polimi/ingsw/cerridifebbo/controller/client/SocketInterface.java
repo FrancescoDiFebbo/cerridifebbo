@@ -27,10 +27,8 @@ public class SocketInterface implements NetworkInterface {
 		try {
 			socket = new Socket(Connection.SERVER_SOCKET_ADDRESS, Connection.SERVER_SOCKET_PORT);
 		} catch (IOException e) {
-			Application.exception(e, "Server not found", false);
-			Application.exitError();
+			Application.exit(e, "Server not found");
 		}
-
 		try {
 			out = new PrintWriter(socket.getOutputStream(), true);
 		} catch (IOException e) {
@@ -55,14 +53,10 @@ public class SocketInterface implements NetworkInterface {
 			return;
 		}
 		do {
-			username = chooseUsername();
+			username = Client.chooseUsername();
 		} while (!registerClientOnServer());
 		listen();
-	}
-
-	@Override
-	public String chooseUsername() {
-		return Client.chooseUsername();
+		close();
 	}
 
 	@Override
@@ -72,8 +66,7 @@ public class SocketInterface implements NetworkInterface {
 			out.close();
 			socket.close();
 		} catch (IOException e) {
-			Application.exception(e);
-			Application.exitError();
+			Application.exit(e);
 		}
 	}
 
@@ -83,7 +76,7 @@ public class SocketInterface implements NetworkInterface {
 		try {
 			return ois.readBoolean();
 		} catch (IOException e) {
-			Application.exception(e, "Unable to contact server", true);
+			Application.exception(e, "Unable to contact server");
 			return false;
 		}
 	}
@@ -91,10 +84,10 @@ public class SocketInterface implements NetworkInterface {
 	private void listen() {
 		while (true) {
 			try {
-				String line = (String) ois.readUnshared();
-				CommandHandler.handleCommand(SocketInterface.this, line);
+				String line = (String) ois.readObject();
+				CommandHandler.handleCommand(this, line);
 			} catch (IOException | ClassNotFoundException e) {
-				Application.exception(e, "Socket closed", true);
+				Application.exception(e, "Socket closed");
 				break;
 			}
 		}
@@ -107,7 +100,7 @@ public class SocketInterface implements NetworkInterface {
 
 	@Override
 	public void sendToServer(String action, String target) {
-		String command = CommandHandler.build(Command.MOVE, action, target);
+		String command = Command.build(Command.MOVE, action, target);
 		out.println(command);
 	}
 
@@ -170,7 +163,7 @@ public class SocketInterface implements NetworkInterface {
 	@SuppressWarnings("unchecked")
 	private void receiveUpdate() {
 		try {
-			Object obj = ois.readUnshared();
+			Object obj = ois.readObject();
 			List<Object> update = (ArrayList<Object>) obj;
 			PlayerRemote player = (PlayerRemote) update.get(0);
 			ItemCardRemote card = (ItemCardRemote) update.get(1);

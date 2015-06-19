@@ -62,35 +62,35 @@ public enum Sentence {
 		String name = nameRevealed(user);
 		switch (sentence) {
 		case NOISE_IN:
-			return name + " made noise in " + sector;
+			return name + ": made noise in " + sector;
 		case NOISE_ANY:
-			return name + " made noise in " + sector;
+			return name + ": made noise in " + sector;
 		case ADRENALINE:
-			return name + " has used adrenaline";
+			return name + ": has used adrenaline";
 		case ATTACK_CARD:
-			return name + " has used attack card";
+			return name + ": has used attack card";
 		case DEFENSE_CARD:
-			return name + " has used defense card";
+			return name + ": has used defense card";
 		case SEDATIVES_CARD:
-			return name + " has used sedatives card";
+			return name + ": has used sedatives card";
 		case SPOTLIGHT_CARD:
-			return name + " has used spotlight card" + spotlight(game, sector);
+			return name + ": has used spotlight card" + spotlight(game, sector);
 		case TELEPORT_CARD:
-			return name + " has used teleport card";
+			return name + ": has used teleport card";
 		case DISCARD_CARD:
-			return name + " has discarded a card";
+			return name + ": has discarded a card";
 		case ATTACK:
-			return name + " is attacking " + sector;
+			return name + ": is attacking " + sector;
 		case KILLED:
-			return name + " is dead";
+			return name + ": is dead";
 		case ESCAPED:
-			return name + " reached " + sector + ". It is open. " + name + " has escaped";
+			return name + ": reached " + sector + ". It is open. " + name + " has escaped";
 		case NOT_ESCAPED:
-			return name + " reached " + sector + ". It is closed. " + name + " can't escape.";
+			return name + ": reached " + sector + ". It is closed. " + name + " can't escape.";
 		case TIMEFINISHED:
-			return name + " has finished his turn time";
+			return name + ": has finished his turn time";
 		case DISCONNECTED:
-			return name + " disconnected from match";
+			return name + ": disconnected from match";
 		default:
 			return null;
 		}

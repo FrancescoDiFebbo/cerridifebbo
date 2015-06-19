@@ -3,23 +3,53 @@ package it.polimi.ingsw.cerridifebbo.controller.client;
 import it.polimi.ingsw.cerridifebbo.controller.common.Application;
 
 import java.io.IOException;
-import java.rmi.NotBoundException;
+import java.util.Calendar;
 
+/**
+ * The Class Client.
+ */
 public class Client implements Runnable {
-	private static final String NETWORK_INTERFACE_SELECTION = "Select '1' for RMI interface, '2' for socket interface";
-	private static final String GRAPHICS_SELECTION = "Select '1' for GUI graphics, '2' for cli graphics";
-	public static final String USERNAME_SELECTION = "Select a username";
-	private static String CHOICE_ONE = "1";
-	private static String CHOICE_TWO = "2";
 
-	public static void main(String[] args) throws IOException, NotBoundException {
+	/** The Constant NETWORK_SELECTION. */
+	private static final String NETWORK_SELECTION = "Select '1' for RMI interface, '2' for socket interface";
+
+	/** The Constant GRAPHIC_SELECTION. */
+	private static final String GRAPHIC_SELECTION = "Select '1' for GUI graphics, '2' for cli graphics";
+
+	/** The Constant USERNAME_SELECTION. */
+	private static final String USERNAME_SELECTION = "Select a username";
+
+	/** The Constant CLIENT. */
+	private static final String CLIENT = "CLIENT";
+
+	/** The Constant CHOICE_ONE. */
+	private static final String CHOICE_ONE = "1";
+
+	/** The Constant CHOICE_TWO. */
+	private static final String CHOICE_TWO = "2";
+
+	/**
+	 * The main method. It starts the client.
+	 *
+	 * @param args
+	 *            the arguments
+	 */
+	public static void main(String[] args) {
 		new Client().start();
 	}
 
+	/**
+	 * Starts the client within a thread.
+	 */
 	public void start() {
-		new Thread(this).start();
+		new Thread(this, CLIENT + Calendar.getInstance().get(Calendar.MILLISECOND)).start();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Runnable#run()
+	 */
 	@Override
 	public void run() {
 		NetworkInterface network = chooseNetwork();
@@ -35,13 +65,18 @@ public class Client implements Runnable {
 		network.connect();
 	}
 
+	/**
+	 * Allows the user to choose a connection interface.
+	 *
+	 * @return the network interface
+	 */
 	private NetworkInterface chooseNetwork() {
 		while (true) {
 			String line = null;
 			try {
-				line = Application.readLine(NETWORK_INTERFACE_SELECTION);
+				line = Application.readLine(NETWORK_SELECTION);
 			} catch (IOException e) {
-				Application.log(e);
+				Application.exception(e);
 				continue;
 			}
 			if (CHOICE_ONE.equals(line)) {
@@ -52,13 +87,18 @@ public class Client implements Runnable {
 		}
 	}
 
+	/**
+	 * Allows the user to choose a graphic interface.
+	 *
+	 * @return the graphics
+	 */
 	private Graphics chooseGraphic() {
 		while (true) {
 			String line = null;
 			try {
-				line = Application.readLine(GRAPHICS_SELECTION);
+				line = Application.readLine(GRAPHIC_SELECTION);
 			} catch (IOException e) {
-				Application.log(e);
+				Application.exception(e);
 				continue;
 			}
 			if (CHOICE_ONE.equals(line)) {
@@ -69,16 +109,21 @@ public class Client implements Runnable {
 		}
 	}
 
+	/**
+	 * Allows the user to choose a name.
+	 *
+	 * @return the string
+	 */
 	public static String chooseUsername() {
 		String name = null;
 		do {
 			try {
-				name = Application.readLine(USERNAME_SELECTION);
+				name = Application.readLine(USERNAME_SELECTION).trim();
 			} catch (IOException e) {
 				Application.exception(e);
 				name = null;
 			}
 		} while (name == null || "".equals(name));
-		return name.trim();
+		return name;
 	}
 }

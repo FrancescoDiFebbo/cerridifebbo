@@ -1,7 +1,5 @@
 package it.polimi.ingsw.cerridifebbo.model;
 
-import java.io.Serializable;
-
 /**
  * This class describes a generic Item card.
  * 
@@ -9,12 +7,8 @@ import java.io.Serializable;
  * @see card that is implemented by this class.
  */
 
-public abstract class ItemCard implements Card, Serializable {
+public abstract class ItemCard implements Card {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 	boolean taken = false;
 
 	/**

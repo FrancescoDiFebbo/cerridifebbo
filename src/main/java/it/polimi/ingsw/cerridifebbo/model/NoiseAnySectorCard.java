@@ -45,7 +45,7 @@ public class NoiseAnySectorCard extends SectorCard {
 		}
 		game.informPlayers(player, Sentence.NOISE_ANY, (Sector) target);
 		if (this.containsItem()) {
-			return (ItemCard) game.getDeck().drawItemCard();
+			return game.getDeck().drawItemCard();
 		} else {
 			return null;
 		}

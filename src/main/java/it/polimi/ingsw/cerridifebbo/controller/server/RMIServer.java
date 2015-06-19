@@ -148,7 +148,7 @@ public class RMIServer extends UnicastRemoteObject implements ServerConnection, 
 			Application.exception(e);
 			return false;
 		} catch (AlreadyBoundException e) {
-			Application.exception(e, "", false);
+			Application.exception(e, "");
 			return true;
 		}
 		newUser.sendMessage("You are connected with \"" + newUser.getName() + "\" name");
