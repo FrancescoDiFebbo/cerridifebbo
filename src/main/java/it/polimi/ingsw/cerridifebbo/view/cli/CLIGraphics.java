@@ -208,7 +208,7 @@ public class CLIGraphics extends Graphics {
 		int nCard = player.getOwnCards().size();
 		if (nCard != 0) {
 			for (int i = 0; i < nCard; i++) {
-				Application.print(player.getOwnCards().get(i) + " ");
+				Application.print(player.getOwnCards().get(i).getName() + " ");
 			}
 			Application.println("");
 		} else {

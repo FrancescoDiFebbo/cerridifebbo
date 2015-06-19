@@ -112,11 +112,14 @@ public class CardsPanel extends JPanel {
 		CardPanel card = null;
 		boolean found = false;
 		for (int i = 0; !found && i < nComp; i++) {
-			if (getComponent(i).getName().equals(cardName))
+			if (((CardPanel) getComponent(i)).getName().equals(cardName)) {
 				card = (CardPanel) getComponent(i);
-			found = true;
+				found = true;
+			}
 		}
-		remove(card);
+		if (found) {
+			remove(card);
+		}
 		repaint();
 	}
 
