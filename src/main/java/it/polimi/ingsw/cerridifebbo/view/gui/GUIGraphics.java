@@ -292,6 +292,8 @@ public class GUIGraphics extends Graphics implements ActionListener {
 	 */
 	@Override
 	public void declareCard() {
+		serverMessage.addText("You reach the maximum number of cards");
+		serverMessage.addText("use or discard one of your cards");
 		listenerOn = true;
 		declareCard = true;
 		cards.addListenersToButton(moveListener, true);

@@ -108,7 +108,7 @@ public class CardPanel extends JPanel {
 		use.setForeground(GUIGraphics.getColorRace(playerRace));
 		use.setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
 		discard = new JButton(DISCARD_TEXT);
-		use.setName(card.getName());
+		discard.setName(card.getName());
 		discard.setBackground(GUIGraphics.BACKGROUND_COLOR);
 		discard.setForeground(GUIGraphics.getColorRace(playerRace));
 		discard.setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
