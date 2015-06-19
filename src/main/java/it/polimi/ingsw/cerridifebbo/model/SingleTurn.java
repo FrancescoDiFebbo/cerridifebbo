@@ -126,7 +126,7 @@ public class SingleTurn extends GameState {
 				Sector sector = null;
 				do {
 					sector = user.getSector(game.getMap());
-				} while (sector != null);
+				} while (sector == null);
 				selectedCard.performAction(player, sector, game);
 
 			} else {

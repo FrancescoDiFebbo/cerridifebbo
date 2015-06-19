@@ -108,7 +108,7 @@ public abstract class Player{
 	public boolean movement(Sector destination, Game game) {
 		if (getPosition().getReachableSectors(getMaxMovement()).contains(destination)) {
 			setPosition(destination);
-			game.sendMessage(this, "You moved to " + getPosition());
+			game.informPlayers(this, Sentence.MOVEMENT, pos);
 			Card sectorCard = destination.playerEnters(this, game.getDeck());
 			Sector target = null;
 			if (sectorCard instanceof NoiseAnySectorCard) {
@@ -120,7 +120,7 @@ public abstract class Player{
 			if (sectorCard != null) {
 				itemCard = (Card) sectorCard.performAction(this, target, game);
 				if (itemCard != null) {
-					game.sendMessage(this, "You received " + itemCard + " card");
+					game.informPlayers(this, Sentence.RECEIVED_CARD, itemCard);
 					this.addCard(itemCard);
 				}
 			}

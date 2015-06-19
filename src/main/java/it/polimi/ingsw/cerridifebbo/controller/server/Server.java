@@ -39,7 +39,7 @@ public class Server {
 	private List<User> room = new ArrayList<User>();
 
 	/** The running games on server. */
-	private Map<Game, Thread> games = new HashMap<Game, Thread>();
+	private List<Game> games = new ArrayList<Game>();
 
 	/**
 	 * The timer that separate the start of the game from the last player
@@ -199,9 +199,8 @@ public class Server {
 			room.clear();
 		}
 		Game game = new Game(gamers);
-		Thread t = new Thread(game, "GAME-" + games.size());
-		games.put(game, t);
-		t.start();
+		games.add(game);
+		game.start();
 	}
 
 	/**
@@ -242,8 +241,8 @@ public class Server {
 	public void gameOver(Game game) {
 		if (started) {
 			List<User> gone = new ArrayList<User>(game.getUsers());
-			games.get(game).interrupt();
 			games.remove(game);
+			Application.println("A game is ended");
 			for (User user : gone) {
 				disconnectUser(user);
 			}

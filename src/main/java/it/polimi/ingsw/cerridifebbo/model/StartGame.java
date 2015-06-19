@@ -11,7 +11,7 @@ public class StartGame extends GameState {
 
 	@Override
 	public void handle() {
-		game.sendMessage(null, "Game is starting...");
+		game.informPlayers(null, Sentence.STARTING_GAME, null);
 		Map map = Map.getInstance();
 		game.setMap(map);
 		List<User> users = game.getUsers();

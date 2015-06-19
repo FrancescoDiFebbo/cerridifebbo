@@ -3,6 +3,7 @@ package it.polimi.ingsw.cerridifebbo.model;
 import it.polimi.ingsw.cerridifebbo.controller.server.Server;
 import it.polimi.ingsw.cerridifebbo.controller.server.User;
 
+import java.util.Calendar;
 import java.util.List;
 
 public class Game implements Runnable {
@@ -17,6 +18,7 @@ public class Game implements Runnable {
 	private Map map;
 	private Deck deck;
 	private boolean end = false;
+	private Thread thread;
 
 	public Game(List<User> users) {
 		this.users = users;
@@ -50,6 +52,11 @@ public class Game implements Runnable {
 		this.end = end;
 	}
 
+	public void start() {
+		thread = new Thread(this, "GAME" + Calendar.getInstance().get(Calendar.MILLISECOND));
+		thread.start();
+	}
+
 	@Override
 	public void run() {
 		state = new StartGame(this);
@@ -80,6 +87,9 @@ public class Game implements Runnable {
 
 	private void close() {
 		Server.getInstance().gameOver(this);
+		if (thread != null) {
+			thread.interrupt();
+		}
 	}
 
 	public Sector getSector(Player player) {
@@ -97,29 +107,28 @@ public class Game implements Runnable {
 		me.updatePlayer(me.getPlayer(), card, added);
 	}
 
-	public void sendMessage(Player player, String message) {
-		if (player == null) {
-			for (User user : users) {
-				user.sendMessage(message);
-			}
-		} else {
-			User user = findUser(player);
-			user.sendMessage(message);
-		}
-	}
-
-	public void informPlayers(Player player, Sentence sentence, Sector sector) {
+	public void informPlayers(Player player, Sentence sentence, Object target) {
 		User me = findUser(player);
 		for (User user : users) {
-			if (user == me) {
-				me.sendMessage(Sentence.toMe(sentence, this, sector));
+			String message = null;
+			if (me != null && user == me) {
+				message = Sentence.toMe(sentence, this, target);
+				if (message != null) {
+					me.sendMessage(message);
+				}
 				continue;
 			}
-			user.sendMessage(Sentence.toOthers(sentence, me, this, sector));
+			message = Sentence.toOthers(sentence, me, this, target);
+			if (message != null) {
+				user.sendMessage("\u2192 " + message);
+			}
 		}
 	}
 
 	private User findUser(Player player) {
+		if (player == null) {
+			return null;
+		}
 		for (User user : users) {
 			if (user.getPlayer() == player) {
 				return user;
