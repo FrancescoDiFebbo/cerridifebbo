@@ -10,7 +10,7 @@ import it.polimi.ingsw.cerridifebbo.controller.common.ItemCardName;
  */
 public class AdrenalineItemCard extends ItemCard {
 
-	private static final int ADRENALINEMOVEMENT = 2;
+	public static final int ADRENALINEMOVEMENT = 2;
 
 	/**
 	 * With this method the player who uses this card has a ADRENALINEMOVEMENT.
