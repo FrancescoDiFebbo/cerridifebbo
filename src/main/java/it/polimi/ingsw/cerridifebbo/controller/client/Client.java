@@ -19,9 +19,6 @@ public class Client implements Runnable {
 	/** The Constant USERNAME_SELECTION. */
 	private static final String USERNAME_SELECTION = "Select a username";
 
-	/** The Constant CLIENT. */
-	private static final String CLIENT = "CLIENT";
-
 	/** The Constant CHOICE_ONE. */
 	private static final String CHOICE_ONE = "1";
 
@@ -42,7 +39,7 @@ public class Client implements Runnable {
 	 * Starts the client within a thread.
 	 */
 	public void start() {
-		new Thread(this, CLIENT + Calendar.getInstance().get(Calendar.MILLISECOND)).start();
+		new Thread(this, "CLIENT" + Calendar.getInstance().get(Calendar.MILLISECOND)).start();
 	}
 
 	/*

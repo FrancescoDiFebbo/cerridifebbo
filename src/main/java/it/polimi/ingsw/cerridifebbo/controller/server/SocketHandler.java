@@ -162,7 +162,7 @@ public class SocketHandler extends Thread implements ClientConnection {
 		info.add(player);
 		info.add(size);
 		try {
-			oos.writeObject(info);
+			oos.writeObject((ArrayList<Object>) info);
 			oos.flush();
 		} catch (IOException e) {
 			user.suspend(e);

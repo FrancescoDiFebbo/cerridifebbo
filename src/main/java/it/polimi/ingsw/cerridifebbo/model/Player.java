@@ -109,25 +109,28 @@ public abstract class Player{
 		if (getPosition().getReachableSectors(getMaxMovement()).contains(destination)) {
 			setPosition(destination);
 			game.informPlayers(this, Sentence.MOVEMENT, pos);
-			Card sectorCard = destination.playerEnters(this, game.getDeck());
-			Sector target = null;
-			if (sectorCard instanceof NoiseAnySectorCard) {
-				do {
-					target = game.getSector(this);
-				} while (target == null);
-			}
-			Card itemCard = null;
-			if (sectorCard != null) {
-				itemCard = (Card) sectorCard.performAction(this, target, game);
-				if (itemCard != null) {
-					game.informPlayers(this, Sentence.RECEIVED_CARD, itemCard);
-					this.addCard(itemCard);
-				}
-			}
-			game.updatePlayer(this, itemCard, true);
 			return true;
 		}
 		return false;
+	}
+
+	protected void drawSectorCard(Sector destination, Game game) {
+		Card sectorCard = destination.playerEnters(this, game.getDeck());
+		Sector target = null;
+		if (sectorCard instanceof NoiseAnySectorCard) {
+			do {
+				target = game.getSector(this);
+			} while (target == null);
+		}
+		Card itemCard = null;
+		if (sectorCard != null) {
+			itemCard = (Card) sectorCard.performAction(this, target, game);
+			if (itemCard != null) {
+				game.informPlayers(this, Sentence.RECEIVED_CARD, itemCard);
+				this.addCard(itemCard);
+			}
+		}
+		game.updatePlayer(this, itemCard, true);
 	}
 
 	public boolean isRevealed() {

@@ -76,6 +76,7 @@ public class SingleTurn extends GameState {
 	private void movement(String target) {
 		Sector destination = game.getMap().getCell(target);
 		if (destination != null && !noMoreMovement && player.movement(destination, game)) {
+			player.drawSectorCard(destination, game);
 			noMoreMovement = true;
 			if (player.getOwnCards().size() > MAX_CARDS) {
 				fullDeck();
@@ -107,9 +108,19 @@ public class SingleTurn extends GameState {
 	}
 
 	private void attack() {
-		if (noMoreMovement && !noMoreAttack) {
-			player.attack(game);
-			noMoreAttack = true;
+		if (!noMoreMovement && !noMoreAttack) {
+			Sector sector = null;
+			do {
+				sector = user.getSector(game.getMap());
+			} while (sector == null);
+			if (player.movement(sector, game)) {
+				user.updatePlayer(player, null, false);
+				player.attack(game);
+				noMoreAttack = true;
+				noMoreMovement = true;
+			} else {
+				user.sendMessage("You can't attack");
+			}
 		} else {
 			user.sendMessage("You can't attack");
 		}

@@ -11,7 +11,7 @@ public class HumanPlayer extends Player {
 		super(playerCard, pos, HUMANMOVEMENT);
 		setEscaped(false);
 	}
-
+	
 	public boolean isEscaped() {
 		return escaped;
 	}

@@ -4,6 +4,7 @@ public class AlienPlayer extends Player {
 
 	private static final int MOVEMENT_BEFORE_EATING = 2;
 	private static final int MOVEMENT_AFTER_EATING = 3;
+	private boolean attacking = false;
 
 	AlienPlayer(CharacterCard playerCard, Sector pos) {
 		super(playerCard, pos, MOVEMENT_BEFORE_EATING);
