@@ -3,6 +3,7 @@ package it.polimi.ingsw.cerridifebbo.controller.client;
 import it.polimi.ingsw.cerridifebbo.controller.common.ItemCardRemote;
 import it.polimi.ingsw.cerridifebbo.controller.common.MapRemote;
 import it.polimi.ingsw.cerridifebbo.controller.common.PlayerRemote;
+import it.polimi.ingsw.cerridifebbo.controller.common.SectorRemote;
 
 public interface NetworkInterface {
 
@@ -18,5 +19,7 @@ public interface NetworkInterface {
 
 	public void setGameInformation(MapRemote map, PlayerRemote player, int size);
 
-	public void updatePlayer(PlayerRemote player, ItemCardRemote card, boolean added);
+	public void setPlayerUpdate(PlayerRemote player, ItemCardRemote card, boolean added);
+
+	public void setHatchUpdate(MapRemote map, SectorRemote sector);
 }

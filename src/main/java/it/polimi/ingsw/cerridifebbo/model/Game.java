@@ -106,6 +106,11 @@ public class Game implements Runnable {
 		User me = findUser(player);
 		me.updatePlayer(me.getPlayer(), card, added);
 	}
+	
+	public void updateHatch(Player player) {
+		User me = findUser(player);
+		me.updateHatch(player.getPosition());		
+	}
 
 	public void informPlayers(Player player, Sentence sentence, Object target) {
 		User me = findUser(player);

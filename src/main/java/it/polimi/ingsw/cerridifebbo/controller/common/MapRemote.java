@@ -16,9 +16,7 @@ public class MapRemote implements Serializable {
 		for (int i = 0; i < ROWMAP; i++) {
 			for (int j = 0; j < COLUMNMAP; j++) {
 				if (map[i][j] != null) {
-					SectorRemote sr = new SectorRemote(map[i][j].getClass()
-							.getSimpleName(), map[i][j].toString(),
-							map[i][j].isPassable(), map[i][j].toString());
+					SectorRemote sr = new SectorRemote(map[i][j]);
 					mr[i][j] = sr;
 				}
 			}
@@ -27,41 +25,5 @@ public class MapRemote implements Serializable {
 
 	public SectorRemote getCell(int i, int j) {
 		return mr[i][j];
-	}
-
-	public class SectorRemote implements Serializable {
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 1L;
-		private final String type;
-		private final String coordinate;
-		private final boolean passable;
-		private final String name;
-
-		private SectorRemote(String type, String coordinate, boolean passable,
-				String name) {
-			this.type = type;
-			this.coordinate = coordinate;
-			this.passable = passable;
-			this.name = name;
-		}
-
-		public String getName() {
-			return name;
-		}
-
-		public String getType() {
-			return type;
-		}
-
-		public String getCoordinate() {
-			return coordinate;
-		}
-
-		public boolean isPassable() {
-			return passable;
-		}
-
 	}
 }

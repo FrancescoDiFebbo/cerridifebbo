@@ -4,6 +4,7 @@ import it.polimi.ingsw.cerridifebbo.controller.common.Application;
 import it.polimi.ingsw.cerridifebbo.controller.common.ClientConnection;
 import it.polimi.ingsw.cerridifebbo.controller.common.ItemCardRemote;
 import it.polimi.ingsw.cerridifebbo.controller.common.RemoteUser;
+import it.polimi.ingsw.cerridifebbo.controller.common.SectorRemote;
 import it.polimi.ingsw.cerridifebbo.model.Card;
 import it.polimi.ingsw.cerridifebbo.model.Game;
 import it.polimi.ingsw.cerridifebbo.model.HumanPlayer;
@@ -352,11 +353,21 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 		if (checkConnection()) {
 			try {
 				if (card == null) {
-					connection.updatePlayer(player.getPlayerRemote(), null, added);
+					connection.sendPlayerUpdate(player.getPlayerRemote(), null, added);
 				} else {
-					connection.updatePlayer(player.getPlayerRemote(), new ItemCardRemote(card), added);
+					connection.sendPlayerUpdate(player.getPlayerRemote(), new ItemCardRemote(card), added);
 				}
 
+			} catch (RemoteException e) {
+				suspend(e);
+			}
+		}
+	}
+
+	public void updateHatch(Sector sector) {
+		if (checkConnection()) {
+			try {
+				connection.sendHatchUpdate(currentGame.getMap().getMapRemote(), new SectorRemote(sector));
 			} catch (RemoteException e) {
 				suspend(e);
 			}

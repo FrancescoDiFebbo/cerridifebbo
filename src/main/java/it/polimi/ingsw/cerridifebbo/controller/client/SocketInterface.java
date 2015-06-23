@@ -6,6 +6,7 @@ import it.polimi.ingsw.cerridifebbo.controller.common.Connection;
 import it.polimi.ingsw.cerridifebbo.controller.common.ItemCardRemote;
 import it.polimi.ingsw.cerridifebbo.controller.common.MapRemote;
 import it.polimi.ingsw.cerridifebbo.controller.common.PlayerRemote;
+import it.polimi.ingsw.cerridifebbo.controller.common.SectorRemote;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -168,14 +169,14 @@ public class SocketInterface implements NetworkInterface {
 			PlayerRemote player = (PlayerRemote) update.get(0);
 			ItemCardRemote card = (ItemCardRemote) update.get(1);
 			boolean added = (Boolean) update.get(2);
-			updatePlayer(player, card, added);
+			setPlayerUpdate(player, card, added);
 		} catch (IOException | ClassNotFoundException e) {
 			Application.exception(e);
 		}
 	}
-	
+
 	@Override
-	public void updatePlayer(PlayerRemote player, ItemCardRemote card, boolean added) {
+	public void setPlayerUpdate(PlayerRemote player, ItemCardRemote card, boolean added) {
 		graphics.updatePlayerPosition(player);
 		if (card == null) {
 			return;
@@ -185,7 +186,27 @@ public class SocketInterface implements NetworkInterface {
 		} else {
 			graphics.deletePlayerCard(player, card);
 		}
-		
+
+	}
+
+	@SuppressWarnings("unchecked")
+	public void receiveHatchUpdate() {
+		try {
+			Object obj = ois.readObject();
+			List<Object> update = (ArrayList<Object>) obj;
+			MapRemote map = (MapRemote) update.get(0);
+			SectorRemote sector = (SectorRemote) update.get(1);
+			setHatchUpdate(map, sector);
+		} catch (IOException | ClassNotFoundException e) {
+			Application.exception(e);
+		}
+	}
+
+	@Override
+	public void setHatchUpdate(MapRemote map, SectorRemote sector) {
+		if (graphics.isInitialized()) {
+			graphics.updateEscapeHatch(map, sector);
+		}
 	}
 
 	public void disconnect() {
@@ -236,6 +257,8 @@ public class SocketInterface implements NetworkInterface {
 			case UPDATE:
 				si.receiveUpdate();
 				break;
+			case HATCH:
+				si.receiveHatchUpdate();
 			default:
 				break;
 			}

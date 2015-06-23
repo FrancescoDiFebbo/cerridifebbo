@@ -1,9 +1,8 @@
 package it.polimi.ingsw.cerridifebbo.view.gui;
 
 import it.polimi.ingsw.cerridifebbo.controller.common.MapRemote;
-import it.polimi.ingsw.cerridifebbo.controller.common.MapRemote.SectorRemote;
 import it.polimi.ingsw.cerridifebbo.controller.common.PlayerRemote;
-import it.polimi.ingsw.cerridifebbo.view.gui.ConcreteSectorButtonFactory;
+import it.polimi.ingsw.cerridifebbo.controller.common.SectorRemote;
 
 import java.awt.Color;
 import java.awt.Container;

@@ -19,6 +19,7 @@ public abstract class Command {
 	public static final String GAME_INFORMATION = "game_information";
 	public static final String UPDATE = "update";
 	public static final String DISCONNECT = "disconnect";
+	public static final String HATCH = "hatch";
 
 	protected Command() {
 

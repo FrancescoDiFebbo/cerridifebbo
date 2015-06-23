@@ -3,8 +3,8 @@ package it.polimi.ingsw.cerridifebbo.view.gui;
 import it.polimi.ingsw.cerridifebbo.controller.client.Graphics;
 import it.polimi.ingsw.cerridifebbo.controller.common.ItemCardRemote;
 import it.polimi.ingsw.cerridifebbo.controller.common.MapRemote;
-import it.polimi.ingsw.cerridifebbo.controller.common.MapRemote.SectorRemote;
 import it.polimi.ingsw.cerridifebbo.controller.common.PlayerRemote;
+import it.polimi.ingsw.cerridifebbo.controller.common.SectorRemote;
 import it.polimi.ingsw.cerridifebbo.model.AlienPlayer;
 import it.polimi.ingsw.cerridifebbo.model.Move;
 
@@ -67,8 +67,7 @@ public class GUIGraphics extends Graphics implements ActionListener {
 	 *            the number of player of the specific game
 	 */
 	@Override
-	public void initialize(MapRemote map, PlayerRemote player,
-			int numberOfPlayers) {
+	public void initialize(MapRemote map, PlayerRemote player, int numberOfPlayers) {
 		if (player.getRace().equals(ALIEN_CLASS)) {
 			playerRace = ALIEN;
 		} else {
@@ -89,8 +88,7 @@ public class GUIGraphics extends Graphics implements ActionListener {
 		contentPane.add(serverMessage);
 		contentPane.add(cards);
 		contentPane.add(buttonPanel);
-		contentPane.setLayout(new CustomLayout(SPACE_BETWEEN_COMP_Y1,
-				SPACE_BETWEEN_COMP_Y2));
+		contentPane.setLayout(new CustomLayout(SPACE_BETWEEN_COMP_Y1, SPACE_BETWEEN_COMP_Y2));
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setMinimumSize(new Dimension(WIDTH, HEIGHT));
 		frame.setVisible(true);
@@ -102,14 +100,11 @@ public class GUIGraphics extends Graphics implements ActionListener {
 		} else {
 			message = PLAYER_RACE_ALIEN;
 		}
-		serverMessage.addText(message
-				+ player.getPlayerCard().getName());
+		serverMessage.addText(message + player.getPlayerCard().getName());
 		if (numberOfPlayers == 2) {
-			serverMessage
-					.addText("You are not alone. There is a creature on the ship");
+			serverMessage.addText("You are not alone. There is a creature on the ship");
 		} else {
-			serverMessage.addText("You are not alone. There are "
-					+ (numberOfPlayers - 1) + " creatures on the ship");
+			serverMessage.addText("You are not alone. There are " + (numberOfPlayers - 1) + " creatures on the ship");
 		}
 	}
 
@@ -231,12 +226,10 @@ public class GUIGraphics extends Graphics implements ActionListener {
 			if (declareSector) {
 				listenerOn = false;
 				declareSector = false;
-				getNetworkInterface().sendToServer(Move.SECTOR,
-						e.getActionCommand());
+				getNetworkInterface().sendToServer(Move.SECTOR, e.getActionCommand());
 				mapGrid.deleteListenersToButton(moveListener);
 			} else {
-				getNetworkInterface().sendToServer(Move.MOVEMENT,
-						e.getActionCommand());
+				getNetworkInterface().sendToServer(Move.MOVEMENT, e.getActionCommand());
 				deleteListeners(moveListener, false);
 			}
 		} else if (e.getActionCommand().equals(CardPanel.USE_TEXT)) {
@@ -341,7 +334,7 @@ public class GUIGraphics extends Graphics implements ActionListener {
 	 */
 	@Override
 	public void updateEscapeHatch(MapRemote map, SectorRemote sector) {
-		mapGrid.updateEscapeHatchStatus(sector.getName());
+		mapGrid.updateEscapeHatchStatus(sector.getCoordinate());
 	}
 
 }

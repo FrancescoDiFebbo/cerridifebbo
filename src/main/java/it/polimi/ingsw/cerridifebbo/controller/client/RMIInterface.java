@@ -1,6 +1,14 @@
 package it.polimi.ingsw.cerridifebbo.controller.client;
 
-import it.polimi.ingsw.cerridifebbo.controller.common.*;
+import it.polimi.ingsw.cerridifebbo.controller.common.Application;
+import it.polimi.ingsw.cerridifebbo.controller.common.Connection;
+import it.polimi.ingsw.cerridifebbo.controller.common.ItemCardRemote;
+import it.polimi.ingsw.cerridifebbo.controller.common.MapRemote;
+import it.polimi.ingsw.cerridifebbo.controller.common.PlayerRemote;
+import it.polimi.ingsw.cerridifebbo.controller.common.RemoteClient;
+import it.polimi.ingsw.cerridifebbo.controller.common.RemoteServer;
+import it.polimi.ingsw.cerridifebbo.controller.common.RemoteUser;
+import it.polimi.ingsw.cerridifebbo.controller.common.SectorRemote;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -23,7 +31,7 @@ public class RMIInterface extends UnicastRemoteObject implements NetworkInterfac
 	private transient int port;
 	private transient RemoteServer server;
 	private transient RemoteUser user;
-	private transient Graphics graphics;	
+	private transient Graphics graphics;
 
 	protected RMIInterface() throws RemoteException {
 		super();
@@ -92,7 +100,7 @@ public class RMIInterface extends UnicastRemoteObject implements NetworkInterfac
 			return false;
 		}
 	}
-	
+
 	@Override
 	public void setGraphicInterface(Graphics graphics) {
 		this.graphics = graphics;
@@ -105,16 +113,6 @@ public class RMIInterface extends UnicastRemoteObject implements NetworkInterfac
 			return;
 		}
 		Application.println("SERVER) " + message);
-	}	
-
-	@Override
-	public void sendGameInformation(MapRemote map, PlayerRemote player, int size) throws RemoteException {
-		graphics.initialize(map, player, size);
-	}
-
-	@Override
-	public void setGameInformation(MapRemote map, PlayerRemote player, int size) {
-		graphics.initialize(map, player, size);
 	}
 
 	@Override
@@ -132,7 +130,22 @@ public class RMIInterface extends UnicastRemoteObject implements NetworkInterfac
 	}
 
 	@Override
-	public void updatePlayer(PlayerRemote player, ItemCardRemote card, boolean added) {
+	public void sendGameInformation(MapRemote map, PlayerRemote player, int size) throws RemoteException {
+		setGameInformation(map, player, size);
+	}
+
+	@Override
+	public void setGameInformation(MapRemote map, PlayerRemote player, int size) {
+		graphics.initialize(map, player, size);
+	}
+
+	@Override
+	public void sendPlayerUpdate(PlayerRemote player, ItemCardRemote card, boolean added) throws RemoteException {
+		setPlayerUpdate(player, card, added);
+	}
+
+	@Override
+	public void setPlayerUpdate(PlayerRemote player, ItemCardRemote card, boolean added) {
 		graphics.updatePlayerPosition(player);
 		if (card == null) {
 			return;
@@ -141,6 +154,18 @@ public class RMIInterface extends UnicastRemoteObject implements NetworkInterfac
 			graphics.addPlayerCard(player, card);
 		} else {
 			graphics.deletePlayerCard(player, card);
+		}
+	}
+
+	@Override
+	public void sendHatchUpdate(MapRemote map, SectorRemote sector) throws RemoteException {
+		setHatchUpdate(map, sector);
+	}
+
+	@Override
+	public void setHatchUpdate(MapRemote map, SectorRemote sector) {
+		if (graphics.isInitialized()) {
+			graphics.updateEscapeHatch(map, sector);
 		}
 	}
 

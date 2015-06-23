@@ -6,6 +6,7 @@ import it.polimi.ingsw.cerridifebbo.controller.common.Command;
 import it.polimi.ingsw.cerridifebbo.controller.common.ItemCardRemote;
 import it.polimi.ingsw.cerridifebbo.controller.common.MapRemote;
 import it.polimi.ingsw.cerridifebbo.controller.common.PlayerRemote;
+import it.polimi.ingsw.cerridifebbo.controller.common.SectorRemote;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -178,7 +179,7 @@ public class SocketHandler extends Thread implements ClientConnection {
 	 * (it.polimi.ingsw.cerridifebbo.controller.common.PlayerRemote)
 	 */
 	@Override
-	public void updatePlayer(PlayerRemote player, ItemCardRemote card, boolean added) throws RemoteException {
+	public void sendPlayerUpdate(PlayerRemote player, ItemCardRemote card, boolean added) throws RemoteException {
 		try {
 			oos.writeUnshared(Command.build(Command.SEND, Command.UPDATE));
 			oos.flush();
@@ -191,6 +192,25 @@ public class SocketHandler extends Thread implements ClientConnection {
 		update.add(added);
 		try {
 			oos.writeUnshared(update);
+			oos.flush();
+		} catch (IOException e) {
+			user.suspend(e);
+		}
+	}
+
+	@Override
+	public void sendHatchUpdate(MapRemote map, SectorRemote sector) throws RemoteException {
+		try {
+			oos.writeObject(Command.build(Command.SEND, Command.HATCH));
+			oos.flush();
+		} catch (IOException e) {
+			user.suspend(e);
+		}
+		List<Object> update = new ArrayList<Object>();
+		update.add(map);
+		update.add(sector);
+		try {
+			oos.writeObject(update);
 			oos.flush();
 		} catch (IOException e) {
 			user.suspend(e);

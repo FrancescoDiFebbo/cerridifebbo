@@ -2,8 +2,8 @@ package it.polimi.ingsw.cerridifebbo.controller.client;
 
 import it.polimi.ingsw.cerridifebbo.controller.common.ItemCardRemote;
 import it.polimi.ingsw.cerridifebbo.controller.common.MapRemote;
-import it.polimi.ingsw.cerridifebbo.controller.common.MapRemote.SectorRemote;
 import it.polimi.ingsw.cerridifebbo.controller.common.PlayerRemote;
+import it.polimi.ingsw.cerridifebbo.controller.common.SectorRemote;
 
 /**
  * This abstract class describes a generic graphics that is used to show the
