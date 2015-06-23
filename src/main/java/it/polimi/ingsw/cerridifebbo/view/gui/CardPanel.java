@@ -83,7 +83,7 @@ public class CardPanel extends JPanel {
 		card.setForeground(GUIGraphics.getColorRace(playerRace));
 		card.setOpaque(false);
 		String cardPath = System.getProperty("user.dir")
-				+ System.getProperty("file.separator") + "map"
+				+ System.getProperty("file.separator") + "file"
 				+ System.getProperty("file.separator") + "card.png";
 		ImageIcon img = new ImageIcon(cardPath);
 		card.setIcon(img);

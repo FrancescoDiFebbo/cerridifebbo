@@ -21,9 +21,7 @@ public class MapContainer extends Container {
 
 	private static final long serialVersionUID = 1L;
 	private transient LayoutManager mapLayout;
-	private static final String PLAYER_STRING = "ME";
 	private static final Color PLAYER_COLOR = new Color(201, 13, 239);
-	private String precName;
 	private Color precColor;
 	private int precPosition;
 	private boolean restore = false;
@@ -98,7 +96,6 @@ public class MapContainer extends Container {
 	 */
 	public void setPlayerPawn(PlayerRemote player) {
 		if (restore) {
-			getComponent(precPosition).setName(precName);
 			getComponent(precPosition).setForeground(precColor);
 		}
 		String position = player.getPos();
@@ -108,10 +105,8 @@ public class MapContainer extends Container {
 					&& getComponent(i).getName().equals(position)) {
 				restore = true;
 				precPosition = i;
-				precName = getComponent(i).getName();
 				precColor = getComponent(i).getForeground();
 				getComponent(i).setForeground(PLAYER_COLOR);
-				getComponent(i).setName(PLAYER_STRING);
 			}
 		}
 
@@ -128,9 +123,13 @@ public class MapContainer extends Container {
 		int nComp = getComponentCount();
 		for (int i = 0; i < nComp; i++) {
 			if (getComponent(i) != null
-					&& getComponent(i).getName().equals(sector.toString())) {
+					&& getComponent(i).getName().equals(sector)) {
+				if (precPosition == i) {
+					precColor = EscapeHatchSectorButton.ESCAPE_HATCH_COLOR_KO;
+				}
 				getComponent(i).setForeground(
 						EscapeHatchSectorButton.ESCAPE_HATCH_COLOR_KO);
+				repaint();
 			}
 		}
 	}

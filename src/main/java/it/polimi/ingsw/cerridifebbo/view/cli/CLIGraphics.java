@@ -37,7 +37,8 @@ public class CLIGraphics extends Graphics {
 	private static final String ESCAPE_HATCH_SECTOR_KO = "\u001B[35m";
 	private static final String START_TURN_MESSAGE = "It's your turn";
 	private static final String END_TURN_MESSAGE = "----------------------------------------";
-	private static final String DANGEROUS = DangerousSector.class.getSimpleName();
+	private static final String DANGEROUS = DangerousSector.class
+			.getSimpleName();
 	private static final String SECURE = SecureSector.class.getSimpleName();
 	private static final String HATCH = EscapeHatchSector.class.getSimpleName();
 	private static final String ALIEN = AlienSector.class.getSimpleName();
@@ -66,6 +67,7 @@ public class CLIGraphics extends Graphics {
 	private int turn = 0;
 	private Timer timeout = new Timer();
 	private Thread inputThread;
+	private boolean chosen = false;
 
 	/**
 	 * This method initializes the graphics.It prints the map and the player and
@@ -80,15 +82,18 @@ public class CLIGraphics extends Graphics {
 	 *            the number of player of the specific game
 	 */
 	@Override
-	public void initialize(MapRemote map, PlayerRemote player, int numberOfPlayers) {
+	public void initialize(MapRemote map, PlayerRemote player,
+			int numberOfPlayers) {
 		this.player = player;
 		this.map = map;
 		printMap();
 		printPlayer();
 		if (numberOfPlayers == 2) {
-			Application.println("You are not alone. There is a creature on the ship");
+			Application
+					.println("You are not alone. There is a creature on the ship");
 		} else {
-			Application.println("You are not alone. There are " + (numberOfPlayers - 1) + " creatures on the ship");
+			Application.println("You are not alone. There are "
+					+ (numberOfPlayers - 1) + " creatures on the ship");
 		}
 		Application.println(END_TURN_MESSAGE);
 		initialized = true;
@@ -109,7 +114,8 @@ public class CLIGraphics extends Graphics {
 				SectorRemote currentCell = map.getCell(i, j);
 				Application.print("/");
 				if (currentCell != null) {
-					Application.print(printTypeOfSector(currentCell) + currentCell.getCoordinate() + RESET_COLOR);
+					Application.print(printTypeOfSector(currentCell)
+							+ currentCell.getCoordinate() + RESET_COLOR);
 				} else {
 					Application.print("   ");
 
@@ -122,7 +128,8 @@ public class CLIGraphics extends Graphics {
 				Application.print("\\___/");
 				SectorRemote currentCell = map.getCell(i, j);
 				if (currentCell != null) {
-					Application.print(printTypeOfSector(currentCell) + currentCell.getCoordinate() + RESET_COLOR);
+					Application.print(printTypeOfSector(currentCell)
+							+ currentCell.getCoordinate() + RESET_COLOR);
 				} else {
 					Application.print("   ");
 				}
@@ -240,6 +247,7 @@ public class CLIGraphics extends Graphics {
 			@Override
 			public void run() {
 				inputThread.interrupt();
+				chosen = true;
 			}
 		}, Game.MAX_TIMEOUT);
 	}
@@ -254,6 +262,8 @@ public class CLIGraphics extends Graphics {
 	public void endTurn() {
 		Application.println(END_TURN_MESSAGE);
 		timeout.cancel();
+		inputThread.interrupt();
+		chosen = true;
 	}
 
 	/**
@@ -370,7 +380,7 @@ public class CLIGraphics extends Graphics {
 	@Override
 	public void updateEscapeHatch(MapRemote map, SectorRemote sector) {
 		this.map = map;
-		sendMessage(sector.toString() + SECTOR_ESCAPE_UPDATE);
+		sendMessage(sector.getCoordinate() + SECTOR_ESCAPE_UPDATE);
 	}
 
 	/**
@@ -394,7 +404,7 @@ public class CLIGraphics extends Graphics {
 		@Override
 		public void run() {
 			try {
-				boolean chosen = false;
+				chosen = false;
 				do {
 					printOptions();
 					String line = null;
@@ -414,7 +424,8 @@ public class CLIGraphics extends Graphics {
 						Application.println(CARD_SELECTION);
 						line = in.nextLine();
 						line = line.replace(" ", "");
-						getNetworkInterface().sendToServer(Move.USEITEMCARD, line);
+						getNetworkInterface().sendToServer(Move.USEITEMCARD,
+								line);
 						chosen = true;
 					} else if (line.equalsIgnoreCase(Move.FINISH)) {
 						getNetworkInterface().sendToServer(Move.FINISH, null);
@@ -423,6 +434,7 @@ public class CLIGraphics extends Graphics {
 				} while (!chosen);
 			} catch (Exception e) {
 				Application.exception(e, EXCEPTION_MESSAGE);
+				chosen = true;
 			}
 		}
 	}
@@ -483,7 +495,7 @@ public class CLIGraphics extends Graphics {
 		public void run() {
 			try {
 				printCardPlayer();
-				boolean chosen = false;
+				chosen = false;
 				do {
 					Application.print(USE_DISCARD);
 					String line = null;
@@ -495,17 +507,20 @@ public class CLIGraphics extends Graphics {
 						String move = null;
 						move = in.nextLine();
 						move = move.replace(" ", "");
-						getNetworkInterface().sendToServer(Move.USEITEMCARD, move);
+						getNetworkInterface().sendToServer(Move.USEITEMCARD,
+								move);
 					} else if (line.equalsIgnoreCase(DELETE_CARD)) {
 						chosen = true;
 						Application.println(CARD_SELECTION);
 						String move = in.nextLine();
 						move = move.replace(" ", "");
-						getNetworkInterface().sendToServer(Move.DELETECARD, move);
+						getNetworkInterface().sendToServer(Move.DELETECARD,
+								move);
 					}
 				} while (!chosen);
 			} catch (Exception e) {
 				Application.exception(e, EXCEPTION_MESSAGE);
+				chosen = true;
 			}
 
 		}

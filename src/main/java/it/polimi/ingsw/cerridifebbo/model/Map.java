@@ -28,7 +28,7 @@ public class Map implements Serializable {
 	private static final Sector[][] grid = new Sector[ROWMAP][COLUMNMAP];
 	private static Map instance = new Map(new File(
 			System.getProperty("user.dir")
-					+ System.getProperty("file.separator") + "map"
+					+ System.getProperty("file.separator") + "file"
 					+ System.getProperty("file.separator") + "galilei.txt"));
 	private static MapRemote mapRemote;
 

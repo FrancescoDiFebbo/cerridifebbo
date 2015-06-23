@@ -32,6 +32,7 @@ public class GUIGraphics extends Graphics implements ActionListener {
 	public static final Color FOREGROUND_COLOR_HUMAN = Color.BLUE;
 	private static final String PLAYER_RACE_HUMAN = "You are a human. Your name is ";
 	private static final String PLAYER_RACE_ALIEN = "You are an alien. Your name is ";
+	private static final String SECTOR_ESCAPE_UPDATE = " is not more available for escape";
 	private MapContainer mapGrid;
 	private ServerScrollPane serverMessage;
 	private TimerPanel timerPanel;
@@ -334,6 +335,7 @@ public class GUIGraphics extends Graphics implements ActionListener {
 	 */
 	@Override
 	public void updateEscapeHatch(MapRemote map, SectorRemote sector) {
+		serverMessage.addText(sector.getCoordinate()+ " " +SECTOR_ESCAPE_UPDATE);
 		mapGrid.updateEscapeHatchStatus(sector.getCoordinate());
 	}
 
