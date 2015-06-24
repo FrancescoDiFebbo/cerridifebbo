@@ -434,7 +434,6 @@ public class CLIGraphics extends Graphics {
 				} while (!chosen);
 			} catch (Exception e) {
 				Application.exception(e, EXCEPTION_MESSAGE);
-				chosen = true;
 			}
 		}
 	}
@@ -520,7 +519,6 @@ public class CLIGraphics extends Graphics {
 				} while (!chosen);
 			} catch (Exception e) {
 				Application.exception(e, EXCEPTION_MESSAGE);
-				chosen = true;
 			}
 
 		}

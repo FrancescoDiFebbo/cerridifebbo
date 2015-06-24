@@ -6,6 +6,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * This class describes a character deck factory. It implements
+ * SingleTypeDeckFactory.
+ * 
+ * @see SingleTypeDeckFactory
+ * 
+ * @author cerridifebbo
+ *
+ */
 public class CharacterDeckFactory implements SingleTypeDeckFactory {
 
 	private static final int MAX_HUMAN_CARDS = 4;
@@ -13,6 +22,14 @@ public class CharacterDeckFactory implements SingleTypeDeckFactory {
 	public static final int MAX_PLAYERS = MAX_HUMAN_CARDS + MAX_ALIEN_CARDS;
 	public static final int MIN_PLAYERS = 2;
 
+	/**
+	 * This method creates a list of character cards.
+	 * 
+	 * @author cerridifebbo
+	 * @param numberOfPlayers
+	 *            the number of players
+	 * @return the list of character cards
+	 */
 	@Override
 	public List<Card> createDeck(Integer numberOfPlayers) {
 		List<Card> cards = new ArrayList<Card>();
