@@ -1,11 +1,11 @@
 package it.polimi.ingsw.cerridifebbo.view.cli;
 
 import it.polimi.ingsw.cerridifebbo.controller.client.Graphics;
-import it.polimi.ingsw.cerridifebbo.controller.common.Util;
 import it.polimi.ingsw.cerridifebbo.controller.common.ItemCardRemote;
 import it.polimi.ingsw.cerridifebbo.controller.common.MapRemote;
 import it.polimi.ingsw.cerridifebbo.controller.common.PlayerRemote;
 import it.polimi.ingsw.cerridifebbo.controller.common.SectorRemote;
+import it.polimi.ingsw.cerridifebbo.controller.common.Util;
 import it.polimi.ingsw.cerridifebbo.model.AlienPlayer;
 import it.polimi.ingsw.cerridifebbo.model.AlienSector;
 import it.polimi.ingsw.cerridifebbo.model.DangerousSector;
@@ -37,8 +37,7 @@ public class CLIGraphics extends Graphics {
 	private static final String ESCAPE_HATCH_SECTOR_KO = "\u001B[35m";
 	private static final String START_TURN_MESSAGE = "It's your turn";
 	private static final String END_TURN_MESSAGE = "----------------------------------------";
-	private static final String DANGEROUS = DangerousSector.class
-			.getSimpleName();
+	private static final String DANGEROUS = DangerousSector.class.getSimpleName();
 	private static final String SECURE = SecureSector.class.getSimpleName();
 	private static final String HATCH = EscapeHatchSector.class.getSimpleName();
 	private static final String ALIEN = AlienSector.class.getSimpleName();
@@ -82,18 +81,15 @@ public class CLIGraphics extends Graphics {
 	 *            the number of player of the specific game
 	 */
 	@Override
-	public void initialize(MapRemote map, PlayerRemote player,
-			int numberOfPlayers) {
+	public void initialize(MapRemote map, PlayerRemote player, int numberOfPlayers) {
 		this.player = player;
 		this.map = map;
 		printMap();
 		printPlayer();
 		if (numberOfPlayers == 2) {
-			Util
-					.println("You are not alone. There is a creature on the ship");
+			Util.println("You are not alone. There is a creature on the ship");
 		} else {
-			Util.println("You are not alone. There are "
-					+ (numberOfPlayers - 1) + " creatures on the ship");
+			Util.println("You are not alone. There are " + (numberOfPlayers - 1) + " creatures on the ship");
 		}
 		Util.println(END_TURN_MESSAGE);
 		initialized = true;
@@ -114,8 +110,7 @@ public class CLIGraphics extends Graphics {
 				SectorRemote currentCell = map.getCell(i, j);
 				Util.print("/");
 				if (currentCell != null) {
-					Util.print(printTypeOfSector(currentCell)
-							+ currentCell.getCoordinate() + RESET_COLOR);
+					Util.print(printTypeOfSector(currentCell) + currentCell.getCoordinate() + RESET_COLOR);
 				} else {
 					Util.print("   ");
 
@@ -128,8 +123,7 @@ public class CLIGraphics extends Graphics {
 				Util.print("\\___/");
 				SectorRemote currentCell = map.getCell(i, j);
 				if (currentCell != null) {
-					Util.print(printTypeOfSector(currentCell)
-							+ currentCell.getCoordinate() + RESET_COLOR);
+					Util.print(printTypeOfSector(currentCell) + currentCell.getCoordinate() + RESET_COLOR);
 				} else {
 					Util.print("   ");
 				}
@@ -424,8 +418,7 @@ public class CLIGraphics extends Graphics {
 						Util.println(CARD_SELECTION);
 						line = in.nextLine();
 						line = line.replace(" ", "");
-						getNetworkInterface().sendToServer(Move.USEITEMCARD,
-								line);
+						getNetworkInterface().sendToServer(Move.USEITEMCARD, line);
 						chosen = true;
 					} else if (line.equalsIgnoreCase(Move.FINISH)) {
 						getNetworkInterface().sendToServer(Move.FINISH, null);
@@ -434,7 +427,6 @@ public class CLIGraphics extends Graphics {
 				} while (!chosen);
 			} catch (Exception e) {
 				Util.exception(e, EXCEPTION_MESSAGE);
-				chosen = true;
 			}
 		}
 	}
@@ -507,23 +499,19 @@ public class CLIGraphics extends Graphics {
 						String move = null;
 						move = in.nextLine();
 						move = move.replace(" ", "");
-						getNetworkInterface().sendToServer(Move.USEITEMCARD,
-								move);
+						getNetworkInterface().sendToServer(Move.USEITEMCARD, move);
 					} else if (line.equalsIgnoreCase(DELETE_CARD)) {
 						chosen = true;
 						Util.println(CARD_SELECTION);
 						String move = in.nextLine();
 						move = move.replace(" ", "");
-						getNetworkInterface().sendToServer(Move.DELETECARD,
-								move);
+						getNetworkInterface().sendToServer(Move.DELETECARD, move);
 					}
 				} while (!chosen);
 			} catch (Exception e) {
 				Util.exception(e, EXCEPTION_MESSAGE);
-				chosen = true;
 			}
 
 		}
-
 	}
 }

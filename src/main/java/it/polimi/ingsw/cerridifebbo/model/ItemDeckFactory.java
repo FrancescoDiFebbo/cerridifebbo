@@ -12,9 +12,19 @@ public class ItemDeckFactory implements SingleTypeDeckFactory {
 	public static final int MAX_SPOTLIGHT_ITEM_CARDS = 2;
 	public static final int MAX_DEFENSE_ITEM_CARDS = 1;
 	public static final int MAX_ADRENALINE_ITEM_CARDS = 2;
-	public static final int MAX_ITEM_CARDS = MAX_ATTACK_ITEM_CARDS + MAX_TELEPORT_ITEM_CARDS + MAX_SEDATIVES_ITEM_CARDS + MAX_SPOTLIGHT_ITEM_CARDS
-			+ MAX_DEFENSE_ITEM_CARDS + MAX_ADRENALINE_ITEM_CARDS;
+	public static final int MAX_ITEM_CARDS = MAX_ATTACK_ITEM_CARDS
+			+ MAX_TELEPORT_ITEM_CARDS + MAX_SEDATIVES_ITEM_CARDS
+			+ MAX_SPOTLIGHT_ITEM_CARDS + MAX_DEFENSE_ITEM_CARDS
+			+ MAX_ADRENALINE_ITEM_CARDS;
 
+	/**
+	 * This method creates a list of item cards.
+	 * 
+	 * @author cerridifebbo
+	 * @param numberOfPlayers
+	 *            null
+	 * @return the list of item cards
+	 */
 	@Override
 	public List<Card> createDeck(Integer numberOfPlayers) {
 		List<Card> cards = new ArrayList<Card>();
