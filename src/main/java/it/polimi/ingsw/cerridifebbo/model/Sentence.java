@@ -5,7 +5,7 @@ import it.polimi.ingsw.cerridifebbo.controller.server.User;
 import java.util.List;
 
 public enum Sentence {
-	NOISE_IN, NOISE_ANY, ADRENALINE, ATTACK_CARD, DEFENSE_CARD, SEDATIVES_CARD, SPOTLIGHT_CARD, TELEPORT_CARD, DISCARD_CARD, ATTACK, KILLED, ESCAPED, NOT_ESCAPED, TIMEFINISHED, DISCONNECTED, STARTING_GAME, MOVEMENT, RECEIVED_CARD;
+	NOISE_IN, NOISE_ANY, ADRENALINE, ATTACK_CARD, DEFENSE_CARD, SEDATIVES_CARD, SPOTLIGHT_CARD, TELEPORT_CARD, DISCARD_CARD, ATTACK, KILLED, ESCAPED, NOT_ESCAPED, TIMEFINISHED, DISCONNECTED, STARTING_GAME, MOVEMENT, RECEIVED_CARD, CONNECTED;
 
 	public static String toMe(Sentence sentence, Game game, Object target) {
 		switch (sentence) {
@@ -43,6 +43,8 @@ public enum Sentence {
 			return "Escape hatch is closed. You can't escape.";
 		case TIMEFINISHED:
 			return "Time is over.";
+		case CONNECTED:
+			return "You rejoined the match";
 		case DISCONNECTED:
 			return "You are disconnected";
 		default:
@@ -90,6 +92,8 @@ public enum Sentence {
 			return name + ": reached " + target + ". It is closed. " + name + " can't escape.";
 		case TIMEFINISHED:
 			return name + ": has finished his turn time";
+		case CONNECTED:
+			return name + ": rejoined the match";
 		case DISCONNECTED:
 			return name + ": disconnected from match";
 		default:

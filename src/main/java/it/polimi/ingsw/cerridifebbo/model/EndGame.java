@@ -13,30 +13,32 @@ public class EndGame extends GameState {
 		for (User user : game.getUsers()) {
 			user.sendMessage("GAME OVER");
 		}
-		boolean allHumanKilled = true;
 		for (User user : game.getUsers()) {
 			Player player = user.getPlayer();
 			if (!player.isAlive()) {
 				user.sendMessage("YOU LOSE");
 			} else if (player instanceof HumanPlayer && ((HumanPlayer) player).isEscaped()) {
 				user.sendMessage("YOU WIN");
-			} else if (player instanceof HumanPlayer && player.isAlive()){
-				allHumanKilled = false;
 			}
 		}
+		HumanPlayer lastHuman = (HumanPlayer) game.getLastHuman();
+		if (lastHuman == null) {
+			aliensResult(true);
+		} else if (lastHuman.isEscaped()) {
+			aliensResult(false);
+		} else {
+			aliensResult(true);
+		}
+
+	}
+
+	private void aliensResult(boolean win) {
 		for (User user : game.getUsers()) {
 			Player player = user.getPlayer();
-			if (allHumanKilled) {
-				if (player instanceof AlienPlayer && player.isAlive()) {
-					user.sendMessage("YOU WIN");
-				}
-			} else {
-				if (player instanceof AlienPlayer && player.isAlive()) {
-					user.sendMessage("YOU LOSE");
-				} else if (player instanceof HumanPlayer && player.isAlive()) {
-					user.sendMessage("YOU WIN");
-				}
+			if (player instanceof AlienPlayer && player.isAlive()) {
+				user.sendMessage(win ? "YOU WIN" : "YOU LOSE");
 			}
 		}
+
 	}
 }

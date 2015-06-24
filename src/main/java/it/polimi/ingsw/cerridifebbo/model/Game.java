@@ -18,6 +18,7 @@ public class Game implements Runnable {
 	private Map map;
 	private Deck deck;
 	private boolean end = false;
+	private Player lastHuman;
 	private Thread thread;
 
 	public Game(List<User> users) {
@@ -50,6 +51,14 @@ public class Game implements Runnable {
 
 	public void setEnd(boolean end) {
 		this.end = end;
+	}
+
+	public Player getLastHuman() {
+		return this.lastHuman;
+	}
+
+	public void setLastHuman(Player player) {
+		this.lastHuman = player;
 	}
 
 	public void start() {
@@ -106,17 +115,18 @@ public class Game implements Runnable {
 		User me = findUser(player);
 		me.updatePlayer(me.getPlayer(), card, added);
 	}
-	
+
 	public void updateHatch(Player player) {
-		User me = findUser(player);
-		me.updateHatch(player.getPosition());		
+		for (User user : users) {
+			user.updateHatch(player.getPosition());
+		}
 	}
 
 	public void informPlayers(Player player, Sentence sentence, Object target) {
 		User me = findUser(player);
 		for (User user : users) {
 			String message = null;
-			if (me != null && user == me) {
+			if (user == me && me != null) {
 				message = Sentence.toMe(sentence, this, target);
 				if (message != null) {
 					me.sendMessage(message);
@@ -125,7 +135,7 @@ public class Game implements Runnable {
 			}
 			message = Sentence.toOthers(sentence, me, this, target);
 			if (message != null) {
-				user.sendMessage("\u2192 " + message);
+				user.sendMessage(message);
 			}
 		}
 	}

@@ -10,6 +10,19 @@ public class CheckGame extends GameState {
 
 	@Override
 	public void handle() {
+		Player lastHuman = null;
+		for (User user : game.getUsers()) {
+			Player p = user.getPlayer();
+			if (p instanceof HumanPlayer) {
+				if (lastHuman == null) {
+					lastHuman = p;
+				} else {
+					lastHuman = null;
+					break;
+				}
+			}
+		}
+		game.setLastHuman(lastHuman);
 		boolean allAlienKilled = true;
 		boolean allHumanNotInGame = true;
 		for (User u : game.getUsers()) {

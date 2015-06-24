@@ -259,6 +259,7 @@ public class SocketInterface implements NetworkInterface {
 				break;
 			case HATCH:
 				si.receiveHatchUpdate();
+				break;
 			default:
 				break;
 			}

@@ -1,26 +1,26 @@
 package it.polimi.ingsw.cerridifebbo.controller.common;
 
-import java.rmi.RemoteException;
+import java.io.IOException;
 
 public interface ClientConnection {
 
-	public void sendMessage(String message) throws RemoteException;
+	public void sendMessage(String message) throws IOException;
 
-	public void startTurn() throws RemoteException;
+	public void startTurn() throws IOException;
 
-	public void endTurn() throws RemoteException;
+	public void endTurn() throws IOException;
 
-	public void askForMove() throws RemoteException;
+	public void askForMove() throws IOException;
 
-	public void askForSector() throws RemoteException;
+	public void askForSector() throws IOException;
 
-	public void askForCard() throws RemoteException;
+	public void askForCard() throws IOException;
 
-	public void sendGameInformation(MapRemote map, PlayerRemote player, int size) throws RemoteException;
+	public void sendGameInformation(MapRemote map, PlayerRemote player, int size) throws IOException;
 
-	public void sendPlayerUpdate(PlayerRemote player, ItemCardRemote card, boolean added) throws RemoteException;
+	public void sendPlayerUpdate(PlayerRemote player, ItemCardRemote card, boolean added) throws IOException;
 
-	public void sendHatchUpdate(MapRemote map, SectorRemote sector) throws RemoteException;
+	public void sendHatchUpdate(MapRemote map, SectorRemote sector) throws IOException;
 
-	public void disconnect() throws RemoteException;
+	public void disconnect() throws IOException;
 }

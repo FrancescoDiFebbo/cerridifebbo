@@ -42,8 +42,8 @@ public class SingleTurn extends GameState {
 		if (!player.isAlive()) {
 			return false;
 		}
-		if (player instanceof HumanPlayer && !((HumanPlayer) player).isEscaped()) {
-			return true;
+		if (player instanceof HumanPlayer && ((HumanPlayer) player).isEscaped()) {
+			return false;
 		}
 		return true;
 	}

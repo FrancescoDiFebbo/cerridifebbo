@@ -14,6 +14,7 @@ import it.polimi.ingsw.cerridifebbo.model.Player;
 import it.polimi.ingsw.cerridifebbo.model.Sector;
 import it.polimi.ingsw.cerridifebbo.model.Sentence;
 
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.LinkedList;
@@ -153,8 +154,9 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 	 */
 	private boolean checkConnection() {
 		if (reinitialize) {
-			sendGameInformation(currentGame);
+			sendGameInformation(currentGame);			
 			reinitialize = false;
+			currentGame.informPlayers(player, Sentence.CONNECTED, null);
 		}
 		return isOnline();
 	}
@@ -169,7 +171,7 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 		if (checkConnection()) {
 			try {
 				connection.sendMessage(message);
-			} catch (RemoteException e) {
+			} catch (IOException e) {
 				suspend(e);
 			}
 		}
@@ -186,7 +188,7 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 			try {
 				connection.sendGameInformation(game.getMap().getMapRemote(), player.getPlayerRemote(), game.getUsers().size());
 				currentGame = game;
-			} catch (RemoteException e) {
+			} catch (IOException e) {
 				suspend(e);
 			}
 		}
@@ -199,7 +201,7 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 		if (checkConnection()) {
 			try {
 				connection.startTurn();
-			} catch (RemoteException e) {
+			} catch (IOException e) {
 				suspend(e);
 			}
 		}
@@ -212,7 +214,7 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 		if (checkConnection()) {
 			try {
 				connection.endTurn();
-			} catch (RemoteException e) {
+			} catch (IOException e) {
 				suspend(e);
 			}
 		}
@@ -247,7 +249,7 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 	private void askForMove() {
 		try {
 			connection.askForMove();
-		} catch (RemoteException e) {
+		} catch (IOException e) {
 			suspend(e);
 		}
 	}
@@ -283,7 +285,7 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 	private void askForSector() {
 		try {
 			connection.askForSector();
-		} catch (RemoteException e) {
+		} catch (IOException e) {
 			suspend(e);
 		}
 	}
@@ -334,7 +336,7 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 	private void askForCard() {
 		try {
 			connection.askForCard();
-		} catch (RemoteException e) {
+		} catch (IOException e) {
 			suspend(e);
 		}
 	}
@@ -358,7 +360,7 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 					connection.sendPlayerUpdate(player.getPlayerRemote(), new ItemCardRemote(card), added);
 				}
 
-			} catch (RemoteException e) {
+			} catch (IOException e) {
 				suspend(e);
 			}
 		}
@@ -368,7 +370,7 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 		if (checkConnection()) {
 			try {
 				connection.sendHatchUpdate(currentGame.getMap().getMapRemote(), new SectorRemote(sector));
-			} catch (RemoteException e) {
+			} catch (IOException e) {
 				suspend(e);
 			}
 		}
@@ -381,7 +383,7 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 		if (isOnline()) {
 			try {
 				connection.disconnect();
-			} catch (RemoteException e) {
+			} catch (IOException e) {
 				suspend(e);
 			}
 		}
