@@ -1,6 +1,6 @@
 package it.polimi.ingsw.cerridifebbo.controller.server;
 
-import it.polimi.ingsw.cerridifebbo.controller.common.Application;
+import it.polimi.ingsw.cerridifebbo.controller.common.Util;
 import it.polimi.ingsw.cerridifebbo.controller.common.ClientConnection;
 import it.polimi.ingsw.cerridifebbo.controller.common.Command;
 import it.polimi.ingsw.cerridifebbo.controller.common.ItemCardRemote;
@@ -58,7 +58,7 @@ public class SocketHandler extends Thread implements ClientConnection {
 			oos = new ObjectOutputStream(socket.getOutputStream());
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 		} catch (IOException e) {
-			Application.exception(e);
+			Util.exception(e);
 			return;
 		}
 		listen();
@@ -98,7 +98,7 @@ public class SocketHandler extends Thread implements ClientConnection {
 			oos.close();
 			socket.close();
 		} catch (IOException e) {
-			Application.exception(e);
+			Util.exception(e);
 		}
 		interrupt();
 	}
@@ -118,17 +118,17 @@ public class SocketHandler extends Thread implements ClientConnection {
 				oos.writeBoolean(false);
 				oos.flush();
 			} catch (IOException e) {
-				Application.exception(e);
+				Util.exception(e);
 			}
 			return;
 		}
 		this.user = newUser;
-		Application.println("Client \"" + username + "\" connected");
+		Util.println("Client \"" + username + "\" connected");
 		try {
 			oos.writeBoolean(true);
 			oos.flush();
 		} catch (IOException e) {
-			Application.exception(e, "BOOOH");
+			Util.exception(e, "BOOOH");
 		}
 		newUser.sendMessage("You are connected with \"" + newUser.getName() + "\" name");
 	}

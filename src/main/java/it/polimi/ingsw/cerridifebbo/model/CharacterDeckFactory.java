@@ -1,7 +1,5 @@
 package it.polimi.ingsw.cerridifebbo.model;
 
-import it.polimi.ingsw.cerridifebbo.controller.common.CharacterName;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

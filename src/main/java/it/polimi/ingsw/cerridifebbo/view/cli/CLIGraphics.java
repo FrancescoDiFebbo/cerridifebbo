@@ -1,7 +1,7 @@
 package it.polimi.ingsw.cerridifebbo.view.cli;
 
 import it.polimi.ingsw.cerridifebbo.controller.client.Graphics;
-import it.polimi.ingsw.cerridifebbo.controller.common.Application;
+import it.polimi.ingsw.cerridifebbo.controller.common.Util;
 import it.polimi.ingsw.cerridifebbo.controller.common.ItemCardRemote;
 import it.polimi.ingsw.cerridifebbo.controller.common.MapRemote;
 import it.polimi.ingsw.cerridifebbo.controller.common.PlayerRemote;
@@ -89,13 +89,13 @@ public class CLIGraphics extends Graphics {
 		printMap();
 		printPlayer();
 		if (numberOfPlayers == 2) {
-			Application
+			Util
 					.println("You are not alone. There is a creature on the ship");
 		} else {
-			Application.println("You are not alone. There are "
+			Util.println("You are not alone. There are "
 					+ (numberOfPlayers - 1) + " creatures on the ship");
 		}
-		Application.println(END_TURN_MESSAGE);
+		Util.println(END_TURN_MESSAGE);
 		initialized = true;
 	}
 
@@ -106,42 +106,42 @@ public class CLIGraphics extends Graphics {
 	 */
 	private void printMap() {
 		for (int i = 0; i < MapRemote.COLUMNMAP; i = i + 2) {
-			Application.print(" ___    ");
+			Util.print(" ___    ");
 		}
-		Application.println("");
+		Util.println("");
 		for (int i = 0; i < MapRemote.ROWMAP; i++) {
 			for (int j = 0; j < MapRemote.COLUMNMAP; j = j + 2) {
 				SectorRemote currentCell = map.getCell(i, j);
-				Application.print("/");
+				Util.print("/");
 				if (currentCell != null) {
-					Application.print(printTypeOfSector(currentCell)
+					Util.print(printTypeOfSector(currentCell)
 							+ currentCell.getCoordinate() + RESET_COLOR);
 				} else {
-					Application.print("   ");
+					Util.print("   ");
 
 				}
 				if (j != MapRemote.COLUMNMAP - 1)
-					Application.print("\\___");
+					Util.print("\\___");
 			}
-			Application.println("\\");
+			Util.println("\\");
 			for (int j = 1; j < MapRemote.COLUMNMAP; j = j + 2) {
-				Application.print("\\___/");
+				Util.print("\\___/");
 				SectorRemote currentCell = map.getCell(i, j);
 				if (currentCell != null) {
-					Application.print(printTypeOfSector(currentCell)
+					Util.print(printTypeOfSector(currentCell)
 							+ currentCell.getCoordinate() + RESET_COLOR);
 				} else {
-					Application.print("   ");
+					Util.print("   ");
 				}
 
 			}
-			Application.println("\\___/");
+			Util.println("\\___/");
 		}
-		Application.print("    \\___/");
+		Util.print("    \\___/");
 		for (int i = 3; i < MapRemote.COLUMNMAP; i = i + 2) {
-			Application.print("   \\___/");
+			Util.print("   \\___/");
 		}
-		Application.println("");
+		Util.println("");
 
 	}
 
@@ -152,11 +152,11 @@ public class CLIGraphics extends Graphics {
 	 */
 	private void printPlayer() {
 		if (player.getRace().equals(ALIEN_CLASS)) {
-			Application.print(PLAYER_RACE_ALIEN);
+			Util.print(PLAYER_RACE_ALIEN);
 		} else {
-			Application.print(PLAYER_RACE_HUMAN);
+			Util.print(PLAYER_RACE_HUMAN);
 		}
-		Application.println(player.getPlayerCard().getName());
+		Util.println(player.getPlayerCard().getName());
 		printPlayerPosition();
 		printCardPlayer();
 
@@ -168,7 +168,7 @@ public class CLIGraphics extends Graphics {
 	 * @author cerridifebbo
 	 */
 	private void printPlayerPosition() {
-		Application.println(PLAYER_POSITION + player.getPos());
+		Util.println(PLAYER_POSITION + player.getPos());
 	}
 
 	/**
@@ -205,15 +205,15 @@ public class CLIGraphics extends Graphics {
 	 * @author cerridifebbo
 	 */
 	private void printCardPlayer() {
-		Application.print(CARD_PLAYER);
+		Util.print(CARD_PLAYER);
 		int nCard = player.getOwnCards().size();
 		if (nCard != 0) {
 			for (int i = 0; i < nCard; i++) {
-				Application.print(player.getOwnCards().get(i).getName() + " ");
+				Util.print(player.getOwnCards().get(i).getName() + " ");
 			}
-			Application.println("");
+			Util.println("");
 		} else {
-			Application.println(NO_CARD_PLAYER);
+			Util.println(NO_CARD_PLAYER);
 		}
 	}
 
@@ -226,7 +226,7 @@ public class CLIGraphics extends Graphics {
 	 */
 	@Override
 	public void sendMessage(String message) {
-		Application.println(message);
+		Util.println(message);
 	}
 
 	/**
@@ -240,8 +240,8 @@ public class CLIGraphics extends Graphics {
 	public void startTurn() {
 		printMap();
 		printPlayer();
-		Application.println("TURN: " + ++turn);
-		Application.println(START_TURN_MESSAGE);
+		Util.println("TURN: " + ++turn);
+		Util.println(START_TURN_MESSAGE);
 		timeout = new Timer();
 		timeout.schedule(new TimerTask() {
 			@Override
@@ -260,7 +260,7 @@ public class CLIGraphics extends Graphics {
 	 */
 	@Override
 	public void endTurn() {
-		Application.println(END_TURN_MESSAGE);
+		Util.println(END_TURN_MESSAGE);
 		timeout.cancel();
 		inputThread.interrupt();
 		chosen = true;
@@ -272,14 +272,14 @@ public class CLIGraphics extends Graphics {
 	 * @author cerridifebbo
 	 */
 	private void printOptions() {
-		Application.println("\n" + MOVE_OPTIONS);
-		Application.println(MOVE_MOVEMENT);
+		Util.println("\n" + MOVE_OPTIONS);
+		Util.println(MOVE_MOVEMENT);
 		if (player.getRace().equals(ALIEN_CLASS)) {
-			Application.println(MOVE_ATTACK);
+			Util.println(MOVE_ATTACK);
 		} else if (!player.getOwnCards().isEmpty()) {
-			Application.println(MOVE_USEITEMCARD);
+			Util.println(MOVE_USEITEMCARD);
 		}
-		Application.println(MOVE_FINISH);
+		Util.println(MOVE_FINISH);
 	}
 
 	/**
@@ -414,14 +414,14 @@ public class CLIGraphics extends Graphics {
 						getNetworkInterface().sendToServer(Move.ATTACK, null);
 						chosen = true;
 					} else if (line.equalsIgnoreCase(Move.MOVEMENT)) {
-						Application.println(SECTOR_SELECTION);
+						Util.println(SECTOR_SELECTION);
 						line = in.nextLine();
 						line = line.replace(" ", "");
 						getNetworkInterface().sendToServer(Move.MOVEMENT, line);
 						chosen = true;
 					} else if (line.equalsIgnoreCase(Move.USEITEMCARD)) {
 						printCardPlayer();
-						Application.println(CARD_SELECTION);
+						Util.println(CARD_SELECTION);
 						line = in.nextLine();
 						line = line.replace(" ", "");
 						getNetworkInterface().sendToServer(Move.USEITEMCARD,
@@ -433,7 +433,7 @@ public class CLIGraphics extends Graphics {
 					}
 				} while (!chosen);
 			} catch (Exception e) {
-				Application.exception(e, EXCEPTION_MESSAGE);
+				Util.exception(e, EXCEPTION_MESSAGE);
 				chosen = true;
 			}
 		}
@@ -460,13 +460,13 @@ public class CLIGraphics extends Graphics {
 		@Override
 		public void run() {
 			try {
-				Application.println(SECTOR_SELECTION);
+				Util.println(SECTOR_SELECTION);
 				String move = null;
 				move = in.nextLine();
 				move = move.replace(" ", "");
 				getNetworkInterface().sendToServer(Move.SECTOR, move);
 			} catch (Exception e) {
-				Application.exception(e, EXCEPTION_MESSAGE);
+				Util.exception(e, EXCEPTION_MESSAGE);
 			}
 
 		}
@@ -497,13 +497,13 @@ public class CLIGraphics extends Graphics {
 				printCardPlayer();
 				chosen = false;
 				do {
-					Application.print(USE_DISCARD);
+					Util.print(USE_DISCARD);
 					String line = null;
 					line = in.nextLine();
 					line = line.replace(" ", "");
 					if (line.equalsIgnoreCase(USE_CARD)) {
 						chosen = true;
-						Application.println(CARD_SELECTION);
+						Util.println(CARD_SELECTION);
 						String move = null;
 						move = in.nextLine();
 						move = move.replace(" ", "");
@@ -511,7 +511,7 @@ public class CLIGraphics extends Graphics {
 								move);
 					} else if (line.equalsIgnoreCase(DELETE_CARD)) {
 						chosen = true;
-						Application.println(CARD_SELECTION);
+						Util.println(CARD_SELECTION);
 						String move = in.nextLine();
 						move = move.replace(" ", "");
 						getNetworkInterface().sendToServer(Move.DELETECARD,
@@ -519,7 +519,7 @@ public class CLIGraphics extends Graphics {
 					}
 				} while (!chosen);
 			} catch (Exception e) {
-				Application.exception(e, EXCEPTION_MESSAGE);
+				Util.exception(e, EXCEPTION_MESSAGE);
 				chosen = true;
 			}
 

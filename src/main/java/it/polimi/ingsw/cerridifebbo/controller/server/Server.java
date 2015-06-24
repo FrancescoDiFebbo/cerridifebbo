@@ -1,6 +1,6 @@
 package it.polimi.ingsw.cerridifebbo.controller.server;
 
-import it.polimi.ingsw.cerridifebbo.controller.common.Application;
+import it.polimi.ingsw.cerridifebbo.controller.common.Util;
 import it.polimi.ingsw.cerridifebbo.controller.common.ClientConnection;
 import it.polimi.ingsw.cerridifebbo.model.Game;
 
@@ -91,13 +91,13 @@ public class Server {
 		socket.start();
 		started = true;
 
-		Application.println("Server ready...");
+		Util.println("Server ready...");
 		while (true) {
 			String line = null;
 			try {
-				line = Application.readLine("Press 'q' to exit, 'b' to broadcast");
+				line = Util.readLine("Press 'q' to exit, 'b' to broadcast");
 			} catch (IOException e) {
-				Application.exception(e, "Command not read");
+				Util.exception(e, "Command not read");
 				line = null;
 			}
 			if ("q".equals(line)) {
@@ -119,7 +119,7 @@ public class Server {
 		if (socket != null) {
 			socket.close();
 		}
-		Application.exitSuccess();
+		Util.exitSuccess();
 	}
 
 	/**
@@ -149,7 +149,7 @@ public class Server {
 		try {
 			newUser = new User(username, client);
 		} catch (RemoteException e) {
-			Application.exception(e);
+			Util.exception(e);
 			return null;
 		}
 		setRoom(newUser);
@@ -240,7 +240,7 @@ public class Server {
 		if (started) {
 			List<User> gone = new ArrayList<User>(game.getUsers());
 			games.remove(game);
-			Application.println("A game is ended");
+			Util.println("A game is ended");
 			for (User user : gone) {
 				disconnectUser(user);
 			}
@@ -256,6 +256,6 @@ public class Server {
 	private void disconnectUser(User user) {
 		user.disconnect();
 		users.remove(user);
-		Application.println(user.getName() + " disconnected from server");
+		Util.println(user.getName() + " disconnected from server");
 	}
 }

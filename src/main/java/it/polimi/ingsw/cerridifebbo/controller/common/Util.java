@@ -6,10 +6,10 @@ import java.io.InputStreamReader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Application {
-	private static final Logger LOG = Logger.getLogger(Application.class.getName());
+public class Util {
+	private static final Logger LOG = Logger.getLogger(Util.class.getName());
 
-	private Application() {
+	private Util() {
 
 	}
 
@@ -56,7 +56,7 @@ public class Application {
 		if (System.console() != null) {
 			return System.console().readLine(format, args);
 		}
-		Application.println(String.format(format, args));
+		Util.println(String.format(format, args));
 
 		InputStreamReader isr = new InputStreamReader(System.in);
 		BufferedReader br = new BufferedReader(isr);

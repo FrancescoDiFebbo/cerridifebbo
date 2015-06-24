@@ -1,6 +1,6 @@
 package it.polimi.ingsw.cerridifebbo.controller.server;
 
-import it.polimi.ingsw.cerridifebbo.controller.common.Application;
+import it.polimi.ingsw.cerridifebbo.controller.common.Util;
 import it.polimi.ingsw.cerridifebbo.controller.common.ClientConnection;
 import it.polimi.ingsw.cerridifebbo.controller.common.Connection;
 
@@ -87,7 +87,7 @@ public class SocketServer implements ServerConnection {
 		try {
 			startListening();
 		} catch (IOException e) {
-			Application.exception(e);
+			Util.exception(e);
 		}
 	}
 
@@ -106,7 +106,7 @@ public class SocketServer implements ServerConnection {
 					SocketHandler sh = new SocketHandler(s);
 					sh.start();
 				} catch (IOException e) {
-					Application.exception(e);
+					Util.exception(e);
 				}
 			}
 		}
@@ -121,7 +121,7 @@ public class SocketServer implements ServerConnection {
 			try {
 				serverSocket.close();
 			} catch (IOException e) {
-				Application.exception(e);
+				Util.exception(e);
 			}
 		}
 	}

@@ -1,6 +1,5 @@
 package it.polimi.ingsw.cerridifebbo.model;
 
-import it.polimi.ingsw.cerridifebbo.controller.common.ItemCardName;
 
 public class SpotlightItemCard extends ItemCard {
 

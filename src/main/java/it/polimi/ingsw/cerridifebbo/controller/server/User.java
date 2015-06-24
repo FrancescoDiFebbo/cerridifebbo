@@ -1,6 +1,6 @@
 package it.polimi.ingsw.cerridifebbo.controller.server;
 
-import it.polimi.ingsw.cerridifebbo.controller.common.Application;
+import it.polimi.ingsw.cerridifebbo.controller.common.Util;
 import it.polimi.ingsw.cerridifebbo.controller.common.ClientConnection;
 import it.polimi.ingsw.cerridifebbo.controller.common.ItemCardRemote;
 import it.polimi.ingsw.cerridifebbo.controller.common.RemoteUser;
@@ -398,7 +398,7 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 	public void suspend(Throwable e) {
 		connection = null;
 		currentGame.informPlayers(player, Sentence.DISCONNECTED, null);
-		Application.exception(e, name + " suspended");
+		Util.exception(e, name + " suspended");
 	}
 
 	/*

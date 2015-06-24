@@ -1,12 +1,16 @@
 package it.polimi.ingsw.cerridifebbo.controller.client;
 
-import it.polimi.ingsw.cerridifebbo.controller.common.Application;
+import it.polimi.ingsw.cerridifebbo.controller.common.Util;
 
 import java.io.IOException;
 import java.util.Calendar;
 
 /**
- * The Class Client.
+ * The Class Client. Allows the user to choose the type of connection
+ * client-server and the graphic interface. This is the entry class for the
+ * client application.
+ * 
+ * @author cerridifebbo
  */
 public class Client implements Runnable {
 
@@ -71,9 +75,9 @@ public class Client implements Runnable {
 		while (true) {
 			String line = null;
 			try {
-				line = Application.readLine(NETWORK_SELECTION);
+				line = Util.readLine(NETWORK_SELECTION);
 			} catch (IOException e) {
-				Application.exception(e);
+				Util.exception(e);
 				continue;
 			}
 			if (CHOICE_ONE.equals(line)) {
@@ -87,15 +91,15 @@ public class Client implements Runnable {
 	/**
 	 * Allows the user to choose a graphic interface.
 	 *
-	 * @return the graphics
+	 * @return the graphics interface
 	 */
 	private Graphics chooseGraphic() {
 		while (true) {
 			String line = null;
 			try {
-				line = Application.readLine(GRAPHIC_SELECTION);
+				line = Util.readLine(GRAPHIC_SELECTION);
 			} catch (IOException e) {
-				Application.exception(e);
+				Util.exception(e);
 				continue;
 			}
 			if (CHOICE_ONE.equals(line)) {
@@ -109,15 +113,15 @@ public class Client implements Runnable {
 	/**
 	 * Allows the user to choose a name.
 	 *
-	 * @return the string
+	 * @return the name
 	 */
 	public static String chooseUsername() {
 		String name = null;
 		do {
 			try {
-				name = Application.readLine(USERNAME_SELECTION).trim();
+				name = Util.readLine(USERNAME_SELECTION).trim();
 			} catch (IOException e) {
-				Application.exception(e);
+				Util.exception(e);
 				name = null;
 			}
 		} while (name == null || "".equals(name));

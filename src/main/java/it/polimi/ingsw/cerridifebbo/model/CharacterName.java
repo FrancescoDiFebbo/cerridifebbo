@@ -1,4 +1,4 @@
-package it.polimi.ingsw.cerridifebbo.controller.common;
+package it.polimi.ingsw.cerridifebbo.model;
 
 import java.util.ArrayList;
 import java.util.List;

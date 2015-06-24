@@ -1,4 +1,4 @@
-package it.polimi.ingsw.cerridifebbo.controller.common;
+package it.polimi.ingsw.cerridifebbo.model;
 
 public enum ItemCardName {
 	ADRENALINE("Adrenaline"), ATTACK("Attack"), DEFENSE("Defense"), SEDATIVES("Sedatives"), SPOTLIGHT("Spotlight"), TELEPORT("Teleport");

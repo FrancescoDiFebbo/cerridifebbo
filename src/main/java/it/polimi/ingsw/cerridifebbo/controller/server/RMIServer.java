@@ -1,6 +1,6 @@
 package it.polimi.ingsw.cerridifebbo.controller.server;
 
-import it.polimi.ingsw.cerridifebbo.controller.common.Application;
+import it.polimi.ingsw.cerridifebbo.controller.common.Util;
 import it.polimi.ingsw.cerridifebbo.controller.common.ClientConnection;
 import it.polimi.ingsw.cerridifebbo.controller.common.Connection;
 import it.polimi.ingsw.cerridifebbo.controller.common.RemoteClient;
@@ -53,7 +53,7 @@ public class RMIServer extends UnicastRemoteObject implements ServerConnection, 
 			try {
 				return new RMIServer();
 			} catch (RemoteException e) {
-				Application.exception(e);
+				Util.exception(e);
 				return null;
 			}
 		}
@@ -84,8 +84,8 @@ public class RMIServer extends UnicastRemoteObject implements ServerConnection, 
 			try {
 				registry.unbind(Connection.REMOTE_SERVER_RMI);
 			} catch (NotBoundException | RemoteException e) {
-				Application.exception(e);
-				Application.exitError();
+				Util.exception(e);
+				Util.exitError();
 			}
 		}
 		if (thread != null) {
@@ -104,8 +104,8 @@ public class RMIServer extends UnicastRemoteObject implements ServerConnection, 
 			registry = LocateRegistry.createRegistry(Connection.SERVER_REGISTRY_PORT);
 			registry.bind(Connection.REMOTE_SERVER_RMI, this);
 		} catch (RemoteException | AlreadyBoundException e) {
-			Application.exception(e);
-			Application.exitError();
+			Util.exception(e);
+			Util.exitError();
 		}
 	}
 
@@ -123,7 +123,7 @@ public class RMIServer extends UnicastRemoteObject implements ServerConnection, 
 			Registry clientRegistry = LocateRegistry.getRegistry(address, port);
 			client = (RemoteClient) clientRegistry.lookup(Connection.REMOTE_CLIENT_RMI);
 		} catch (RemoteException | NotBoundException e) {
-			Application.exception(e);
+			Util.exception(e);
 			return false;
 		}
 		return registerClientOnServer(username, client);
@@ -145,14 +145,14 @@ public class RMIServer extends UnicastRemoteObject implements ServerConnection, 
 		try {
 			registry.bind(username, newUser);
 		} catch (RemoteException e) {
-			Application.exception(e);
+			Util.exception(e);
 			return false;
 		} catch (AlreadyBoundException e) {
-			Application.exception(e, "");
+			Util.exception(e, "");
 			return true;
 		}
 		newUser.sendMessage("You are connected with \"" + newUser.getName() + "\" name");
-		Application.println("Client \"" + username + "\" connected");
+		Util.println("Client \"" + username + "\" connected");
 		return true;
 	}
 
