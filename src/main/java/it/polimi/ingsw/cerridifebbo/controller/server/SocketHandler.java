@@ -124,7 +124,7 @@ public class SocketHandler extends Thread implements ClientConnection {
 			oos.writeBoolean(true);
 			oos.flush();
 		} catch (IOException e) {
-			Util.exception(e, "BOOOH");
+			Util.exception(e, "Socket closed on registering");
 		}
 		newUser.sendMessage("You are connected with \"" + newUser.getName() + "\" name");
 	}
