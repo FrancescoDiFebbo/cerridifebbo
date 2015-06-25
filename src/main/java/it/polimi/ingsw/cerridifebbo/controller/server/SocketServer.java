@@ -98,7 +98,7 @@ public class SocketServer implements ServerConnection {
 		try {
 			startListening();
 		} catch (IOException e) {
-			Util.exception(e);
+			Util.exception(e, "Socket server not started. Another server is listening on this port");
 		}
 	}
 
@@ -118,7 +118,7 @@ public class SocketServer implements ServerConnection {
 					SocketHandler sh = new SocketHandler(s);
 					sh.start();
 				} catch (IOException e) {
-					Util.exception(e);
+					Util.exception(e, "Socket is already closed");
 				}
 			}
 		}

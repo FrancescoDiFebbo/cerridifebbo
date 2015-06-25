@@ -47,10 +47,29 @@ public class EndGame extends GameState {
 			aliensResult(true);
 		} else if (lastHuman.isEscaped()) {
 			aliensResult(false);
+		} else if (!lastHuman.isAlive()){
+			aliensResult(true);
+		} else {
+			checkRaces();
+		}
+
+	}
+
+	private void checkRaces() {
+		boolean allAlienKilled = true;
+		for (User user : game.getUsers()) {
+			Player player = user.getPlayer();
+			if (player instanceof AlienPlayer && player.isAlive()) {
+				allAlienKilled = false;
+				break;
+			}
+		}
+		if (allAlienKilled) {
+			aliensResult(false);
 		} else {
 			aliensResult(true);
 		}
-
+		
 	}
 
 	/**

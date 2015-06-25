@@ -239,7 +239,7 @@ public class Server {
 	 */
 	public void gameOver(Game game) {
 		if (started) {
-			List<User> gone = new ArrayList<User>(game.getUsers());
+			List<User> gone = new ArrayList<User>(game.getUsers());			
 			games.remove(game);
 			Util.println("A game is ended");
 			for (User user : gone) {

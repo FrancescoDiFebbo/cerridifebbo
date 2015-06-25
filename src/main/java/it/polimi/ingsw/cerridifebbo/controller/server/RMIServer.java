@@ -106,7 +106,7 @@ public class RMIServer extends UnicastRemoteObject implements ServerConnection, 
 			registry = LocateRegistry.createRegistry(Connection.SERVER_REGISTRY_PORT);
 			registry.bind(Connection.REMOTE_SERVER_RMI, this);
 		} catch (RemoteException | AlreadyBoundException e) {
-			Util.exception(e);
+			Util.exception(e, "RMI server not started. Another server is listening on this port");
 			Util.exitError();
 		}
 	}
@@ -145,13 +145,10 @@ public class RMIServer extends UnicastRemoteObject implements ServerConnection, 
 			return false;
 		}
 		try {
-			registry.bind(username, newUser);
+			registry.rebind(username, newUser);
 		} catch (RemoteException e) {
 			Util.exception(e);
 			return false;
-		} catch (AlreadyBoundException e) {
-			Util.exception(e, "");
-			return true;
 		}
 		newUser.sendMessage("You are connected with \"" + newUser.getName() + "\" name");
 		Util.println("Client \"" + username + "\" connected");
