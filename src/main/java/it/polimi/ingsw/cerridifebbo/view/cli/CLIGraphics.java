@@ -59,7 +59,7 @@ public class CLIGraphics extends Graphics {
 	private static final String PLAYER_RACE_HUMAN = "You are a human. Your name is ";
 	private static final String PLAYER_RACE_ALIEN = "You are an alien. Your name is ";
 	private static final String SECTOR_ESCAPE_UPDATE = " is not more available for escape";
-	private static final String EXCEPTION_MESSAGE = "You didn't make your decision in time";
+	private static final String EXCEPTION_MESSAGE = "Remember that the turn time is not unlimited!";
 	private Scanner in = new Scanner(System.in);
 	private PlayerRemote player;
 	private MapRemote map;
@@ -459,10 +459,10 @@ public class CLIGraphics extends Graphics {
 				getNetworkInterface().sendToServer(Move.SECTOR, move);
 			} catch (Exception e) {
 				Util.exception(e, EXCEPTION_MESSAGE);
+
 			}
 
 		}
-
 	}
 
 	/**
