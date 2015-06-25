@@ -56,7 +56,7 @@ public class SingleTurn extends GameState {
 			movement(target);
 			break;
 		case Move.ATTACK:
-			attack();
+			attack(target);
 			break;
 		case Move.USEITEMCARD:
 			useCard(target);
@@ -107,12 +107,12 @@ public class SingleTurn extends GameState {
 		}
 	}
 
-	private void attack() {
+	private void attack(String target) {
 		if (!noMoreMovement && !noMoreAttack) {
-			Sector sector = null;
-			do {
+			Sector sector = game.getMap().getCell(target);
+			while (sector == null) {
 				sector = user.getSector(game.getMap());
-			} while (sector == null);
+			}
 			if (player.movement(sector, game)) {
 				user.updatePlayer(player, null, false);
 				player.attack(game);

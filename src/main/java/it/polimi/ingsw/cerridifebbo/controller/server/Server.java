@@ -12,7 +12,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 /**
- * The Class Server.
+ * The Class Server. It starts RMI and Socket servers, listening for incoming
+ * connections. It manages all the users connected and games running. This is
+ * the entry class for the server application.
  * 
  * @author cerridifebbo
  */
@@ -20,7 +22,7 @@ public class Server {
 
 	/**
 	 * It indicates the interval in milliseconds that separate the start of the
-	 * game from the last player connected
+	 * game from the last player connected.
 	 */
 	private static final int TIMEOUT_NEWGAME = 10000;
 
@@ -41,11 +43,11 @@ public class Server {
 
 	/**
 	 * The timer that separate the start of the game from the last player
-	 * connected
+	 * connected.
 	 */
 	private Timer timeout = new Timer();
 
-	/** Indicates if server is started */
+	/** Indicates if server is started. */
 	private boolean started = false;
 
 	/**
@@ -75,8 +77,7 @@ public class Server {
 	}
 
 	/**
-	 * This method start the server. It listens for incoming rmi and socket
-	 * connections.
+	 * Starts the server. It listens for incoming rmi and socket connections.
 	 */
 	private void start() {
 		rmi = ServerConnectionFactory.getConnection(ServerConnectionFactory.RMI);
@@ -110,7 +111,7 @@ public class Server {
 	}
 
 	/**
-	 * This method stop the server. Incoming connections are not listened.
+	 * Stops the server. Incoming connections are not listened.
 	 */
 	public void stop() {
 		if (rmi != null) {
@@ -157,7 +158,7 @@ public class Server {
 	}
 
 	/**
-	 * Adds the incoming client in the room, waiting for the game to start
+	 * Adds the incoming client in the room, waiting for the game to start.
 	 *
 	 * @param newUser
 	 *            the new user
@@ -231,7 +232,7 @@ public class Server {
 	}
 
 	/**
-	 * Disconnects all the users in the game and remove the game just finished.
+	 * Disconnects all the users in the game just finished.
 	 *
 	 * @param game
 	 *            the game

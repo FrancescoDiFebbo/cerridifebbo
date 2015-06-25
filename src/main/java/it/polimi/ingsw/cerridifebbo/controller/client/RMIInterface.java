@@ -21,42 +21,48 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.Random;
 
 /**
- * The Class RMIInterface. Chosen by user, this connection bind 
+ * The Class RMIInterface. Chosen by user, this connection bind itself on a
+ * registry and can be easy-called by the methods provided by RemoteClient.
+ *
+ * @author cerridifebbo
  */
 public class RMIInterface extends UnicastRemoteObject implements NetworkInterface, RemoteClient {
 
-	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
-	
+
 	/** The username. */
 	private transient String username;
-	
-	/** The ip. */
+
+	/** The ip address. */
 	private transient String ip;
-	
+
 	/** The port. */
 	private transient int port;
-	
+
 	/** The server. */
 	private transient RemoteServer server;
-	
-	/** The user. */
+
+	/** The user bound on server registry. */
 	private transient RemoteUser user;
-	
+
 	/** The graphic. */
 	private transient Graphics graphics;
 
 	/**
 	 * Instantiates a new RMI interface.
 	 *
-	 * @throws RemoteException the remote exception
+	 * @throws RemoteException
+	 *             the remote exception
 	 */
 	protected RMIInterface() throws RemoteException {
 		super();
 	}
 
-	/* (non-Javadoc)
-	 * @see it.polimi.ingsw.cerridifebbo.controller.client.NetworkInterface#connect()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * it.polimi.ingsw.cerridifebbo.controller.client.NetworkInterface#connect()
 	 */
 	@Override
 	public void connect() {
@@ -96,8 +102,11 @@ public class RMIInterface extends UnicastRemoteObject implements NetworkInterfac
 		} while (!registerClientOnServer());
 	}
 
-	/* (non-Javadoc)
-	 * @see it.polimi.ingsw.cerridifebbo.controller.client.NetworkInterface#close()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * it.polimi.ingsw.cerridifebbo.controller.client.NetworkInterface#close()
 	 */
 	@Override
 	public void close() {
@@ -109,8 +118,11 @@ public class RMIInterface extends UnicastRemoteObject implements NetworkInterfac
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see it.polimi.ingsw.cerridifebbo.controller.client.NetworkInterface#registerClientOnServer()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see it.polimi.ingsw.cerridifebbo.controller.client.NetworkInterface#
+	 * registerClientOnServer()
 	 */
 	@Override
 	public boolean registerClientOnServer() {
@@ -128,16 +140,24 @@ public class RMIInterface extends UnicastRemoteObject implements NetworkInterfac
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see it.polimi.ingsw.cerridifebbo.controller.client.NetworkInterface#setGraphicInterface(it.polimi.ingsw.cerridifebbo.controller.client.Graphics)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see it.polimi.ingsw.cerridifebbo.controller.client.NetworkInterface#
+	 * setGraphicInterface
+	 * (it.polimi.ingsw.cerridifebbo.controller.client.Graphics)
 	 */
 	@Override
 	public void setGraphicInterface(Graphics graphics) {
 		this.graphics = graphics;
 	}
 
-	/* (non-Javadoc)
-	 * @see it.polimi.ingsw.cerridifebbo.controller.common.ClientConnection#sendMessage(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * it.polimi.ingsw.cerridifebbo.controller.common.ClientConnection#sendMessage
+	 * (java.lang.String)
 	 */
 	@Override
 	public void sendMessage(String message) throws RemoteException {
@@ -148,8 +168,12 @@ public class RMIInterface extends UnicastRemoteObject implements NetworkInterfac
 		Util.println("SERVER) " + message);
 	}
 
-	/* (non-Javadoc)
-	 * @see it.polimi.ingsw.cerridifebbo.controller.common.ClientConnection#startTurn()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * it.polimi.ingsw.cerridifebbo.controller.common.ClientConnection#startTurn
+	 * ()
 	 */
 	@Override
 	public void startTurn() throws RemoteException {
@@ -158,8 +182,11 @@ public class RMIInterface extends UnicastRemoteObject implements NetworkInterfac
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see it.polimi.ingsw.cerridifebbo.controller.common.ClientConnection#endTurn()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * it.polimi.ingsw.cerridifebbo.controller.common.ClientConnection#endTurn()
 	 */
 	@Override
 	public void endTurn() throws RemoteException {
@@ -168,32 +195,52 @@ public class RMIInterface extends UnicastRemoteObject implements NetworkInterfac
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see it.polimi.ingsw.cerridifebbo.controller.common.ClientConnection#sendGameInformation(it.polimi.ingsw.cerridifebbo.controller.common.MapRemote, it.polimi.ingsw.cerridifebbo.controller.common.PlayerRemote, int)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see it.polimi.ingsw.cerridifebbo.controller.common.ClientConnection#
+	 * sendGameInformation
+	 * (it.polimi.ingsw.cerridifebbo.controller.common.MapRemote,
+	 * it.polimi.ingsw.cerridifebbo.controller.common.PlayerRemote, int)
 	 */
 	@Override
-	public void sendGameInformation(MapRemote map, PlayerRemote player, int size) throws RemoteException {
-		setGameInformation(map, player, size);
+	public void sendGameInformation(MapRemote map, PlayerRemote player, int numberOfPlayers) throws RemoteException {
+		setGameInformation(map, player, numberOfPlayers);
 	}
 
-	/* (non-Javadoc)
-	 * @see it.polimi.ingsw.cerridifebbo.controller.client.NetworkInterface#setGameInformation(it.polimi.ingsw.cerridifebbo.controller.common.MapRemote, it.polimi.ingsw.cerridifebbo.controller.common.PlayerRemote, int)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see it.polimi.ingsw.cerridifebbo.controller.client.NetworkInterface#
+	 * setGameInformation
+	 * (it.polimi.ingsw.cerridifebbo.controller.common.MapRemote,
+	 * it.polimi.ingsw.cerridifebbo.controller.common.PlayerRemote, int)
 	 */
 	@Override
 	public void setGameInformation(MapRemote map, PlayerRemote player, int size) {
 		graphics.initialize(map, player, size);
 	}
 
-	/* (non-Javadoc)
-	 * @see it.polimi.ingsw.cerridifebbo.controller.common.ClientConnection#sendPlayerUpdate(it.polimi.ingsw.cerridifebbo.controller.common.PlayerRemote, it.polimi.ingsw.cerridifebbo.controller.common.ItemCardRemote, boolean)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see it.polimi.ingsw.cerridifebbo.controller.common.ClientConnection#
+	 * sendPlayerUpdate
+	 * (it.polimi.ingsw.cerridifebbo.controller.common.PlayerRemote,
+	 * it.polimi.ingsw.cerridifebbo.controller.common.ItemCardRemote, boolean)
 	 */
 	@Override
 	public void sendPlayerUpdate(PlayerRemote player, ItemCardRemote card, boolean added) throws RemoteException {
 		setPlayerUpdate(player, card, added);
 	}
 
-	/* (non-Javadoc)
-	 * @see it.polimi.ingsw.cerridifebbo.controller.client.NetworkInterface#setPlayerUpdate(it.polimi.ingsw.cerridifebbo.controller.common.PlayerRemote, it.polimi.ingsw.cerridifebbo.controller.common.ItemCardRemote, boolean)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see it.polimi.ingsw.cerridifebbo.controller.client.NetworkInterface#
+	 * setPlayerUpdate
+	 * (it.polimi.ingsw.cerridifebbo.controller.common.PlayerRemote,
+	 * it.polimi.ingsw.cerridifebbo.controller.common.ItemCardRemote, boolean)
 	 */
 	@Override
 	public void setPlayerUpdate(PlayerRemote player, ItemCardRemote card, boolean added) {
@@ -208,16 +255,24 @@ public class RMIInterface extends UnicastRemoteObject implements NetworkInterfac
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see it.polimi.ingsw.cerridifebbo.controller.common.ClientConnection#sendHatchUpdate(it.polimi.ingsw.cerridifebbo.controller.common.MapRemote, it.polimi.ingsw.cerridifebbo.controller.common.SectorRemote)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see it.polimi.ingsw.cerridifebbo.controller.common.ClientConnection#
+	 * sendHatchUpdate(it.polimi.ingsw.cerridifebbo.controller.common.MapRemote,
+	 * it.polimi.ingsw.cerridifebbo.controller.common.SectorRemote)
 	 */
 	@Override
 	public void sendHatchUpdate(MapRemote map, SectorRemote sector) throws RemoteException {
 		setHatchUpdate(map, sector);
 	}
 
-	/* (non-Javadoc)
-	 * @see it.polimi.ingsw.cerridifebbo.controller.client.NetworkInterface#setHatchUpdate(it.polimi.ingsw.cerridifebbo.controller.common.MapRemote, it.polimi.ingsw.cerridifebbo.controller.common.SectorRemote)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see it.polimi.ingsw.cerridifebbo.controller.client.NetworkInterface#
+	 * setHatchUpdate(it.polimi.ingsw.cerridifebbo.controller.common.MapRemote,
+	 * it.polimi.ingsw.cerridifebbo.controller.common.SectorRemote)
 	 */
 	@Override
 	public void setHatchUpdate(MapRemote map, SectorRemote sector) {
@@ -226,8 +281,12 @@ public class RMIInterface extends UnicastRemoteObject implements NetworkInterfac
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see it.polimi.ingsw.cerridifebbo.controller.common.ClientConnection#askForMove()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * it.polimi.ingsw.cerridifebbo.controller.common.ClientConnection#askForMove
+	 * ()
 	 */
 	@Override
 	public void askForMove() throws RemoteException {
@@ -236,8 +295,12 @@ public class RMIInterface extends UnicastRemoteObject implements NetworkInterfac
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see it.polimi.ingsw.cerridifebbo.controller.common.ClientConnection#askForSector()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * it.polimi.ingsw.cerridifebbo.controller.common.ClientConnection#askForSector
+	 * ()
 	 */
 	@Override
 	public void askForSector() throws RemoteException {
@@ -246,8 +309,12 @@ public class RMIInterface extends UnicastRemoteObject implements NetworkInterfac
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see it.polimi.ingsw.cerridifebbo.controller.common.ClientConnection#askForCard()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * it.polimi.ingsw.cerridifebbo.controller.common.ClientConnection#askForCard
+	 * ()
 	 */
 	@Override
 	public void askForCard() throws RemoteException {
@@ -256,8 +323,12 @@ public class RMIInterface extends UnicastRemoteObject implements NetworkInterfac
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see it.polimi.ingsw.cerridifebbo.controller.client.NetworkInterface#sendToServer(java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * it.polimi.ingsw.cerridifebbo.controller.client.NetworkInterface#sendToServer
+	 * (java.lang.String, java.lang.String)
 	 */
 	@Override
 	public void sendToServer(String action, String target) {
@@ -268,8 +339,12 @@ public class RMIInterface extends UnicastRemoteObject implements NetworkInterfac
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see it.polimi.ingsw.cerridifebbo.controller.common.ClientConnection#disconnect()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * it.polimi.ingsw.cerridifebbo.controller.common.ClientConnection#disconnect
+	 * ()
 	 */
 	@Override
 	public void disconnect() throws RemoteException {
@@ -277,7 +352,9 @@ public class RMIInterface extends UnicastRemoteObject implements NetworkInterfac
 		close();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.rmi.server.RemoteObject#equals(java.lang.Object)
 	 */
 	@Override
@@ -285,7 +362,9 @@ public class RMIInterface extends UnicastRemoteObject implements NetworkInterfac
 		return super.equals(obj);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.rmi.server.RemoteObject#hashCode()
 	 */
 	@Override

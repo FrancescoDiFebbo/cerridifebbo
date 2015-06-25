@@ -2,21 +2,21 @@ package it.polimi.ingsw.cerridifebbo.controller.server;
 
 import it.polimi.ingsw.cerridifebbo.controller.common.ClientConnection;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Interface ServerConnection.
+ * The Interface ServerConnection provides methods to manage a server for
+ * different connection protocols.
  * 
  * @author cerridifebbo
  */
 public interface ServerConnection extends Runnable {
 
 	/**
-	 * Starts the server. It listens to incoming connection from client.
+	 * Starts the server. It listens for incoming connection from client.
 	 */
 	public abstract void start();
 
 	/**
-	 * Closes the server.
+	 * Closes the server. Incoming connections are not listened.
 	 */
 	public abstract void close();
 

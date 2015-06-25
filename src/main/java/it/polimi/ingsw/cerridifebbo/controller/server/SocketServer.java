@@ -8,25 +8,27 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class SocketServer.
+ * The Class SocketServer.It listens for incoming socket connections from
+ * clients.
+ *
+ * @author cerridifebbo
  */
 public class SocketServer implements ServerConnection {
 
 	/** The instance. */
 	private static SocketServer instance;
-	
-	/** The port. */
+
+	/** The server port. */
 	private int port;
-	
+
 	/** The server socket. */
 	private ServerSocket serverSocket;
-	
-	/** The thread. */
+
+	/** The thread containing SocketServer. */
 	private Thread thread;
-	
-	/** The listening. */
+
+	/** Indicates if server is listening for incoming connections. */
 	private boolean listening;
 
 	/**
@@ -39,7 +41,8 @@ public class SocketServer implements ServerConnection {
 	/**
 	 * Instantiates a new socket server.
 	 *
-	 * @param port the port
+	 * @param port
+	 *            the port
 	 */
 	public SocketServer(int port) {
 		this.port = port;
@@ -58,8 +61,11 @@ public class SocketServer implements ServerConnection {
 		return instance;
 	}
 
-	/* (non-Javadoc)
-	 * @see it.polimi.ingsw.cerridifebbo.controller.server.ServerConnection#start()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * it.polimi.ingsw.cerridifebbo.controller.server.ServerConnection#start()
 	 */
 	@Override
 	public void start() {
@@ -67,8 +73,11 @@ public class SocketServer implements ServerConnection {
 		thread.start();
 	}
 
-	/* (non-Javadoc)
-	 * @see it.polimi.ingsw.cerridifebbo.controller.server.ServerConnection#close()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * it.polimi.ingsw.cerridifebbo.controller.server.ServerConnection#close()
 	 */
 	@Override
 	public void close() {
@@ -79,7 +88,9 @@ public class SocketServer implements ServerConnection {
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Runnable#run()
 	 */
 	@Override
@@ -92,9 +103,10 @@ public class SocketServer implements ServerConnection {
 	}
 
 	/**
-	 * Start listening.
+	 * Starts listening for incoming commands from client.
 	 *
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
 	 */
 	private void startListening() throws IOException {
 		if (!listening) {
@@ -113,7 +125,7 @@ public class SocketServer implements ServerConnection {
 	}
 
 	/**
-	 * End listening.
+	 * Ends listening. Commands from client are not listened.
 	 */
 	private void endListening() {
 		if (listening) {
@@ -126,8 +138,12 @@ public class SocketServer implements ServerConnection {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see it.polimi.ingsw.cerridifebbo.controller.server.ServerConnection#registerClientOnServer(java.lang.String, it.polimi.ingsw.cerridifebbo.controller.common.ClientConnection)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see it.polimi.ingsw.cerridifebbo.controller.server.ServerConnection#
+	 * registerClientOnServer(java.lang.String,
+	 * it.polimi.ingsw.cerridifebbo.controller.common.ClientConnection)
 	 */
 	@Override
 	public boolean registerClientOnServer(String username, ClientConnection client) {

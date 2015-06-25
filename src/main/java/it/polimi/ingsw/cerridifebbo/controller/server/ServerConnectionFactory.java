@@ -1,8 +1,7 @@
 package it.polimi.ingsw.cerridifebbo.controller.server;
 
-// TODO: Auto-generated Javadoc
 /**
- * A factory for creating ServerConnection objects.
+ * A factory for creating server connections.
  * 
  * @author cerridifebbo
  */
@@ -26,7 +25,7 @@ public class ServerConnectionFactory {
 	 *
 	 * @param connection
 	 *            the connection
-	 * @return the connection
+	 * @return the server connection
 	 */
 	public static ServerConnection getConnection(String connection) {
 		switch (connection) {

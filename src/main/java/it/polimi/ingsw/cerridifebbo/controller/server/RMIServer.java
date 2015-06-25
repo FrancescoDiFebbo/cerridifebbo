@@ -14,20 +14,22 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 
 /**
- * The Class RMIServer.
+ * The Class RMIServer. It listens for incoming RMI connections from clients.
  * 
  * @author cerridifebbo
  *
  */
 public class RMIServer extends UnicastRemoteObject implements ServerConnection, RemoteServer {
 
-	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
 	/** The instance of RMIServer. */
 	private static transient RMIServer instance;
 
-	/** The registry of RMIServer. */
+	/**
+	 * The registry of RMIServer. RMIServer binds itself and users on this
+	 * registry.
+	 */
 	private transient Registry registry;
 
 	/** The thread containing RMIServer. */
@@ -37,7 +39,7 @@ public class RMIServer extends UnicastRemoteObject implements ServerConnection, 
 	 * Instantiates a new RMI server.
 	 *
 	 * @throws RemoteException
-	 *             the remote exception
+	 *             if I/O errors occurs.
 	 */
 	private RMIServer() throws RemoteException {
 		super();

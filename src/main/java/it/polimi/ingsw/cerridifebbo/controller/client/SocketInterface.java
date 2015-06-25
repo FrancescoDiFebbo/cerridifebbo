@@ -15,29 +15,34 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class SocketInterface.
+ * The Class SocketInterface. Chosen by user, this connection listens for
+ * incoming string commands from server.
+ *
+ * @author cerridifebbo
  */
 public class SocketInterface implements NetworkInterface {
 
 	/** The socket. */
 	private Socket socket;
-	
-	/** The out. */
+
+	/** The out stream. */
 	private PrintWriter out;
-	
-	/** The ois. */
+
+	/** The input stream. */
 	private ObjectInputStream ois;
-	
+
 	/** The username. */
 	private String username;
-	
-	/** The graphics. */
+
+	/** The graphic. */
 	private Graphics graphics;
 
-	/* (non-Javadoc)
-	 * @see it.polimi.ingsw.cerridifebbo.controller.client.NetworkInterface#connect()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * it.polimi.ingsw.cerridifebbo.controller.client.NetworkInterface#connect()
 	 */
 	@Override
 	public void connect() {
@@ -76,8 +81,11 @@ public class SocketInterface implements NetworkInterface {
 		close();
 	}
 
-	/* (non-Javadoc)
-	 * @see it.polimi.ingsw.cerridifebbo.controller.client.NetworkInterface#close()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * it.polimi.ingsw.cerridifebbo.controller.client.NetworkInterface#close()
 	 */
 	@Override
 	public void close() {
@@ -90,8 +98,11 @@ public class SocketInterface implements NetworkInterface {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see it.polimi.ingsw.cerridifebbo.controller.client.NetworkInterface#registerClientOnServer()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see it.polimi.ingsw.cerridifebbo.controller.client.NetworkInterface#
+	 * registerClientOnServer()
 	 */
 	@Override
 	public boolean registerClientOnServer() {
@@ -119,16 +130,24 @@ public class SocketInterface implements NetworkInterface {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see it.polimi.ingsw.cerridifebbo.controller.client.NetworkInterface#setGraphicInterface(it.polimi.ingsw.cerridifebbo.controller.client.Graphics)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see it.polimi.ingsw.cerridifebbo.controller.client.NetworkInterface#
+	 * setGraphicInterface
+	 * (it.polimi.ingsw.cerridifebbo.controller.client.Graphics)
 	 */
 	@Override
 	public void setGraphicInterface(Graphics graphics) {
 		this.graphics = graphics;
 	}
 
-	/* (non-Javadoc)
-	 * @see it.polimi.ingsw.cerridifebbo.controller.client.NetworkInterface#sendToServer(java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * it.polimi.ingsw.cerridifebbo.controller.client.NetworkInterface#sendToServer
+	 * (java.lang.String, java.lang.String)
 	 */
 	@Override
 	public void sendToServer(String action, String target) {
@@ -137,7 +156,7 @@ public class SocketInterface implements NetworkInterface {
 	}
 
 	/**
-	 * Start turn.
+	 * Starts turn.
 	 */
 	public void startTurn() {
 		if (graphics.isInitialized()) {
@@ -146,7 +165,7 @@ public class SocketInterface implements NetworkInterface {
 	}
 
 	/**
-	 * End turn.
+	 * Ends turn.
 	 */
 	public void endTurn() {
 		if (graphics.isInitialized()) {
@@ -155,7 +174,7 @@ public class SocketInterface implements NetworkInterface {
 	}
 
 	/**
-	 * Ask for move.
+	 * Asks user for move.
 	 */
 	public void askForMove() {
 		if (graphics.isInitialized()) {
@@ -164,7 +183,7 @@ public class SocketInterface implements NetworkInterface {
 	}
 
 	/**
-	 * Ask for sector.
+	 * Asks user for sector.
 	 */
 	public void askForSector() {
 		if (graphics.isInitialized()) {
@@ -173,7 +192,7 @@ public class SocketInterface implements NetworkInterface {
 	}
 
 	/**
-	 * Ask for card.
+	 * Asks user for card.
 	 */
 	public void askForCard() {
 		if (graphics.isInitialized()) {
@@ -182,9 +201,10 @@ public class SocketInterface implements NetworkInterface {
 	}
 
 	/**
-	 * Show message.
+	 * Shows message from server.
 	 *
-	 * @param message the message
+	 * @param message
+	 *            the message
 	 */
 	public void showMessage(String message) {
 		if (graphics.isInitialized()) {
@@ -195,7 +215,7 @@ public class SocketInterface implements NetworkInterface {
 	}
 
 	/**
-	 * Receive game information.
+	 * Receives game information from server.
 	 */
 	@SuppressWarnings("unchecked")
 	private void receiveGameInformation() {
@@ -210,8 +230,13 @@ public class SocketInterface implements NetworkInterface {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see it.polimi.ingsw.cerridifebbo.controller.client.NetworkInterface#setGameInformation(it.polimi.ingsw.cerridifebbo.controller.common.MapRemote, it.polimi.ingsw.cerridifebbo.controller.common.PlayerRemote, int)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see it.polimi.ingsw.cerridifebbo.controller.client.NetworkInterface#
+	 * setGameInformation
+	 * (it.polimi.ingsw.cerridifebbo.controller.common.MapRemote,
+	 * it.polimi.ingsw.cerridifebbo.controller.common.PlayerRemote, int)
 	 */
 	@Override
 	public void setGameInformation(MapRemote map, PlayerRemote player, int size) {
@@ -219,7 +244,7 @@ public class SocketInterface implements NetworkInterface {
 	}
 
 	/**
-	 * Receive update.
+	 * Receive update from server.
 	 */
 	@SuppressWarnings("unchecked")
 	private void receiveUpdate() {
@@ -235,8 +260,13 @@ public class SocketInterface implements NetworkInterface {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see it.polimi.ingsw.cerridifebbo.controller.client.NetworkInterface#setPlayerUpdate(it.polimi.ingsw.cerridifebbo.controller.common.PlayerRemote, it.polimi.ingsw.cerridifebbo.controller.common.ItemCardRemote, boolean)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see it.polimi.ingsw.cerridifebbo.controller.client.NetworkInterface#
+	 * setPlayerUpdate
+	 * (it.polimi.ingsw.cerridifebbo.controller.common.PlayerRemote,
+	 * it.polimi.ingsw.cerridifebbo.controller.common.ItemCardRemote, boolean)
 	 */
 	@Override
 	public void setPlayerUpdate(PlayerRemote player, ItemCardRemote card, boolean added) {
@@ -253,7 +283,7 @@ public class SocketInterface implements NetworkInterface {
 	}
 
 	/**
-	 * Receive hatch update.
+	 * Receives hatch update from server.
 	 */
 	@SuppressWarnings("unchecked")
 	public void receiveHatchUpdate() {
@@ -268,8 +298,12 @@ public class SocketInterface implements NetworkInterface {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see it.polimi.ingsw.cerridifebbo.controller.client.NetworkInterface#setHatchUpdate(it.polimi.ingsw.cerridifebbo.controller.common.MapRemote, it.polimi.ingsw.cerridifebbo.controller.common.SectorRemote)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see it.polimi.ingsw.cerridifebbo.controller.client.NetworkInterface#
+	 * setHatchUpdate(it.polimi.ingsw.cerridifebbo.controller.common.MapRemote,
+	 * it.polimi.ingsw.cerridifebbo.controller.common.SectorRemote)
 	 */
 	@Override
 	public void setHatchUpdate(MapRemote map, SectorRemote sector) {
@@ -279,7 +313,7 @@ public class SocketInterface implements NetworkInterface {
 	}
 
 	/**
-	 * Disconnect.
+	 * Disconnects client from server.
 	 */
 	public void disconnect() {
 		showMessage("You are disconnected from the server! Hope you like the game! :)");
@@ -287,15 +321,19 @@ public class SocketInterface implements NetworkInterface {
 	}
 
 	/**
-	 * The Class CommandHandler.
+	 * The Class CommandHandler.It manages String commands from client.
+	 *
+	 * @author cerridifebbo
 	 */
 	private static class CommandHandler extends Command {
 
 		/**
 		 * Handle command.
 		 *
-		 * @param si the si
-		 * @param line the line
+		 * @param si
+		 *            the socket interface
+		 * @param line
+		 *            the String command
 		 */
 		public static void handleCommand(SocketInterface si, String line) {
 			java.util.Map<String, String> params = translateCommand(line);
@@ -331,10 +369,12 @@ public class SocketInterface implements NetworkInterface {
 		}
 
 		/**
-		 * Receive object.
+		 * Receives object.
 		 *
-		 * @param si the si
-		 * @param data the data
+		 * @param si
+		 *            the socket interface
+		 * @param data
+		 *            the type of data
 		 */
 		private static void receiveObject(SocketInterface si, String data) {
 			switch (data) {

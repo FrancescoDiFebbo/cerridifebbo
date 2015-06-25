@@ -21,31 +21,35 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Random;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class User.
+ * The Class User. It represents the client on server. It provides methods to
+ * contact client from game.
+ *
+ * @author cerridifebbo
  */
 public class User extends UnicastRemoteObject implements RemoteUser {
 
-	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
-	/** The name. */
+	/** The username of the client. */
 	private final transient String name;
 
-	/** The connection. */
+	/** The connection established with client. */
 	private transient ClientConnection connection;
 
-	/** The player. */
+	/** The player in the game. */
 	private transient Player player;
 
-	/** The queue. */
+	/** The queue for incoming moves. */
 	private transient Queue<Move> queue = new LinkedList<Move>();
 
-	/** The time finished. */
+	/** Indicates if user has finished his turn time */
 	private transient boolean timeFinished = false;
 
-	/** The reinitialize. */
+	/**
+	 * Indicates if the user has to be reinitialized after a suspension on
+	 * connection.
+	 */
 	private transient boolean reinitialize = false;
 
 	/** The current game. */
@@ -59,7 +63,7 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 	 * @param connection
 	 *            the connection
 	 * @throws RemoteException
-	 *             the remote exception
+	 *             if I/O errors occurs
 	 */
 	public User(String name, ClientConnection connection) throws RemoteException {
 		super();
@@ -68,9 +72,9 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 	}
 
 	/**
-	 * Gets the name.
+	 * Gets the username.
 	 *
-	 * @return the name
+	 * @return the username
 	 */
 	public String getName() {
 		return name;
@@ -97,7 +101,7 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 	}
 
 	/**
-	 * Gets the player.
+	 * Gets the player in current game.
 	 *
 	 * @return the player
 	 */
@@ -106,7 +110,7 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 	}
 
 	/**
-	 * Sets the player.
+	 * Sets the player of the user.
 	 *
 	 * @param player
 	 *            the new player
@@ -116,7 +120,7 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 	}
 
 	/**
-	 * Checks if is time finished.
+	 * Checks if time is finished.
 	 *
 	 * @return true, if is time finished
 	 */
@@ -125,7 +129,7 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 	}
 
 	/**
-	 * Sets the time finished.
+	 * Sets the time if it's finished.
 	 *
 	 * @param timeFinished
 	 *            the new time finished
@@ -135,7 +139,7 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 	}
 
 	/**
-	 * Clear.
+	 * Clears the queue of moves and clears the stats of the player.
 	 */
 	public void clear() {
 		synchronized (queue) {
@@ -148,13 +152,13 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 	}
 
 	/**
-	 * Check connection.
+	 * Check the connection to the client.
 	 *
 	 * @return true, if successful
 	 */
 	private boolean checkConnection() {
 		if (reinitialize) {
-			sendGameInformation(currentGame);			
+			sendGameInformation(currentGame);
 			reinitialize = false;
 			currentGame.informPlayers(player, Sentence.CONNECTED, null);
 		}
@@ -162,7 +166,7 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 	}
 
 	/**
-	 * Send message.
+	 * Sends message to the client.
 	 *
 	 * @param message
 	 *            the message
@@ -178,7 +182,7 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 	}
 
 	/**
-	 * Send game information.
+	 * Sends game information to client.
 	 *
 	 * @param game
 	 *            the game
@@ -195,7 +199,7 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 	}
 
 	/**
-	 * Start turn.
+	 * Signals the start turn to client.
 	 */
 	public void startTurn() {
 		if (checkConnection()) {
@@ -208,7 +212,7 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 	}
 
 	/**
-	 * End turn.
+	 * Signals the end turn to client.
 	 */
 	public void endTurn() {
 		if (checkConnection()) {
@@ -221,9 +225,10 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 	}
 
 	/**
-	 * Gets the move.
+	 * Gets the move from client.
 	 *
-	 * @return the move
+	 * @return the move, if there is no connection or turn time is finished
+	 *         returns a TIMEFINISHED move.
 	 */
 	public Move getMove() {
 		if (checkConnection()) {
@@ -244,7 +249,7 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 	}
 
 	/**
-	 * Ask for move.
+	 * Asks for move from client.
 	 */
 	private void askForMove() {
 		try {
@@ -255,11 +260,12 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 	}
 
 	/**
-	 * Gets the sector.
+	 * Gets the sector from client.
 	 *
 	 * @param map
 	 *            the map
-	 * @return the sector
+	 * @return the sector, if there is no connection or turn time is finished
+	 *         returns a random sector.
 	 */
 	public Sector getSector(Map map) {
 		if (checkConnection()) {
@@ -280,7 +286,7 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 	}
 
 	/**
-	 * Ask for sector.
+	 * Asks for sector from client.
 	 */
 	private void askForSector() {
 		try {
@@ -291,7 +297,7 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 	}
 
 	/**
-	 * Random sector.
+	 * It returns a random sector from the map.
 	 *
 	 * @param map
 	 *            the map
@@ -307,9 +313,10 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 	}
 
 	/**
-	 * Gets the card.
+	 * Gets the card from client.
 	 *
-	 * @return the card
+	 * @return the card, if there is no connection or turn time is finished
+	 *         returns the first card of player's deck.
 	 */
 	public Move getCard() {
 		if (checkConnection()) {
@@ -331,7 +338,7 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 	}
 
 	/**
-	 * Ask for card.
+	 * Ask for card from client.
 	 */
 	private void askForCard() {
 		try {
@@ -342,14 +349,14 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 	}
 
 	/**
-	 * Update player.
+	 * Sends player's update to client.
 	 *
 	 * @param player
 	 *            the player
 	 * @param card
 	 *            the card
 	 * @param added
-	 *            the added
+	 *            indicates if card has been added or removed from the deck
 	 */
 	public void updatePlayer(Player player, Card card, boolean added) {
 		if (checkConnection()) {
@@ -366,6 +373,12 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 		}
 	}
 
+	/**
+	 * Sends hatch update to client.
+	 *
+	 * @param sector
+	 *            the sector
+	 */
 	public void updateHatch(Sector sector) {
 		if (checkConnection()) {
 			try {
@@ -377,7 +390,7 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 	}
 
 	/**
-	 * Disconnect.
+	 * Disconnects the client from server.
 	 */
 	public void disconnect() {
 		if (isOnline()) {
@@ -390,10 +403,10 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 	}
 
 	/**
-	 * Suspend.
+	 * Suspend the user. It removes the client connection.
 	 *
 	 * @param e
-	 *            the e
+	 *            the exception
 	 */
 	public void suspend(Throwable e) {
 		connection = null;
@@ -414,7 +427,7 @@ public class User extends UnicastRemoteObject implements RemoteUser {
 	}
 
 	/**
-	 * Put move.
+	 * Put a incoming move in the queue.
 	 *
 	 * @param action
 	 *            the action

@@ -4,18 +4,19 @@ import java.rmi.RemoteException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-// TODO: Auto-generated Javadoc
 /**
  * A factory for creating NetworkInterface objects.
+ * 
+ * @author cerridifebbo
  */
 public class NetworkInterfaceFactory {
-	
+
 	/** The Constant LOG. */
 	private static final Logger LOG = Logger.getLogger(NetworkInterfaceFactory.class.getName());
-	
+
 	/** The Constant SOCKET_INTERFACE. */
 	public static final String SOCKET_INTERFACE = "socket_interface";
-	
+
 	/** The Constant RMI_INTERFACE. */
 	public static final String RMI_INTERFACE = "rmi_interface";
 
@@ -29,7 +30,8 @@ public class NetworkInterfaceFactory {
 	/**
 	 * Gets the interface.
 	 *
-	 * @param param the param
+	 * @param param
+	 *            the user choice.
 	 * @return the interface
 	 */
 	public static NetworkInterface getInterface(String param) {

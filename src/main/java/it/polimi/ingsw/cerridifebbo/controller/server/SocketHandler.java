@@ -16,9 +16,9 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class SocketHandler.
+ * The Class SocketHandler. It ensures the communication between server and
+ * client on socket.
  *
  * @author cerridifebbo
  */
@@ -27,13 +27,13 @@ public class SocketHandler extends Thread implements ClientConnection {
 	/** The socket. */
 	private Socket socket;
 
-	/** The oos. */
+	/** The output stream. */
 	private ObjectOutputStream oos;
 
-	/** The in. */
+	/** The input stream. */
 	private BufferedReader in;
 
-	/** The user. */
+	/** The user associated with client. */
 	private User user;
 
 	/**
@@ -66,7 +66,7 @@ public class SocketHandler extends Thread implements ClientConnection {
 	}
 
 	/**
-	 * Listen.
+	 * It listens for incoming commands from client.
 	 */
 	private void listen() {
 		String input = null;
@@ -87,10 +87,7 @@ public class SocketHandler extends Thread implements ClientConnection {
 	}
 
 	/**
-	 * Close.
-	 *
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
+	 * Closes all the streams and thread associated.
 	 */
 	public void close() {
 		try {
@@ -104,15 +101,14 @@ public class SocketHandler extends Thread implements ClientConnection {
 	}
 
 	/**
-	 * Register client on server.
+	 * Registers client on server.
 	 *
 	 * @param username
 	 *            the username
-	 * @param client
-	 *            the client
+	 * 
 	 */
-	public void registerClientOnServer(String username, SocketHandler client) {
-		User newUser = Server.getInstance().registerClientOnServer(username, client);
+	public void registerClientOnServer(String username) {
+		User newUser = Server.getInstance().registerClientOnServer(username, this);
 		if (newUser == null) {
 			try {
 				oos.writeBoolean(false);
@@ -146,14 +142,22 @@ public class SocketHandler extends Thread implements ClientConnection {
 		oos.flush();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see it.polimi.ingsw.cerridifebbo.controller.common.ClientConnection#
+	 * sendGameInformation
+	 * (it.polimi.ingsw.cerridifebbo.controller.common.MapRemote,
+	 * it.polimi.ingsw.cerridifebbo.controller.common.PlayerRemote, int)
+	 */
 	@Override
-	public void sendGameInformation(MapRemote map, PlayerRemote player, int size) throws IOException {
+	public void sendGameInformation(MapRemote map, PlayerRemote player, int numberOfPlayers) throws IOException {
 		oos.writeObject(Command.build(Command.SEND, Command.GAME_INFORMATION));
 		oos.flush();
 		List<Object> info = new ArrayList<Object>();
 		info.add(map);
 		info.add(player);
-		info.add(size);
+		info.add(numberOfPlayers);
 		oos.writeObject((ArrayList<Object>) info);
 		oos.flush();
 	}
@@ -178,6 +182,13 @@ public class SocketHandler extends Thread implements ClientConnection {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see it.polimi.ingsw.cerridifebbo.controller.common.ClientConnection#
+	 * sendHatchUpdate(it.polimi.ingsw.cerridifebbo.controller.common.MapRemote,
+	 * it.polimi.ingsw.cerridifebbo.controller.common.SectorRemote)
+	 */
 	@Override
 	public void sendHatchUpdate(MapRemote map, SectorRemote sector) throws IOException {
 		oos.writeObject(Command.build(Command.SEND, Command.HATCH));
@@ -268,7 +279,7 @@ public class SocketHandler extends Thread implements ClientConnection {
 	}
 
 	/**
-	 * Put move.
+	 * Puts the move from client in the user.
 	 *
 	 * @param action
 	 *            the action
@@ -280,17 +291,19 @@ public class SocketHandler extends Thread implements ClientConnection {
 	}
 
 	/**
-	 * The Class CommandHandler.
+	 * The Class CommandHandler. It manages String commands from client.
+	 *
+	 * @author cerridifebbo
 	 */
-	public static class CommandHandler extends Command {
+	private static class CommandHandler extends Command {
 
 		/**
-		 * Handle command.
+		 * Handle the command.
 		 *
 		 * @param sh
-		 *            the sh
+		 *            the socket handler
 		 * @param line
-		 *            the line
+		 *            the line from client
 		 */
 		public static void handleCommand(SocketHandler sh, String line) {
 			java.util.Map<String, String> params = translateCommand(line);
@@ -298,7 +311,7 @@ public class SocketHandler extends Thread implements ClientConnection {
 			switch (action) {
 			case REGISTER:
 				String username = params.get(DATA);
-				sh.registerClientOnServer(username, sh);
+				sh.registerClientOnServer(username);
 				break;
 			case MOVE:
 				sh.putMove(params.get(DATA), params.get(DATA + "0"));
