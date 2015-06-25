@@ -7,7 +7,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Application {
-	private static final Logger LOG = Logger.getLogger(Application.class.getName());
+	private static final Logger LOG = Logger.getLogger(Application.class
+			.getName());
 
 	private Application() {
 
@@ -52,7 +53,13 @@ public class Application {
 		println(message + " (" + e.getMessage() + ")");
 	}
 
-	public static String readLine(String format, Object... args) throws IOException {
+	public static void exceptionNoMessageException(Throwable e, String message) {
+		if (e != null && message != null)
+			println(message);
+	}
+
+	public static String readLine(String format, Object... args)
+			throws IOException {
 		if (System.console() != null) {
 			return System.console().readLine(format, args);
 		}
