@@ -71,8 +71,7 @@ public class GameTest {
 		for (int i = 0; i < 39; i++) {
 			for (int k = 0; k < Game.MAX_PLAYERS; k++) {
 				Player player = game.getUsers().get(k).getPlayer();
-				List<Sector> sectors = player.getPosition()
-						.getReachableSectors(player.getMaxMovement());
+				List<Sector> sectors = player.getPosition().getReachableSectors(player.getMaxMovement());
 				int index = new Random().nextInt(sectors.size());
 				player.movement(sectors.get(index), game);
 				player.attack(game);
@@ -97,8 +96,7 @@ public class GameTest {
 			Player player = user.getPlayer();
 			if (player instanceof HumanPlayer) {
 				player.setPosition(hatches.get(sector));
-				hatches.get(sector++).playerEnters(player, game.getDeck())
-						.performAction(player, null, game);
+				hatches.get(sector++).playerEnters(player, game.getDeck()).performAction(player, null, game);
 			}
 		}
 	}

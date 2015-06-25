@@ -18,8 +18,7 @@ public class SectorDeckFactory implements SingleTypeDeckFactory {
 	public static final int MAX_NOISE_IN_YOUR_SECTOR_CARDS = 10;
 	public static final int MAX_NOISE_IN_ANY_SECTOR_CARDS = 10;
 	public static final int MAX_SILENCE_CARDS = 5;
-	public static final int MAX_SECTOR_CARDS = MAX_NOISE_IN_YOUR_SECTOR_CARDS
-			+ MAX_NOISE_IN_ANY_SECTOR_CARDS + MAX_SILENCE_CARDS;
+	public static final int MAX_SECTOR_CARDS = MAX_NOISE_IN_YOUR_SECTOR_CARDS + MAX_NOISE_IN_ANY_SECTOR_CARDS + MAX_SILENCE_CARDS;
 	public static final int MAX_SECTOR_ITEM_CARDS = 4;
 
 	/**

@@ -20,10 +20,11 @@ public class MapTest {
 		end = map.getCell(10, 11);
 		assertFalse(start.getReachableSectors(maxMovement).contains(end));
 	}
-	
+
 	@Test
 	public void testMapRemote() {
 		Map map = Map.getInstance();
+		@SuppressWarnings("unused")
 		MapRemote remote = map.getMapRemote();
 	}
 }

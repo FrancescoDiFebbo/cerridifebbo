@@ -17,8 +17,7 @@ public class EscapeHatchDeckFactory implements SingleTypeDeckFactory {
 
 	public static final int MAX_GREEN_ESCAPE_HATCH_CARDS = 3;
 	public static final int MAX_RED_ESCAPE_HATCH_CARDS = 3;
-	public static final int MAX_ESCAPE_HATCH_CARDS = MAX_GREEN_ESCAPE_HATCH_CARDS
-			+ MAX_RED_ESCAPE_HATCH_CARDS;
+	public static final int MAX_ESCAPE_HATCH_CARDS = MAX_GREEN_ESCAPE_HATCH_CARDS + MAX_RED_ESCAPE_HATCH_CARDS;
 
 	/**
 	 * This method creates a list of escape hatch cards.

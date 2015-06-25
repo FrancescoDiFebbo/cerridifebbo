@@ -95,8 +95,7 @@ public class TimerPanel extends JPanel {
 					remainingSeconds = remainingSeconds - 60;
 					remainingMinutes++;
 				}
-				timeLeft.setText(String.valueOf(remainingMinutes + " : "
-						+ remainingSeconds));
+				timeLeft.setText(String.valueOf(remainingMinutes + " : " + remainingSeconds));
 			} else {
 				timeLeft.setText(TIME_FINISHED);
 				timer.stop();

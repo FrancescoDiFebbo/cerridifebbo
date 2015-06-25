@@ -162,8 +162,7 @@ public abstract class Sector implements Serializable {
 	 *            the sector controlled by this method
 	 */
 	private void checkAdjacentSector(List<Sector> list, Sector adjacentSector) {
-		if (adjacentSector.isPassable() && !list.contains(adjacentSector)
-				&& !adjacentSector.equals(this))
+		if (adjacentSector.isPassable() && !list.contains(adjacentSector) && !adjacentSector.equals(this))
 			list.add(adjacentSector);
 	}
 

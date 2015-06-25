@@ -101,8 +101,7 @@ public class MapContainer extends Container {
 		String position = player.getPos();
 		int nComp = getComponentCount();
 		for (int i = 0; i < nComp; i++) {
-			if (getComponent(i) != null
-					&& getComponent(i).getName().equals(position)) {
+			if (getComponent(i) != null && getComponent(i).getName().equals(position)) {
 				restore = true;
 				precPosition = i;
 				precColor = getComponent(i).getForeground();
@@ -122,13 +121,11 @@ public class MapContainer extends Container {
 	public void updateEscapeHatchStatus(String sector) {
 		int nComp = getComponentCount();
 		for (int i = 0; i < nComp; i++) {
-			if (getComponent(i) != null
-					&& getComponent(i).getName().equals(sector)) {
+			if (getComponent(i) != null && getComponent(i).getName().equals(sector)) {
 				if (precPosition == i) {
 					precColor = EscapeHatchSectorButton.ESCAPE_HATCH_COLOR_KO;
 				}
-				getComponent(i).setForeground(
-						EscapeHatchSectorButton.ESCAPE_HATCH_COLOR_KO);
+				getComponent(i).setForeground(EscapeHatchSectorButton.ESCAPE_HATCH_COLOR_KO);
 				repaint();
 			}
 		}

@@ -49,7 +49,7 @@ public class ItemCardsTest {
 					}
 				}
 				card.performAction(player, null, game);
-				assertTrue(user.getPlayer().getMaxMovement()==AdrenalineItemCard.ADRENALINEMOVEMENT);
+				assertTrue(user.getPlayer().getMaxMovement() == AdrenalineItemCard.ADRENALINEMOVEMENT);
 			}
 
 		}

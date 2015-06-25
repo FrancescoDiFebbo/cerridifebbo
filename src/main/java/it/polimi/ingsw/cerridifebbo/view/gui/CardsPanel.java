@@ -35,8 +35,7 @@ public class CardsPanel extends JPanel {
 		setLayout(new FlowLayout());
 		if (player.getOwnCards() != null) {
 			for (int i = 0; i < player.getOwnCards().size(); i++) {
-				add(new CardPanel(player.getOwnCards().get(i).getName(),
-						playerRace));
+				add(new CardPanel(player.getOwnCards().get(i).getName(), playerRace));
 			}
 		}
 		setSize(WIDTH, HEIGHT);
@@ -54,8 +53,7 @@ public class CardsPanel extends JPanel {
 	 *            otherwise the method does not add the listener to the discard
 	 *            button.
 	 */
-	public void addListenersToButton(ActionListener moveListener,
-			boolean discard) {
+	public void addListenersToButton(ActionListener moveListener, boolean discard) {
 		int nComp = getComponentCount();
 		CardPanel card;
 		for (int i = 0; i < nComp; i++)
@@ -82,8 +80,7 @@ public class CardsPanel extends JPanel {
 	 *            button, otherwise the method does not delete the listener to
 	 *            the discard button.
 	 */
-	public void deleteListenersToButton(ActionListener moveListener,
-			boolean discard) {
+	public void deleteListenersToButton(ActionListener moveListener, boolean discard) {
 		int nComp = getComponentCount();
 		CardPanel card;
 		for (int i = 0; i < nComp; i++)

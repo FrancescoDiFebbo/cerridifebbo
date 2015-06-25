@@ -62,10 +62,8 @@ public class MapLayout implements LayoutManager, Serializable {
 	}
 
 	private void setSizes() {
-		preferredWidth = (SectorButton.WIDTH - SectorButton.SHIFT_OBLIQUE_SIDE)
-				* column + 4 * BORDER;
-		preferredHeight = SectorButton.HEIGHT * raw + 4 * SectorButton.RADIUS
-				+ 4 * BORDER;
+		preferredWidth = (SectorButton.WIDTH - SectorButton.SHIFT_OBLIQUE_SIDE) * column + 4 * BORDER;
+		preferredHeight = SectorButton.HEIGHT * raw + 4 * SectorButton.RADIUS + 4 * BORDER;
 	}
 
 	/**
@@ -123,8 +121,7 @@ public class MapLayout implements LayoutManager, Serializable {
 				currentColumn = 0;
 				currentRow++;
 				x = BORDER;
-				y = BORDER + SectorButton.RADIUS + currentRow
-						* SectorButton.HEIGHT;
+				y = BORDER + SectorButton.RADIUS + currentRow * SectorButton.HEIGHT;
 			}
 
 			Component c = parent.getComponent(i);

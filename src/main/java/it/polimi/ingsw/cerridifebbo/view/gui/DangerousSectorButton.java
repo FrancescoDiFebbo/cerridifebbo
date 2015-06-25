@@ -16,8 +16,8 @@ public class DangerousSectorButton extends SectorButton {
 	private static final Color DANGEROUS_COLOR = Color.DARK_GRAY;
 
 	/**
-	 * This constructor calls the super constructor and sets the foreground color
-	 * to DANGEROUS_COLOR.
+	 * This constructor calls the super constructor and sets the foreground
+	 * color to DANGEROUS_COLOR.
 	 * 
 	 * @author cerridifebbo
 	 * @param label

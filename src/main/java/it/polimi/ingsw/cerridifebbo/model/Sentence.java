@@ -4,9 +4,27 @@ import it.polimi.ingsw.cerridifebbo.controller.server.User;
 
 import java.util.List;
 
+/**
+ * The Enum Sentence contains the sentences to be sent to clients during the
+ * game.
+ *
+ * @author cerridifebbo
+ */
 public enum Sentence {
+
 	NOISE_IN, NOISE_ANY, ADRENALINE, ATTACK_CARD, DEFENSE_CARD, SEDATIVES_CARD, SPOTLIGHT_CARD, TELEPORT_CARD, DISCARD_CARD, ATTACK, KILLED, ESCAPED, NOT_ESCAPED, TIMEFINISHED, DISCONNECTED, STARTING_GAME, MOVEMENT, RECEIVED_CARD, CONNECTED;
 
+	/**
+	 * Returns a String directed to the current playing client.
+	 *
+	 * @param sentence
+	 *            the sentence
+	 * @param game
+	 *            the game
+	 * @param target
+	 *            the target
+	 * @return the message
+	 */
 	public static String toMe(Sentence sentence, Game game, Object target) {
 		switch (sentence) {
 		case STARTING_GAME:
@@ -52,11 +70,24 @@ public enum Sentence {
 		}
 	}
 
+	/**
+	 * Returns a String directed to other players during a player turn.
+	 *
+	 * @param sentence
+	 *            the sentence
+	 * @param user
+	 *            the user
+	 * @param game
+	 *            the game
+	 * @param target
+	 *            the target
+	 * @return the message
+	 */
 	public static String toOthers(Sentence sentence, User user, Game game, Object target) {
 		String name = null;
 		if (user != null) {
 			name = nameRevealed(user);
-		}		
+		}
 		switch (sentence) {
 		case STARTING_GAME:
 			return "Game is starting...";
@@ -101,6 +132,16 @@ public enum Sentence {
 		}
 	}
 
+	/**
+	 * If a spotlight item has been used the method sends messages to all
+	 * players about the effect of the spotlight.
+	 *
+	 * @param game
+	 *            the game
+	 * @param sector
+	 *            the sector
+	 * @return the message
+	 */
 	private static String spotlight(Game game, Sector sector) {
 		StringBuilder build = new StringBuilder();
 		List<Sector> sectors = sector.getAdjacentSectors();
@@ -115,6 +156,13 @@ public enum Sentence {
 		return build.toString();
 	}
 
+	/**
+	 * Checks if a players is revealed.
+	 *
+	 * @param user
+	 *            the user
+	 * @return the string
+	 */
 	private static String nameRevealed(User user) {
 		Player player = user.getPlayer();
 		if (player.isRevealed()) {

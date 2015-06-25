@@ -26,10 +26,8 @@ public class Map implements Serializable {
 	public static final int COLUMNMAP = 23;
 	public static final int ROWMAP = 14;
 	private static final Sector[][] grid = new Sector[ROWMAP][COLUMNMAP];
-	private static Map instance = new Map(new File(
-			System.getProperty("user.dir")
-					+ System.getProperty("file.separator") + "file"
-					+ System.getProperty("file.separator") + "galilei.txt"));
+	private static Map instance = new Map(new File(System.getProperty("user.dir") + System.getProperty("file.separator") + "file"
+			+ System.getProperty("file.separator") + "galilei.txt"));
 	private static MapRemote mapRemote;
 
 	/**
@@ -113,8 +111,7 @@ public class Map implements Serializable {
 	 */
 	private static void setNorthEast(int row, int column, Sector[][] grid) {
 		if (column % 2 == 0) {
-			if (row - 1 >= 0 && column + 1 < COLUMNMAP
-					&& grid[row - 1][column + 1] != null) {
+			if (row - 1 >= 0 && column + 1 < COLUMNMAP && grid[row - 1][column + 1] != null) {
 				grid[row][column].setNorthEast(grid[row - 1][column + 1]);
 				grid[row - 1][column + 1].setSouthWest(grid[row][column]);
 			} else {
@@ -151,8 +148,7 @@ public class Map implements Serializable {
 				grid[row][column].setSouthEast(null);
 			}
 		} else {
-			if (column + 1 < COLUMNMAP && row + 1 < ROWMAP
-					&& grid[row + 1][column + 1] != null) {
+			if (column + 1 < COLUMNMAP && row + 1 < ROWMAP && grid[row + 1][column + 1] != null) {
 				grid[row][column].setSouthEast(grid[row + 1][column + 1]);
 				grid[row + 1][column + 1].setNorthWest(grid[row][column]);
 			} else {
@@ -206,10 +202,12 @@ public class Map implements Serializable {
 	 *         sector is not found.
 	 */
 	public Sector getCell(String sector) {
+		if (sector == null) {
+			return null;
+		}
 		for (int i = 0; i < ROWMAP; i++) {
 			for (int j = 0; j < COLUMNMAP; j++) {
-				if (grid[i][j] != null
-						&& grid[i][j].toString().equalsIgnoreCase(sector)) {
+				if (grid[i][j] != null && grid[i][j].toString().equalsIgnoreCase(sector)) {
 					return grid[i][j];
 				}
 			}

@@ -4,11 +4,28 @@ import it.polimi.ingsw.cerridifebbo.controller.server.User;
 
 import java.util.List;
 
+/**
+ * The Class StartGame takes care of players, map and deck initialization.
+ *
+ * @author cerridifebbo
+ */
 public class StartGame extends GameState {
+
+	/**
+	 * Instantiates a new start game state.
+	 *
+	 * @param game
+	 *            the game
+	 */
 	public StartGame(Game game) {
 		super(game);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see it.polimi.ingsw.cerridifebbo.model.GameState#handle()
+	 */
 	@Override
 	public void handle() {
 		game.informPlayers(null, Sentence.STARTING_GAME, null);
@@ -20,6 +37,9 @@ public class StartGame extends GameState {
 		initializePlayers();
 	}
 
+	/**
+	 * Initialize players.
+	 */
 	private void initializePlayers() {
 		for (User user : game.getUsers()) {
 			Card card = game.getDeck().drawCharacterCard();

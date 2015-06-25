@@ -1,6 +1,5 @@
 package it.polimi.ingsw.cerridifebbo.model;
 
-
 /**
  * This class describes an adrenaline card.
  * 

@@ -16,8 +16,8 @@ public class AlienSectorButton extends SectorButton {
 	private static final Color ALIEN_COLOR = Color.GREEN;
 
 	/**
-	 * This constructor calls the super constructor and sets the foreground color
-	 * to ALIEN_COLOR.
+	 * This constructor calls the super constructor and sets the foreground
+	 * color to ALIEN_COLOR.
 	 * 
 	 * @author cerridifebbo
 	 * @param label

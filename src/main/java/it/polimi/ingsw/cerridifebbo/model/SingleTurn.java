@@ -6,30 +6,69 @@ import java.util.TimerTask;
 
 import it.polimi.ingsw.cerridifebbo.controller.server.User;
 
+/**
+ * The Class SingleTurn manages the player turn.
+ *
+ * @author cerridifebbo
+ */
 public class SingleTurn extends GameState {
 
+	/** The Constant MAX_CARDS. */
 	private static final int MAX_CARDS = 3;
 
+	/** The user playing the current turn. */
 	private final User user;
+
+	/** The player associated to user. */
 	private final Player player;
+
+	/** Indicates if player finished his turn */
 	private boolean finish = false;
+
+	/** Indicates if player has no more movements to perform */
 	private boolean noMoreMovement = false;
+
+	/** Indicates if player has no more attacks to perform */
 	private boolean noMoreAttack = false;
+
+	/** Indicates if player has to use a item card. */
 	private boolean mustUseCard = false;
+
+	/** The timer of turn */
 	private Timer timeoutMove;
 
+	/**
+	 * Instantiates a new single turn state.
+	 *
+	 * @param game
+	 *            the game
+	 * @param user
+	 *            the user
+	 */
 	public SingleTurn(Game game, User user) {
 		super(game);
 		this.user = user;
 		this.player = user.getPlayer();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see it.polimi.ingsw.cerridifebbo.model.GameState#handle()
+	 */
 	@Override
 	public void handle() {
 		if (canPlay()) {
 			user.startTurn();
 			timeoutMove = new Timer();
-			timeoutMove.schedule(new MoveTimer(user), Game.MAX_TIMEOUT);
+			timeoutMove.schedule(new TimerTask() {
+
+				@Override
+				public void run() {
+					user.setTimeFinished(true);
+
+				}
+			}, Game.MAX_TIMEOUT);
 			while (!finish) {
 				Move move = user.getMove();
 				perform(move);
@@ -38,6 +77,11 @@ public class SingleTurn extends GameState {
 		}
 	}
 
+	/**
+	 * Returns if the player can play.
+	 *
+	 * @return true, if successful
+	 */
 	private boolean canPlay() {
 		if (!player.isAlive()) {
 			return false;
@@ -48,6 +92,12 @@ public class SingleTurn extends GameState {
 		return true;
 	}
 
+	/**
+	 * Performs the move from user.
+	 *
+	 * @param move
+	 *            the move
+	 */
 	private void perform(Move move) {
 		String action = move.getAction();
 		String target = move.getTarget();
@@ -73,6 +123,12 @@ public class SingleTurn extends GameState {
 		}
 	}
 
+	/**
+	 * Performs a movement of player
+	 *
+	 * @param target
+	 *            the target
+	 */
 	private void movement(String target) {
 		Sector destination = game.getMap().getCell(target);
 		if (destination != null && !noMoreMovement && player.movement(destination, game)) {
@@ -89,6 +145,9 @@ public class SingleTurn extends GameState {
 		}
 	}
 
+	/**
+	 * If the player's deck is full, the user has to choose an action.
+	 */
 	private void fullDeck() {
 		mustUseCard = true;
 		while (mustUseCard) {
@@ -107,6 +166,12 @@ public class SingleTurn extends GameState {
 		}
 	}
 
+	/**
+	 * Performs an attack in position of player.
+	 *
+	 * @param target
+	 *            the target
+	 */
 	private void attack(String target) {
 		if (!noMoreMovement && !noMoreAttack) {
 			Sector sector = game.getMap().getCell(target);
@@ -126,6 +191,12 @@ public class SingleTurn extends GameState {
 		}
 	}
 
+	/**
+	 * Performs the use of an item card.
+	 *
+	 * @param target
+	 *            the target
+	 */
 	private void useCard(String target) {
 		if (player instanceof AlienPlayer) {
 			user.sendMessage("Alien can't use item. Aliens are stupid!");
@@ -149,6 +220,12 @@ public class SingleTurn extends GameState {
 		}
 	}
 
+	/**
+	 * Performs the remove of an item card.
+	 *
+	 * @param target
+	 *            the target
+	 */
 	private void deleteCard(String target) {
 		Card selectedCard = findCard(target);
 		if (selectedCard == null) {
@@ -162,6 +239,13 @@ public class SingleTurn extends GameState {
 		game.informPlayers(player, Sentence.DISCARD_CARD, null);
 	}
 
+	/**
+	 * Finds an item card in the deck by a String.
+	 *
+	 * @param target
+	 *            the target
+	 * @return the card
+	 */
 	private Card findCard(String target) {
 		for (Card own : player.getOwnCards()) {
 			if (own.toString().equalsIgnoreCase(target)) {
@@ -171,6 +255,9 @@ public class SingleTurn extends GameState {
 		return null;
 	}
 
+	/**
+	 * Performs a random movement if time is finished
+	 */
 	private void timeFinished() {
 		game.informPlayers(player, Sentence.TIMEFINISHED, null);
 		if (!noMoreMovement) {
@@ -179,12 +266,20 @@ public class SingleTurn extends GameState {
 		finish();
 	}
 
+	/**
+	 * Returns a random reachable sector.
+	 *
+	 * @return the sector
+	 */
 	private Sector randomReachableSector() {
 		Random random = new Random();
 		return player.getPosition().getReachableSectors(player.getMaxMovement())
 				.get(random.nextInt(player.getPosition().getReachableSectors(player.getMaxMovement()).size()));
 	}
 
+	/**
+	 * Checks if turn can end.
+	 */
 	private void finish() {
 		if (noMoreMovement && !mustUseCard) {
 			endTurn();
@@ -195,24 +290,13 @@ public class SingleTurn extends GameState {
 		}
 	}
 
+	/**
+	 * Ends turn.
+	 */
 	private void endTurn() {
 		timeoutMove.cancel();
 		finish = true;
 		user.endTurn();
 		user.clear();
-	}
-
-	private class MoveTimer extends TimerTask {
-
-		private final User user;
-
-		MoveTimer(User user) {
-			this.user = user;
-		}
-
-		@Override
-		public void run() {
-			user.setTimeFinished(true);
-		}
 	}
 }

@@ -13,7 +13,7 @@ import it.polimi.ingsw.cerridifebbo.controller.common.SectorRemote;
 public interface NetworkInterface {
 
 	/**
-	 * Opens the connection. Allows the client to connect to the server. 
+	 * Opens the connection. Allows the client to connect to the server.
 	 */
 	public void connect();
 
@@ -30,7 +30,8 @@ public interface NetworkInterface {
 	public boolean registerClientOnServer();
 
 	/**
-	 * Sends to server a couple of strings. "action" describes the command, "target" describes the value.
+	 * Sends to server a couple of strings. "action" describes the command,
+	 * "target" describes the value.
 	 *
 	 * @param action
 	 *            the command to be performed by the server

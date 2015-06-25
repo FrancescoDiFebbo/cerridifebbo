@@ -49,8 +49,7 @@ public class CardPanel extends JPanel {
 	 *
 	 */
 	public CardPanel(String label, String playerRace) {
-		LayoutManager cardLayout = new CustomLayout(SPACE_BETWEEN_COMP_Y1,
-				SPACE_BETWEEN_COMP_Y2);
+		LayoutManager cardLayout = new CustomLayout(SPACE_BETWEEN_COMP_Y1, SPACE_BETWEEN_COMP_Y2);
 		setLayout(cardLayout);
 		setSize(PANEL_WIDTH, PANEL_HEIGHT);
 		setMinimumSize(cardLayout.minimumLayoutSize(this));
@@ -82,9 +81,8 @@ public class CardPanel extends JPanel {
 		card.setBackground(GUIGraphics.BACKGROUND_COLOR);
 		card.setForeground(GUIGraphics.getColorRace(playerRace));
 		card.setOpaque(false);
-		String cardPath = System.getProperty("user.dir")
-				+ System.getProperty("file.separator") + "file"
-				+ System.getProperty("file.separator") + "card.png";
+		String cardPath = System.getProperty("user.dir") + System.getProperty("file.separator") + "file" + System.getProperty("file.separator")
+				+ "card.png";
 		ImageIcon img = new ImageIcon(cardPath);
 		card.setIcon(img);
 		card.setSize(CARD_WIDTH, CARD_HEIGHT);
@@ -99,8 +97,7 @@ public class CardPanel extends JPanel {
 	 *            the race of the player
 	 */
 	private void initializeButton(String playerRace) {
-		UIManager.getDefaults().put("Button.disabledText",
-				GUIGraphics.getColorRace(playerRace));
+		UIManager.getDefaults().put("Button.disabledText", GUIGraphics.getColorRace(playerRace));
 		use = new JButton(USE_TEXT);
 		use.setFont(new Font(FONT_NAME, Font.PLAIN, 10));
 		use.setName(card.getName());
@@ -117,8 +114,7 @@ public class CardPanel extends JPanel {
 		add(discard);
 		discard.setEnabled(false);
 		use.setEnabled(false);
-		Border thickBorder = new LineBorder(
-				GUIGraphics.getColorRace(playerRace), 1);
+		Border thickBorder = new LineBorder(GUIGraphics.getColorRace(playerRace), 1);
 		discard.setBorder(thickBorder);
 		use.setBorder(thickBorder);
 	}

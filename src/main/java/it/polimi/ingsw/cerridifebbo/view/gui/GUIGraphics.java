@@ -335,7 +335,7 @@ public class GUIGraphics extends Graphics implements ActionListener {
 	 */
 	@Override
 	public void updateEscapeHatch(MapRemote map, SectorRemote sector) {
-		serverMessage.addText(sector.getCoordinate()+ " " +SECTOR_ESCAPE_UPDATE);
+		serverMessage.addText(sector.getCoordinate() + " " + SECTOR_ESCAPE_UPDATE);
 		mapGrid.updateEscapeHatchStatus(sector.getCoordinate());
 	}
 

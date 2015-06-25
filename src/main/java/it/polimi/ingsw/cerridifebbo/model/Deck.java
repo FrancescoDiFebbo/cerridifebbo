@@ -35,8 +35,8 @@ public class Deck {
 	 * @param escapeHatches
 	 *            a list of escape hatch cards
 	 */
-	Deck(List<Card> characters, List<Card> sectors, List<Card> items,
-			List<Card> escapeHatches) {
+	Deck(List<Card> characters, List<Card> sectors, List<Card> items, List<Card> escapeHatches) {
+		Collections.shuffle(characters);
 		this.characterCards = characters;
 		this.sectorCards = sectors;
 		this.itemCards = items;

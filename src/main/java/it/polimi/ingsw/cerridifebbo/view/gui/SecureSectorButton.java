@@ -16,8 +16,8 @@ public class SecureSectorButton extends SectorButton {
 	private static final Color SECURE_COLOR = Color.LIGHT_GRAY;
 
 	/**
-	 * This constructor calls the super constructor and sets the foreground color
-	 * to SECURE_COLOR.
+	 * This constructor calls the super constructor and sets the foreground
+	 * color to SECURE_COLOR.
 	 * 
 	 * @author cerridifebbo
 	 * @param label

@@ -15,8 +15,8 @@ public class HumanSectorButton extends SectorButton {
 	private static final Color HUMAN_COLOR = Color.BLUE;
 
 	/**
-	 * This constructor calls the super constructor and sets the foreground color
-	 * to HUMAN_COLOR.
+	 * This constructor calls the super constructor and sets the foreground
+	 * color to HUMAN_COLOR.
 	 * 
 	 * @author cerridifebbo
 	 * @param label

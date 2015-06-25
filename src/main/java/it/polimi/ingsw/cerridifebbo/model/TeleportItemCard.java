@@ -1,6 +1,5 @@
 package it.polimi.ingsw.cerridifebbo.model;
 
-
 /**
  * This class describes a teleport card.
  * 

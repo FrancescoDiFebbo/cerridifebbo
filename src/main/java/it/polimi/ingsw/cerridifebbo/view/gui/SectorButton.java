@@ -22,14 +22,11 @@ public abstract class SectorButton extends JButton {
 	public static final Color HEXAGON_BORDER_COLOR = Color.WHITE;
 	public static final Color PRESSED_BUTTON = Color.WHITE;
 	public static final int SIDE = 24;
-	public static final int SHIFT_OBLIQUE_SIDE = (int) (SIDE * Math
-			.sin((30 * Math.PI) / 180));
-	public static final int RADIUS = (int) (SIDE * Math
-			.cos((30 * Math.PI) / 180));
+	public static final int SHIFT_OBLIQUE_SIDE = (int) (SIDE * Math.sin((30 * Math.PI) / 180));
+	public static final int RADIUS = (int) (SIDE * Math.cos((30 * Math.PI) / 180));
 	public static final int BORDER_WIDTH = 3;
 	public static final int BORDER_HEIGHT = 3;
-	public static final int WIDTH = SIDE + SHIFT_OBLIQUE_SIDE * 2 + 2
-			* BORDER_WIDTH;
+	public static final int WIDTH = SIDE + SHIFT_OBLIQUE_SIDE * 2 + 2 * BORDER_WIDTH;
 	public static final int HEIGHT = 2 * RADIUS + 2 * BORDER_HEIGHT;
 	private static Polygon hexagon;
 
@@ -56,9 +53,8 @@ public abstract class SectorButton extends JButton {
 	 */
 	private void initializeHexagon() {
 		int[] cx, cy;
-		cx = new int[] { 0, SHIFT_OBLIQUE_SIDE, SIDE + SHIFT_OBLIQUE_SIDE,
-				SIDE + SHIFT_OBLIQUE_SIDE + SHIFT_OBLIQUE_SIDE,
-				SIDE + SHIFT_OBLIQUE_SIDE, SHIFT_OBLIQUE_SIDE };
+		cx = new int[] { 0, SHIFT_OBLIQUE_SIDE, SIDE + SHIFT_OBLIQUE_SIDE, SIDE + SHIFT_OBLIQUE_SIDE + SHIFT_OBLIQUE_SIDE, SIDE + SHIFT_OBLIQUE_SIDE,
+				SHIFT_OBLIQUE_SIDE };
 		cy = new int[] { RADIUS, RADIUS + RADIUS, RADIUS + RADIUS, RADIUS, 0, 0 };
 		hexagon = new Polygon(cx, cy, 6);
 	}
@@ -91,8 +87,7 @@ public abstract class SectorButton extends JButton {
 	@Override
 	protected void paintComponent(Graphics g) {
 		Graphics2D graphics2d = (Graphics2D) g;
-		graphics2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-				RenderingHints.VALUE_ANTIALIAS_ON);
+		graphics2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g.fillPolygon(hexagon);
 		g.setColor(FONT_COLOR);
 		g.setFont(new Font("Arial", Font.BOLD, 11));

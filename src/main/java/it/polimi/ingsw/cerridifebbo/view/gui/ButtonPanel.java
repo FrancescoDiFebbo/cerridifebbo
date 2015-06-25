@@ -54,10 +54,8 @@ public class ButtonPanel extends JPanel {
 	 * 
 	 */
 	private void setButton() {
-		UIManager.getDefaults().put("Button.disabledText",
-				GUIGraphics.getColorRace(playerRace));
-		Border thickBorder = new LineBorder(
-				GUIGraphics.getColorRace(playerRace), 2);
+		UIManager.getDefaults().put("Button.disabledText", GUIGraphics.getColorRace(playerRace));
+		Border thickBorder = new LineBorder(GUIGraphics.getColorRace(playerRace), 2);
 		finishTurn = new JButton(FINISH_TURN);
 		finishTurn.setBackground(GUIGraphics.BACKGROUND_COLOR);
 		finishTurn.setForeground(GUIGraphics.getColorRace(playerRace));
